@@ -125,8 +125,7 @@ MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-    if not DEBUG:
-        env('STATIC_ROOT')
+    env('STATIC_ROOT')
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles' if DEBUG else env('STATIC_ROOT')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
