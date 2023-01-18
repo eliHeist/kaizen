@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div id="hero-space" class="md:hidden"></div>
+<section id="banner" class="h-screen overflow-hidden mb-8 shadow-2xl">
+    <div class="relative h-full">
+        <video autoplay muted loop class=" w-full h-full object-cover">
+            <source src="{% static 'video/kaizensafaris.mp4' %}" type="video/mp4">
+        </video>
+        <div class="cover z-10 absolute top-0 left-0 w-full h-full bg-black bg-opacity-40">
+            <div id="hero-space"></div>
+            <div class="content-end h-full grid justify-center">
+                <h1 class="text-6xl mt-auto text-white font-black uppercase">Explore Africa</h1>
+                <a href="#next" class="mx-auto"><i class="fas fa-arrow-down text-white opacity-30 hover:opacity-90 text-6xl  my-4"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- welcome section -->
+<section id="next" class=" bg-[#efd8ae] py-8 border-all shadow-2xl">
+    <div class="container">
+        <div class="grid md:grid-cols-2 lg:grid-cols-2">
+            <figure>
+                <img src="{% static 'img/lion.png' %}" alt="East Africa Tours" class="sm:max-h-96">
+            </figure>
+            <article class="grid obs fade-in">
+                <p class="text-xl p-4 my-auto text-center">
+                    Kaizen Safaris welcomes you to Africa, the magnificent continent with inexhaustible natural,
+                    cultural and adventurous treasures. We have been dedicated to providing best services to our valued
+                    clients since our establishment, putting every single effort to make your trips memorable. Rich in
+                    Nature and culture, events and festivals, flora and fauna, art and architecture, Africa boasts of
+                    being an awe-inspiring destination in all aspects. It has been fascinating travelers for more than
+                    half a century and continues to do so now and in the future. People from all over the world with
+                    different tastes, interests are fully satisfied once they experience their stay in Africa.
+                </p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- upcoming tours -->
+<section class="mt-16 py-16 bg-primary-900">
+    <h2 class="head-1 text-white">Upcoming Tours</h2>
+    <div class="container">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            {% for safari in upcoming_tours %}
+                <div class="obs fade-in slide-in top overflow-hidden relative card hover:shadow-2xl shadow-white">
+                    <img src="{{ safari.image.url }}" alt=""
+                        class="w-full h-full aspect-square object-cover">
+                    <div class="absolute top-0 left-0 w-full h-full grid">
+                        <div class="mt-auto filter p-2 backdrop-blur-md bg-gradient-to-t from-[rgba(0,0,0,0.4)]">
+                            <a href="{% url 'destinations:itinerary-detail' safari.pk %}">
+                                <h2 class="text-white text-3xl font-extrabold">{{ safari.name }}</h2>
+                            </a>
+                            <div class="grid grid-cols-2 gap-2 text-gray-300 font-semibold transition-all duration-1000 show overflow-hidden h-0">
+                                <span><i class="fa fa-calendar mr-2"></i>{{ safari.departure_date }}</span>
+                                <span><i class="fas fa-clock mr-2"></i>{{ safari.Duration }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flyer px-4 h-12 absolute top-6 right-6 bg-lime-500">
+                        <h3 class="mx-auto h-full grid place-content-center text-center text-white text-xl font-bold font-sans">
+                            UGX 200,000
+                        </h3>
+                    </div>
+                </div>
+            {% endfor %}
+                
+        </div>
+    </div>
+    
+</section>
+
+<!-- Featured safaris -->
+<aside class=" py-16">
+    <h2 class="head-1 mb-8">Featured Safaris</h2>
+    <div class="swiper container">
+        <div class="swiper-wrapper slide-content flex">
+            
+            {% for safari in tours %}
+                <div class="scroll-element swiper-slide shadow-2xl h-100">
+                    <div class="grid p-4">
+                        <img src="{{ safari.image.url }}" alt=""
+                        class=" rounded-2xl outline outline-5 outline-lime-600 aspect-video w-full object-cover">
+                    <h3 class=" mt-4 h-full"><a href="{% url 'destinations:itinerary-detail' safari.pk %}" class="link">{{ safari.name }}</a></h3>
+                    </div>
+                </div>
+            {% endfor %}
+                
+        </div>
+        <div class="swiper-pagination mx-auto"></div>
+        <!-- <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div> -->
+    </div>
+</aside>
+
+<!-- destinations -->
+<section class="pt-32 mb-32">
+    <div class="container mx-auto">
+        <h2 class="head-1">Our Popular Destinations</h2>
+        <div class="shadow-all-round flex h-96 md:h-[30rem] mx-auto">
+            
+            {% for destination in destinations %}
+                <div class="accord-item h-full flex-1 transition-all hover:flex-3 z-0 overflow-hidden grid content-end" style="background-image: url('{{ destination.image.url }}'); background-size:cover;">
+                    <span class="font-extrabold text-xl md:text-2xl cursor-default mt-auto text-white ml-2">{{ destination.name }}</span><br>
+                    <a href="{% url 'destinations:destination-detail' destination.pk %}" class=" text-xl font-bold text-white hover:text-lime-500 ml-2 mt-1 mb-4">visit <i class="fas fa-arrow-right ml-2 text-lg"></i></a>
+                </div>
+            {% endfor %}
+                
+        </div>
+    </div>
+</section>
+
+<!-- parallax -->
+<section class="parallax overflow-hidden">
+    <div class="py-16 bg-black bg-opacity-60 grid">
+        <div class="container text-white text-center py-16">
+            <h2 class="head-1">Didn’t find the trip you’re looking for?</h2>
+            <p class=" max-w-6xl text-xl mx-auto my-4 p-4">
+                Tailor-made trips offer you the flexibility to design your own trip exactly how you like it. You can
+                decide how and when to travel, the level of service and the hotel standard. Pack in as many activities
+                and locations as possible, or incorporate some relaxation and free time to explore on your own terms.
+            </p>
+            <button class="bg-white text-primary-900 btn">
+                <a href="{% url 'contacts:book_now' %}" class="">Get a custom trip <i class="fas fa-arrow-right ml-3 font-black text-xl"></i></a>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- reviews -->
+<section class="py-16">
+    <h2 class="head-1">What do our customers say?</h2>
+    <div class="container">
+        <div class="swiper2">
+            <div class="swiper-wrapper slide-content">
+                
+                {% for review in reviews %}
+                    <div class="scroll-element swiper-slide h-full">
+                        <div class="p-4 bg-white h-full rounded-lg">
+                            <h3 class="text-xl font-semibold text-black mb-4">{{ review.reviewer }}</h3>
+                            <p class="text-primary-800 text-lg">{{ review.text }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+                    
+            </div>
+            <div class="swiper2-pagination mx-auto"></div>
+            <div class="swiper2-button-next"></div>
+            <div class="swiper2-button-prev"></div>
+        </div>
+    </div>
+</section>
+
+<!-- affiliations -->
+<section class="py-16 shadow-2xl mb-16">
+    <h2 class="head-1">Affiliations</h2>
+    <div class="gtc gap-3 lg:gap-16 container justify-center">
+        <figure class="aspect-square grid place-content-center">
+            <img class="aspect-square object-contain" src="{% static 'img/affiliations/safaribookings.png' %}" alt="">
+        </figure>
+        <figure class="aspect-square grid place-content-center">
+            <img class="aspect-square object-contain" src="{% static 'img/affiliations/auto.png' %}" alt="">
+        </figure>
+        <figure class="aspect-square grid place-content-center">
+            <img class="aspect-square object-contain" src="{% static 'img/affiliations/uwa.png' %}" alt="">
+        </figure>
+        <figure class="aspect-square grid place-content-center">
+            <img class="aspect-square object-contain" src="{% static 'img/affiliations/uta.png' %}" alt="">
+        </figure>
+        <figure class="aspect-square grid place-content-center">
+            <img class="aspect-square object-contain" src="{% static 'img/affiliations/utb.png' %}" alt="">
+        </figure>
+    </div>
+</section>
+{% endblock content %}
+
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'swiper/swiper-bundle.min.css' %}">
+<script src="{% static 'swiper/swiper-bundle.min.js' %}"></script>
+
+<style>
+    .scroller {
+        --_space: 1rem;
+        display: grid;
+        grid-auto-flow: column;
+        gap: var(--_space);
+        grid-auto-columns: 21%;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+    }
+
+    .accord-item{
+        width: 100%;
+    }
+    .accord-item{
+        width: 200%;
+    }
+    .accord-item a, .accord-item span{
+        text-shadow: 1px 1px 2px rgb(15, 45, 0);
+    }
+
+    .parallax {
+        background-image: url('/static/img/elephant.png');
+        background-size: cover;
+        background-attachment: fixed;
+    }
+
+    .gtc{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, 100px);
+    }
+</style>
+{% endblock styles %}
+
+
+{% block scripts %}
+<script>
+    var swiper = new Swiper(".swiper", {
+        spaceBetween: 25,
+        loop: true,
+        centerSlide: 'true',
+        fade: 'true',
+        grabCursor: 'true',
+        autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+        },
+        autoHeight: true,
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+          dynamicBullets: true,
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+    
+        breakpoints:{
+            0: {
+                slidesPerView: 1,
+            },
+            520: {
+                slidesPerView: 2,
+            },
+            950: {
+                slidesPerView: 3,
+            },
+            1366: {
+                slidesPerView: 3,
+            },
+        },
+      });
+    var feedbackSwiper = new Swiper(".swiper2", {
+        spaceBetween: 25,
+        loop: true,
+        centerSlide: 'false',
+        fade: 'true',
+        grabCursor: 'true',
+        autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+        },
+        pagination: {
+          el: ".swiper2-pagination",
+          clickable: true,
+          dynamicBullets: true,
+        },
+        navigation: {
+          nextEl: ".swiper2-button-next",
+          prevEl: ".swiper2-button-prev",
+        },
+    
+        breakpoints:{
+            0: {
+                slidesPerView: 1,
+            },
+            520: {
+                slidesPerView: 1,
+            },
+            720: {
+                slidesPerView: 2,
+            },
+            1366: {
+                slidesPerView: 2,
+            },
+        },
+      });
+</script>
+{% endblock scripts %}
+    

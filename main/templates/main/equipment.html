@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<section class=" h-[100vh] overflow-hidden">
+    <div class="relative h-full">
+        <video autoplay muted loop class=" w-full h-full object-cover">
+            <source src="{% static 'video/homehero.m4v' %}" type="video/mp4">
+        </video>
+        <div class="cover z-10 absolute top-0 left-0 bottom-0 w-full bg-black bg-opacity-40">
+            <!-- <div id="hero-space"></div> -->
+            <div class="content-center grid justify-center h-full relative">
+                <h1 class="shadowed text-6xl text-white uppercase font-bold text-center h-fit">Tents For Hire</h1>
+                <button class="btn bg-white mt-3">
+                    <a href="#next" class=""> <i class="fas fa-arrow-down mr-4 font-black"></i> Hire tents</a>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="my-16" id="next">
+    <div class="container">
+        <p class="mx-auto max-w-2xl text-xl">
+            Welcome to the Kaizen Safaris camping Equipments and tents shop! Tents are your ticket to a quick weekend or week away with family and friends to relax or enjoy all that the outdoors has to offer.
+        </p>
+        
+        <main>
+            <form method="post" class="booking-form grid gap-4 text-xl">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {{ form.management_form }}
+                <fieldset class="grid grid-cols-2 gap-4">
+                    <div>
+                        {{ form.first_name.errors }}
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div>
+                        {{ form.last_name.errors }}
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                        {{ form.last_name }}
+                    </div>
+                </fieldset>
+                <fieldset class="grid grid-cols-2 gap-4">
+                    <div>
+                        {{ form.email.errors }}
+                        <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                        {{ form.email }}
+                    </div>
+                    <div>
+                        {{ form.phone.errors }}
+                        <label for="{{ form.phone.id_for_label }}" class="form-label">Phone Number</label>
+                        {{ form.phone }}
+                    </div>
+                </fieldset>
+                <fieldset class="grid grid-cols-1 gap-4">
+                    <div>
+                        {{ form.sleepers.errors }}
+                        <label for="{{ form.sleepers.id_for_label }}" class="form-label">{{ form.sleepers.label }}</label>
+                        {{ form.sleepers }}
+                    </div>
+                </fieldset>
+                <fieldset class="grid grid-cols-2 gap-4">
+                    <div>
+                        {{ form.contact_choice.errors }}
+                        <label for="{{ form.contact_choice.id_for_label }}" class="form-label">What's the best way to contact you?</label>
+                        <fieldset>
+                            {{ form.contact_choice }}
+                        </fieldset>
+                    </div>
+                    <div>
+                        {{ form.time_choice.errors }}
+                        <label for="{{ form.time_choice.id_for_label }}" class="form-label">If phone what is the best time to call you?</label>
+                        <fieldset>
+                            {{ form.time_choice }}
+                        </fieldset>
+                    </div>
+                </fieldset>
+                <div>
+                    {{ form.more_info.errors }}
+                    <label for="{{ form.more_info.id_for_label }}" class="form-label">Anything Else we should know</label>
+                    {{ form.more_info }}
+                </div>
+                <button type="submit" class="text-white bg-primary-900 p-2 px-4 mx-auto rounded-md max-w-fit">
+                    Submit Booking
+                </button>
+            </form>
+        </main>
+            
+    </div>
+</section>
+{% endblock content %}
+
+
+{% block styles %}
+    <style>
+        .card img{
+            aspect-ratio: 4 / 3;
+        }
+    </style>
+{% endblock styles %}
+    

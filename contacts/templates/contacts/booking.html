@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load tailwind_filters %}
+
+
+{% block content %}
+<section id="banner" class=" h-[70vh] overflow-hidden rounded-b-[3rem] shadow-2xl">
+    <div class="relative">
+        <video autoplay muted loop class=" w-full h-full object-cover">
+            <source src="{% static 'video/homehero.m4v' %}" type="video/mp4">
+        </video>
+        <div class="cover z-10 absolute top-0 left-0 w-full h-full bg-black bg-opacity-40">
+            <div id="hero-space"></div>
+            <div class="content-space">
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-16">
+    <h2 class="head-1">Booking Form</h2>
+    <div class="container">
+            <!-- {{ form|crispy }} -->
+        <form method="post" class="booking-form grid gap-4 text-xl">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {{ form.management_form }}
+            <fieldset class="grid grid-cols-2 gap-4">
+                <div>
+                    {{ form.first_name.errors }}
+                    <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                    {{ form.first_name }}
+                </div>
+                <div>
+                    {{ form.last_name.errors }}
+                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                    {{ form.last_name }}
+                </div>
+            </fieldset>
+            <fieldset class="grid grid-cols-2 gap-4">
+                <div>
+                    {{ form.email.errors }}
+                    <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                    {{ form.email }}
+                </div>
+                <div>
+                    {{ form.phone.errors }}
+                    <label for="{{ form.phone.id_for_label }}" class="form-label">Phone Number</label>
+                    {{ form.phone }}
+                </div>
+            </fieldset>
+            <fieldset class="grid grid-cols-2 gap-4">
+                <div>
+                    {{ form.visit_date.errors }}
+                    <label for="{{ form.visit_date.id_for_label }}" class="form-label">When are you planning to visit?</label>
+                    {{ form.visit_date }}
+                </div>
+                <div>
+                    {{ form.no.errors }}
+                    <label for="{{ form.no.id_for_label }}" class="form-label">How many are you?</label>
+                    {{ form.no }}
+                </div>
+            </fieldset>
+            <fieldset class="grid grid-cols-2 gap-4">
+                <div>
+                    {{ form.group_no.errors }}
+                    <label for="{{ form.group_no.id_for_label }}" class="form-label">If a group, How many People are in the group?</label>
+                    {{ form.group_no }}
+                </div>
+                <div>
+                    {{ form.tour.errors }}
+                    <label for="{{ form.tour.id_for_label }}" class="form-label">Which Tour or Visit are you intrested in?</label>
+                    {{ form.tour }}
+                </div>
+            </fieldset>
+            <fieldset class="grid grid-cols-2 gap-4">
+                <div>
+                    {{ form.contact_choice.errors }}
+                    <label for="{{ form.contact_choice.id_for_label }}" class="form-label">What's the best way to contact you?</label>
+                    <fieldset>
+                        {{ form.contact_choice }}
+                    </fieldset>
+                </div>
+                <div>
+                    {{ form.time_choice.errors }}
+                    <label for="{{ form.time_choice.id_for_label }}" class="form-label">If phone what is the best time to call you?</label>
+                    <fieldset>
+                        {{ form.time_choice }}
+                    </fieldset>
+                </div>
+            </fieldset>
+            <div>
+                {{ form.more_info.errors }}
+                <label for="{{ form.more_info.id_for_label }}" class="form-label">Anything Else we should know</label>
+                {{ form.more_info }}
+            </div>
+            <button type="submit" class="text-white bg-primary-900 p-2 px-4 mx-auto rounded-md max-w-fit">
+                Submit Booking
+            </button>
+        </form>
+    </div>
+</section>
+{% endblock content %}

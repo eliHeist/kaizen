@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'lightbox2/dist/css/lightbox.min.css' %}">
+    <script src="{% static 'lightbox2/dist/js/lightbox-plus-jquery.min.js' %}"></script>
+{% endblock styles %}
+    
+
+{% block content %}
+<section class=" h-[70vh] overflow-hidden" id="banner">
+    <div class="relative h-full">
+        <video autoplay muted loop class=" w-full h-full object-cover">
+            <source src="{% static 'video/homehero.m4v' %}" type="video/mp4">
+        </video>
+        <div class="cover z-10 absolute top-0 left-0 bottom-0 w-full bg-black bg-opacity-40">
+            <!-- <div id="hero-space"></div> -->
+            <div class="content-center grid justify-center h-full relative">
+                <h1 class="shadowed text-6xl text-white uppercase font-bold text-center h-fit">Kaizen Safaris' Gallery</h1>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="my-8">
+    <div class="container grid">
+        <h2 class="head-1 text-primary-800">Photos</h2>
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-8 pb-8" id="photo-box">
+            
+            {% for photo in photos %}
+                <figure class="photo aspect-1610 overflow-hidden hidden clipped hover:shadow-2xl scale-100 hover:z-30 hover:scale-125 transition-all rounded">
+                    <a href="{{ photo.image.url }}" data-lightbox="gallery" data-title="{{ photo.description }}">
+                        <img src="{{ photo.image.url }}" alt="{{ photo.description }}" class=" sm:scale-125 sm:grayscale sm:hover:grayscale-0 transition-all object-cover">
+                    </a>
+                </figure>
+            {% endfor %}
+                
+        </div>
+        <a class="link more-link ml-auto cursor-pointer" data-class="photo" data-number="4">more..</a>
+    </div>
+    <div class="container mt-16 grid">
+        <h2 class="head-1 text-primary-800">Videos</h2>
+        <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8" id="photo-box">
+            
+            {% for video in videos %}
+            <iframe class="aspect-video w-full ytVideo hidden clipped transform scale-100 hover:scale-105 transition-all" allowfullscreen
+            src="{{ video.link }}">
+            </iframe>
+            {% endfor %}
+                
+        </div>
+        <a class="link more-link ml-auto cursor-pointer" data-class="ytVideo" data-number="3">more..</a>
+    </div>
+</main>
+{% endblock content %}
+
+
+{% block scripts %}
+    <script>
+        ShowMore('ytVideo', 6)
+        ShowMore('photo', 8)
+    </script>
+{% endblock scripts %}
+    
+
+    

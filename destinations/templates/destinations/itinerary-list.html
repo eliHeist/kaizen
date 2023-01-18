@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<section id="itineries">
+    <div id="hero-space"></div>
+    <div class="container py-16">
+        <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4">
+            
+            {% for itinerary in itineraries %}
+                <div class="overflow-hidden relative card">
+                    <img src="{{ itinerary.image.url }}" alt=""
+                        class="w-full h-full object-cover">
+                    <div class="absolute top-0 left-0 w-full h-full grid">
+                        <div class="mt-auto filter p-2 backdrop-blur-md bg-gradient-to-t from-[rgba(0,0,0,0.4)]">
+                            <h2 class="text-white text-xl font-extrabold">
+                                <a href="{% url 'destinations:itinerary-detail' itinerary.pk %}" class="hover:text-lime-300">{{ itinerary.name }}</a>
+                            </h2>
+                            <div class="grid grid-cols-2 gap-2 text-gray-300 font-semibold show overflow-hidden h-0">
+                                <span><i class="fa fa-calendar mr-2"></i>
+                                    {% if itinerary.departure_date %}
+                                        {{itinerary.departure_date}}
+                                    {% else %}
+                                        Unset
+                                    {% endif %}
+                                </span>
+                                <span><i class="fas fa-clock mr-2"></i>
+                                    {% if itinerary.return_date %}
+                                        {{itinerary.Duration}}
+                                    {% else %}
+                                        Unset
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+                
+        </div>
+    </div>
+</section>
+{% endblock content %}
+    

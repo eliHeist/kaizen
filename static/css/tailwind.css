@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap');
+
+
+.container{
+    @apply mx-auto
+}
+
+.nav-logo{
+    transform-origin: top;
+    transform: scale(2);
+    background-color: transparent;
+}
+/* 
+.show .nav-logo{
+    background-color: white;
+} */
+
+.link{
+    @apply text-primary-900 font-medium;
+}
+.link:hover{
+    @apply text-lime-600;
+}
+
+.hs{
+    outline: 2px solid lime !important;
+}
+
+.booking-form input, .booking-form textarea{
+    @apply outline outline-1 outline-slate-200 p-2 bg-slate-200;
+}
+.booking-form input[type='radio'], .booking-form input[type='checkbox']{
+    outline: none;
+}
+
+.form-label{
+    @apply block text-gray-700 text-base font-bold mb-2;
+}
+
+.btn{
+    @apply rounded-md text-base font-semibold py-3 px-6;
+}
+.btn:hover{
+    @apply transition-all scale-95;
+}
+
+.head-1{
+    @apply text-4xl font-bold text-center mb-8;
+}
+
+.card .show{
+    transition: height .5s ease-in;
+}
+.card:hover .show{
+    height: fit-content;
+}
+.card img{
+    transition: transform 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.card:hover img{
+    transform: scale(110%);
+}
+
+.shadowed{
+    text-shadow: 2px 2px 5px black;
+}
+
+.text-f{
+    color: white !important;
+    color: rgb(237, 250, 237);
+}
+
+.clipped{
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+    transition: clip-path 3s ease-in;
+}
+.clipped.show{
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+#banner{
+    border-bottom-left-radius: 3rem;
+    border-bottom-right-radius: 3rem;
+    overflow: hidden;
+}
+
+.border-all{
+    border-radius: 3rem;
+}
+.border-top{
+    border-top-left-radius: 3rem;
+    border-top-right-radius: 3rem;
+}
+
+#next-section{
+    opacity: 0;
+    transform: translateY(50%);
+    transition: opacity 200ms ease-in-out;
+    transition: transform 700ms ease-in-out;
+}
+
+#next-section.show{
+    opacity: 1;
+    transform: translateY(0);
+}
+
+body{
+    font-family: 'Comic Neue', cursive;
+}
+
+.h-100{
+    height: 100% !important;
+}
+
+.shadow-all-round{
+    box-shadow: 0 0 15px rgb(0 0 0 / 70%);
+}
+
+#navbar-sticky{
+    background: url('../img/fade.gif');
+    
+}
+
+form label{
+    /* @apply text-base font-semibold text-slate-900 */
+}

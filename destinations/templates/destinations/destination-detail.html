@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<section id="banner" class=" h-[100vh] overflow-hidden">
+    <div class="relative h-full">
+        <video autoplay muted loop class=" w-full h-full object-cover">
+            <source src="{{ destination.video.url }}" type="video/mp4">
+        </video>
+        <div class="cover z-10 absolute top-0 left-0 bottom-0 w-full bg-black bg-opacity-40">
+            <!-- <div id="hero-space"></div> -->
+            <div class="content-center grid justify-center h-full relative">
+                <h1 class="shadowed text-6xl text-white uppercase font-bold text-center h-fit">{{ destination.name }}</h1>
+                <p class="shadowed text-lg text-white text-center mt-4">Come and tour {{ destination.name }} with Kaizen Safaris</p>
+                <button id="next-section-btn" class="btn bg-white mt-3">
+                    <a class="cursor-pointer"> <i class="fas fa-arrow-down mr-4 font-black"></i> Explore Itineraries</a>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="hidden py-16" >
+    <section id="next-section">
+        <div class="container grid">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                
+                {% for itinerary in itineraries %}
+                    <div class="overflow-hidden relative card">
+                        <img src="{{ itinerary.image.url }}" alt=""
+                            class="w-full h-full object-cover">
+                        <div class="absolute top-0 left-0 w-full h-full grid">
+                            <div class="mt-auto filter p-2 backdrop-blur-md bg-gradient-to-t from-[rgba(0,0,0,0.4)]">
+                                <h2 class="text-white text-xl font-extrabold">{{ itinerary.name }}</h2>
+                                <div class="grid grid-cols-2 gap-2 text-gray-300 font-semibold transition-all duration-1000 show overflow-hidden h-0">
+                                    <span><i class="fa fa-calendar mr-2"></i>{{ itinerary.departure_date }}</span>
+                                    <span><i class="fas fa-clock mr-2"></i>{{ itinerary.Duration }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                    
+            </div>
+            <a class="link more-link ml-auto cursor-pointer hidden " data-class="card" data-number="3">more..</a>
+        </div>
+    </section>
+</div>
+{% endblock content %}
+    

@@ -1,0 +1,91 @@
+{% load static %}
+
+<footer class="border-all bg-primary-900 py-4 px-2 shadow-2xl">
+    <div class="container text-white">
+        <h2 class="hidden">Footer</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4">
+            <figure class="hidden sm:block">
+                <img src="{% static 'img/logo-white.png' %}" alt="">
+            </figure>
+            <div>
+                <h3 class=" text-3xl font-medium mb-4">Locate Us</h3>
+                <ol class="list-none grid gap-2">
+                    <li><i class="fas fa-building mr-4"></i>Mukasa Towers, Ground Floor</li>
+                    <li><i class="fas fa-road mr-4"></i>Seeta – Namilyango Road</li>
+                    <li><i class="fas fa-box mr-4"></i>P O Box 8437, Mukono, Uganda</li>
+                    <li><i class="fas fa-envelope mr-4"></i>info@kaizensafaris.com</li>
+                    <li><i class="fas fa-phone mr-4"></i>Office: (+256) 393 243 933</li>
+                    <li><i class="fab fa-whatsapp mr-4"></i>Whatsapp:(+256) 755 312 238</li>
+                </ol>
+            </div>
+            <aside class="mt-8 lg:mt-0">
+                <h3 class="text-3xl font-medium mb-4">Popular Links</h3>
+                <ol class="list-none grid gap-2">
+                    <li>~<a href="">Ministry of Tourism</a></li>
+                    <li>~<a href="">Wildlife and Antiquities</a></li>
+                    <li>~<a href="">Uganda Wildlife Authority</a></li>
+                    <li>~<a href="">Gorilla Permits and Licenses</a></li>
+                    <li>~<a href="">Travel e-Visa</a></li>
+                    <li>~<a href="">Uganda Tourism Board</a></li>
+                </ol>
+            </aside>
+            <div class="mt-8 lg:mt-0">
+                <h3 class="text-3xl font-medium mb-4">Get in Touch</h3>
+                <form class="grid gap-3" x-data="{
+                    status: '',
+                    mail: {
+                        name: '',
+                        email: '',
+                        message: '',
+                    },
+                    csrf() {
+                        token = document.getElementById('token').firstElementChild.value;
+                        return token;
+                     },
+                    sendMail() {
+                        this.status = 'sending...'
+                        fetch(`{% url 'contacts:send_mail' %}`, {
+                            method: 'POST',
+                            headers: {
+                               Accept: 'application/json',
+                               'Content-Type': 'application/json',
+                               'X-CSRFToken': this.csrf(),
+                            },
+                            body: JSON.stringify(this.mail),
+                         }).then((response) => response.json())
+                                .then((json) => this.status = json);
+                        if (status === 'SUCCESS') {
+                           // clear fields
+                            this.mail.name = ''
+                            this.mail.email = ''
+                            this.mail.message = ''
+                        }
+                     }
+                }" @submit.prevent="sendMail()">
+                    <div id="token">{% csrf_token %}</div>
+                    <input x-model="mail.name" type="text" placeholder="Your Name" name="your_name"
+                        class=" p-1 w-full rounded-lg text-base text-black">
+                    <input x-model="mail.email" type="email" placeholder="Your email" name="your_email"
+                        class=" p-1 w-full rounded-lg text-base text-black">
+                    <textarea x-model="mail.message" name="your_message" cols="30" rows="4" placeholder="Your Message"
+                        class=" p-1 w-full rounded-lg text-base text-black"></textarea>
+                    <button type="submit"
+                        class="bg-white w-fit text-primary-900 font-semibold mx-auto sm:ml-0 btn"
+                        >Submit</button> <span class="" x-text="status"></span>
+                </form>
+            </div>
+        </div>
+        <p class="text-center mt-8">
+            © Copyright 2022 - Kaizen Safaris - All Rights Reserved.
+        </p>
+        <ul class=" list-none flex gap-4 justify-center text-4xl">
+            <li><a href="https://www.facebook.com/kaizensafaris" class=""><i class="fab fa-facebook"></i></a></li>
+            <li><a href="https://twitter.com/KaizenSafaris" class=""><i class="fab fa-twitter"></i></a></li>
+            <li><a href="" class=""><i class="fab fa-instagram"></i></a></li>
+            <li><a href="" class=""><i class="fab fa-whatsapp"></i></a></li>
+            <li><a href="" class=""><i class="fas fa-envelope"></i></a></li>
+            <li><a href="https://www.linkedin.com/in/kaizen-safaris-8a7845199/" class=""><i
+                        class="fab fa-linkedin"></i></a></li>
+        </ul>
+    </div>
+</footer>
