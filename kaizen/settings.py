@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -119,15 +120,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-STATIC_ROOT = BASE_DIR / 'staticfiles' if DEBUG else env('STATIC_ROOT')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -136,6 +139,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
+
 
 # email
 EMAIL_BACKEND = env('EMAIL_BACKEND')
