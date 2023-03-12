@@ -1,23 +1,29 @@
 //#region header
 let lastScroll = 0;
 const nav = document.getElementById("navbar-sticky");
-if (document.getElementById("#hero-space") != null) {
-    document.getElementById("#hero-space").style.height = nav.offsetHeight + "px";
+console.log(document.querySelector("#hero-space"));
+if (document.querySelector("#hero-space") != null) {
+    document.querySelector("#hero-space").style.height = nav.offsetHeight + "px";
 }
+
+let navTL = gsap.timeline({defaults: {Easings: Expo.Easeout}})
 
 window.addEventListener("scroll", () => {
     const currentScroll = window.pageYOffset;
 
     if (currentScroll <= 0) {
         nav.classList.remove("show");
+        navTL.to(nav, { top: 0, duration: .3 })
     }
-    if (currentScroll > lastScroll && !nav.classList.contains("hidden")) {
+    if (currentScroll > lastScroll && !nav.classList.contains("hide")) {
         nav.classList.remove("show");
-        nav.classList.add("hidden");
+        nav.classList.add("hide");
+        navTL.to(nav, { top: "-20%", duration: .6 })
     }
-    if (currentScroll < lastScroll && nav.classList.contains("hidden")) {
-        nav.classList.remove("hidden");
+    if (currentScroll < lastScroll && nav.classList.contains("hide")) {
+        nav.classList.remove("hide");
         nav.classList.add("show");
+        navTL.to(nav, { top: 0, duration: .3 })
     }
     lastScroll = currentScroll;
 });
@@ -25,11 +31,16 @@ window.addEventListener("scroll", () => {
 const smmenu = document.querySelector('.smmenu')
 const menubtn = document.querySelector('#menu-btn')
 const closemenu = document.querySelector('.close-nav')
+
+
+let menuOpenTL = gsap.timeline({defaults: {Easings: Expo.Easeout}})
+
+
 menubtn.addEventListener('click', () => {
-    smmenu.classList.toggle('hidden')
+    menuOpenTL.to(smmenu, { top: 0, duration: .6 })
 })
 closemenu.addEventListener('click', () => {
-    smmenu.classList.toggle('hidden')
+    menuOpenTL.to(smmenu, { top: "-100%", duration: .6 })
 })
 
 const banner = document.getElementById("banner")
@@ -60,36 +71,36 @@ const options = {
 //#endregion
 
 //#region gallery
-const linkBtns = document.querySelectorAll('.more-link')
+// const linkBtns = document.querySelectorAll('.more-link')
 
-linkBtns.forEach(link => {
-    link.addEventListener('click', (e) => {
-        ShowMore(link.getAttribute('data-class'), link.getAttribute('data-number'), e.target)
-    })
-});
+// linkBtns.forEach(link => {
+//     link.addEventListener('click', (e) => {
+//         ShowMore(link.getAttribute('data-class'), link.getAttribute('data-number'), e.target)
+//     })
+// });
 
-function ShowMore(className, number, el=null) {
-    var items = document.querySelectorAll(`.${className}.hidden`)
-    let num = number
-    if (num > items.length) {
-        num = items.length
-    }
+// function ShowMore(className, number, el=null) {
+//     var items = document.querySelectorAll(`.${className}.hidden`)
+//     let num = number
+//     if (num > items.length) {
+//         num = items.length
+//     }
 
-    let i = 0
-    items.forEach(element => {
-        if (i < num) {
-            element.classList.remove('hidden')
-            element.classList.add('show')
-            items = document.querySelectorAll(`.${className}.hidden`)
-        }
-        i++
-    });
+//     let i = 0
+//     items.forEach(element => {
+//         if (i < num) {
+//             element.classList.remove('hidden')
+//             element.classList.add('show')
+//             items = document.querySelectorAll(`.${className}.hidden`)
+//         }
+//         i++
+//     });
     
-    if (items.length == 0 && el) {
-        el.classList.add('hidden')
-    }
-    console.log(9);
-}
+//     if (items.length == 0 && el) {
+//         el.classList.add('hidden')
+//     }
+//     console.log(9);
+// }
 //#endregion
 
 //#region single page

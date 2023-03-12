@@ -5,10 +5,11 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          900: 'rgb(16, 43, 16)',
-          800: 'rgb(13, 40, 13)',
-          100: 'rgb(237, 250, 237)',
-        }
+          900: '#797931',
+          800: '#d8d185',
+          100: '#f0ea86',
+        },
+        lead: '#ccc'
       },
       fontFamily: {
         body: ['poppins']

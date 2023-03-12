@@ -30,7 +30,7 @@
         <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-8 pb-8" id="photo-box">
             
             {% for photo in photos %}
-                <figure class="photo aspect-1610 overflow-hidden hidden clipped hover:shadow-2xl scale-100 hover:z-30 hover:scale-125 transition-all rounded">
+                <figure class="photo aspect-1610 overflow-hidden clipped hover:shadow-2xl scale-100 hover:z-30 hover:scale-125 transition-all rounded">
                     <a href="{{ photo.image.url }}" data-lightbox="gallery" data-title="{{ photo.description }}">
                         <img src="{{ photo.image.url }}" alt="{{ photo.description }}" class=" sm:scale-125 sm:grayscale sm:hover:grayscale-0 transition-all object-cover">
                     </a>
@@ -45,7 +45,7 @@
         <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8" id="photo-box">
             
             {% for video in videos %}
-            <iframe class="aspect-video w-full ytVideo hidden clipped transform scale-100 hover:scale-105 transition-all" allowfullscreen
+            <iframe class="aspect-video w-full ytVideo clipped transform scale-100 hover:scale-105 transition-all" allowfullscreen
             src="{{ video.link }}">
             </iframe>
             {% endfor %}

@@ -3,17 +3,16 @@
 
 <header class="fixed w-full z-50" id="navbar-sticky">
     <div class="container">
-        <nav class="flex justify-between">
-            <div class="nav-brand p-1">
+        <nav class="flex justify-between py-4">
+            <div class="nav-brand">
                 <a href="/" class="">
-                    <img src="{% static 'img/logo.png' %}" alt="Kaizen Safaris" class="">
+                    <img src="{% static 'img/logo.png' %}" alt="Kaizen Safaris" class=" h-24">
                 </a>
             </div>
             <div class="menu grid content-center">
-                <ol class="nav-list list-none flex gap-2 lg:gap-4 text-lg text-black">
-                    <li class="md:grid content-center hidden"><a
-                            href="/" class="nav-link link">Home</a></li>
-                    <li class="md:grid content-center relative dropdown hidden" x-data="
+                <ol class="nav-list list-none hidden md:flex gap-2 lg:gap-4 bg-[rgba(0,0,0,0.3)] px-8 py-2">
+                    <li class="grid content-center"><a href="/" class="nav-link link">Home</a></li>
+                    <li class="grid content-center relative dropdown" x-data="
                     {
                         destinations: null,
                         getDestinations() {
@@ -32,52 +31,55 @@
                             </template>
                         </div>
                     </li>
-                    <li class="md:grid content-center hidden"><a
-                            href="{% url 'contacts:car-hire' %}" class="nav-link link">Car hire</a></li>
-                    <li class="md:grid content-center hidden"><a
-                            href="{% url 'contacts:tent-hire' %}" class="nav-link link">Camping
+                    <li class="grid content-center"><a href="{% url 'contacts:car-hire' %}"
+                            class="nav-link link">Car hire</a></li>
+                    <li class="grid content-center"><a href="{% url 'contacts:tent-hire' %}"
+                            class="nav-link link">Camping
                             equipment</a></li>
-                    <li class="md:grid content-center hidden"><a
-                            href="{% url 'main:gallery-view' %}" class="nav-link link">Gallery</a></li>
-                    <li class="btn bg-primary-800"><a href="{% url 'contacts:book_now' %}"
-                            class="text-white">Book Now</a></li>
-                    <li class="grid content-center md:hidden text-3xl p-2">
-                        <i class="fas fa-bars" id="menu-btn"></i>
-                    </li>
+                    <li class="grid content-center"><a href="{% url 'main:gallery-view' %}"
+                            class="nav-link link">Gallery</a></li>
+                    <li class="grid content-center"><a href="{% url 'contacts:book_now' %}"
+                            class="nav-link link">Book Now</a></li>
                 </ol>
+                <span class="grid content-center md:hidden text-4xl p-2 text-white">
+                    <i class="fas fa-bars" id="menu-btn"></i>
+                </span>
             </div>
         </nav>
     </div>
 </header>
-<div class="hidden fixed smmenu top-0 left-0 bg-white z-40 h-full w-full ">
-    <ul class="h-full w-full grid place-content-center text-black list-none">
-        <li class="md:grid content-center relative dropdown bg-slate-50 my-4 text-center text-xl rounded-2xl px-4" x-data="
-                    {
-                        destinations: null,
-                        getDestinations() {
-                            fetch('{% url 'api:destinations' 'all' %}')
-                                .then((response) => response.json())
-                                .then((json) => this.destinations = json);
+<div class="fixed smmenu -top-full left-0 bg-white z-40 h-full w-full block md:hidden">
+    <div class="h-full w-full grid place-content-center inner">
+        <ul class="text-black list-none">
+            <li class="md:grid content-center relative dropdown bg-slate-50 my-4 text-center text-xl rounded-2xl px-4"
+                x-data="
+                        {
+                            destinations: null,
+                            getDestinations() {
+                                fetch('{% url 'api:destinations' 'all' %}')
+                                    .then((response) => response.json())
+                                    .then((json) => this.destinations = json);
+                            }
                         }
-                    }
-                    " x-init="getDestinations()">
-        <a class=" cursor-default">Destinations <i class="fas fa-caret-down"></i></a>
-        <div class="dropdown-content absolute shadow-lg bg-white hidden py-4 rounded w-full">
-            <template x-for="destination in destinations">
-                <a @click="window.location.href = `/destinations/${destination.id}`" x-text="destination.name"
-                    class="my-1 text-center hover:bg-slate-400 w-full px-3 cursor-pointer"></a>
-            </template>
-        </div>
-    </li>
-    <li class="md:grid content-center bg-slate-50 my-4 text-center text-xl rounded-2xl px-4"><a href="{% url 'contacts:car-hire' %}"
-            class="">Car hire</a></li>
-    <li class="md:grid content-center bg-slate-50 my-4 text-center text-xl rounded-2xl px-4"><a href="{% url 'contacts:tent-hire' %}"
-            class="">Camping
-            Equipment</a></li>
-    <li class="md:grid content-center bg-slate-50 my-4 text-center text-xl rounded-2xl px-4"><a href="{% url 'main:gallery-view' %}"
-            class="">Gallery</a></li>
+                        " x-init="getDestinations()">
+                <a class=" cursor-default">Destinations <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content absolute shadow-lg bg-white hidden py-4 rounded w-full">
+                    <template x-for="destination in destinations">
+                        <a @click="window.location.href = `/destinations/${destination.id}`" x-text="destination.name"
+                            class="my-1 text-center hover:bg-slate-400 w-full px-3 cursor-pointer"></a>
+                    </template>
+                </div>
+            </li>
+            <li class="md:grid content-center bg-slate-50 my-4 text-center text-xl rounded-2xl px-4"><a
+                    href="{% url 'contacts:car-hire' %}" class="">Car hire</a></li>
+            <li class="md:grid content-center bg-slate-50 my-4 text-center text-xl rounded-2xl px-4"><a
+                    href="{% url 'contacts:tent-hire' %}" class="">Camping
+                    Equipment</a></li>
+            <li class="md:grid content-center bg-slate-50 my-4 text-center text-xl rounded-2xl px-4"><a
+                    href="{% url 'main:gallery-view' %}" class="">Gallery</a></li>
             <div class="close-nav text-4xl text-center mt-8 "><i class="fas fa-close"></i></div>
-    </ul>
+        </ul>
+    </div>
 </div>
 
 
@@ -89,5 +91,3 @@
     }
 </style>
 {% endblock styles %}
-
-    
