@@ -22,7 +22,7 @@
                         }
                     }
                     " x-init="getDestinations()">
-                        <a class="nav-link link cursor-default">Destinations</a>
+                        <a class="nav-link link cursor-default">Countries</a>
                         <div class="dropdown-content absolute bg-white hidden pt-4 rounded w-full">
                             <template x-for="destination in destinations">
                                 <a @click="window.location.href = `/destinations/${destination.id}`"
@@ -62,7 +62,7 @@
                             }
                         }
                         " x-init="getDestinations()">
-                <a class=" cursor-default">Destinations <i class="fas fa-caret-down"></i></a>
+                <a class=" cursor-default">Countries <i class="fas fa-caret-down"></i></a>
                 <div class="dropdown-content absolute shadow-lg bg-white hidden py-4 rounded w-full">
                     <template x-for="destination in destinations">
                         <a @click="window.location.href = `/destinations/${destination.id}`" x-text="destination.name"
