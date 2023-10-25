@@ -1,5 +1,7 @@
 from django.db import models
 
+from destinations.models import Destination
+
 
 # Create your models here.
 class EquipmentType(models.Model):
@@ -59,6 +61,11 @@ class Review(models.Model):
     def __str__(self):
         return self.reviewer
 
+class TopSpot(models.Model):
+    title = models.CharField(max_length=50)
+    country = models.ForeignKey(Destination, on_delete=models.SET_NULL, null=True)
+    description = models.TextField()
+    feature = models.BooleanField(default=False)
 
 # class ReviewLink(models.Model):
 #     link = models.URLField()

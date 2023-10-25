@@ -5,7 +5,7 @@ from destinations.views import destinationDetailView, itineraryDetailView, itine
 app_name = 'destinations'
 
 urlpatterns = [
-    path('<int:pk>/', destinationDetailView, name='destination-detail'),
+    path('<int:pk>/', destinationDetailView, name='detail'),
     path('<int:pk>/itineraries/', itineraryListView, name='itinerary-list'),
     path('itineraries/<int:pk>', itineraryDetailView, name='itinerary-detail'),
 ]

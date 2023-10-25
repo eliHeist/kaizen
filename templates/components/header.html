@@ -6,36 +6,33 @@
         <nav class="flex justify-between py-4">
             <div class="nav-brand">
                 <a href="/" class="">
-                    <img src="{% static 'img/logo.png' %}" alt="Kaizen Safaris" class=" h-24">
+                    <img src="{% static 'img/logo.webp' %}" alt="Kaizen Safaris" class=" h-24">
                 </a>
             </div>
             <div class="menu grid content-center">
                 <ol class="nav-list list-none hidden md:flex gap-2 lg:gap-4 bg-[rgba(0,0,0,0.3)] px-8 py-2">
                     <li class="grid content-center"><a href="/" class="nav-link link">Home</a></li>
-                    <li class="grid content-center relative dropdown" x-data="
-                    {
-                        destinations: null,
-                        getDestinations() {
-                            fetch('{% url 'api:destinations' 'all' %}')
-                                .then((response) => response.json())
-                                .then((json) => this.destinations = json);
-                        }
-                    }
-                    " x-init="getDestinations()">
-                        <a class="nav-link link cursor-default">Countries</a>
-                        <div class="dropdown-content absolute bg-white hidden pt-4 rounded w-full">
-                            <template x-for="destination in destinations">
-                                <a @click="window.location.href = `/destinations/${destination.id}`"
-                                    x-text="destination.name"
-                                    class="link my-1 text-center hover:bg-slate-100 w-full px-3 cursor-pointer"></a>
+                    <li class="grid content-center relative dropdown">
+                        <a class="nav-link link cursor-default">Destinations</a>
+                        <div class="dropdown-content absolute bg-white hidden py-4 rounded w-full" x-data='main'>
+                            <template x-for="d in destinations">
+                                <a :href="`/destinations/${d.id}/`" class="link hover:bg-slate-100  px-3 py-2 whitespace-nowrap" x-text="d.name">
+                                    {{ destination.name }}
+                                </a>
                             </template>
                         </div>
                     </li>
-                    <li class="grid content-center"><a href="{% url 'contacts:car-hire' %}"
-                            class="nav-link link">Car hire</a></li>
-                    <li class="grid content-center"><a href="{% url 'contacts:tent-hire' %}"
-                            class="nav-link link">Camping
-                            equipment</a></li>
+                    <li class="grid content-center relative dropdown">
+                        <a class="nav-link link cursor-default">Services</a>
+                        <div class="dropdown-content absolute bg-white hidden py-4 rounded w-max">
+                            <a href="{% url 'contacts:car-hire' %}" class="link hover:bg-slate-100 w-full px-3 py-2">
+                                Car Hire
+                            </a>
+                            <a href="{% url 'contacts:tent-hire' %}" class="link hover:bg-slate-100  px-3 py-2 whitespace-nowrap">
+                                Camping Equipment
+                            </a>
+                        </div>
+                    </li>
                     <li class="grid content-center"><a href="{% url 'main:gallery-view' %}"
                             class="nav-link link">Gallery</a></li>
                     <li class="grid content-center"><a href="{% url 'contacts:book_now' %}"

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from destinations.models import Destination, Itinerary
-from main.models import EquipmentType, Photo, Review, YTVideo
+from main.models import EquipmentType, Photo, Review, TopSpot, YTVideo
 
 # Create your views here.
 
@@ -11,8 +11,8 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['destinations'] = Destination.objects.all()
         context['upcoming_tours'] = Itinerary.objects.filter(is_upcoming=True)
+        context['topspot'] = TopSpot.objects.all()
         context['tours'] = Itinerary.objects.all()
         context['reviews'] = Review.objects.all()
         return context
