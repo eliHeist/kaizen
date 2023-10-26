@@ -32,7 +32,7 @@
             {% for day in itinerary.days.all %}
                 <div class="card grid sm:grid-cols-2 sm:gap-8 ">
                     <figure class="card-item relative bg-slate-600">
-                        <figure class=" relative">
+                        <figure class=" relative overflow-hidden">
                             <img src="{{ day.image.url }}" alt="" class="w-full object-cover transition-all">
                             <div class="overdrop bg-lime-500 hidden sm:block absolute z-10 top-0 left-0 w-full h-full opacity-30 transition-all"></div>
                         </figure>
