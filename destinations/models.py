@@ -18,7 +18,9 @@ class Itinerary(models.Model):
     destination = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='itineraries')
     departure_date = models.DateField(blank=True, null=True)
     return_date = models.DateField(blank=True, null=True)
+    price = models.PositiveSmallIntegerField(null=True, blank=True)
     is_upcoming = models.BooleanField(default=False)
+    details = models.TextField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'Itinerary'
@@ -33,14 +35,14 @@ class Itinerary(models.Model):
 
 class Day(models.Model):
     itinerary = models.ForeignKey(Itinerary, on_delete=models.CASCADE, related_name='days')
-    image = models.ImageField(null=True)
-    day = models.CharField(max_length=6, blank=True)
-    title = models.CharField(max_length=100)
-    description = models.TextField()
-    tourist_attraction = models.CharField(max_length=100)
-    best_buy = models.CharField(max_length=50)
-    food_speciality = models.CharField(max_length=50)
-    activity = models.CharField(max_length=50)
+    image = models.ImageField(null=True, blank=True)
+    day = models.CharField(max_length=6, null=True, blank=True)
+    title = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    tourist_attraction = models.CharField(max_length=100, null=True, blank=True)
+    best_buy = models.CharField(max_length=50, null=True, blank=True)
+    food_speciality = models.CharField(max_length=50, null=True, blank=True)
+    activity = models.CharField(max_length=50, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Day'
