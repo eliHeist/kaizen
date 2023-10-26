@@ -4,7 +4,7 @@
 
 
 {% block content %}
-<section id="banner" class=" h-[70vh] overflow-hidden rounded-b-[3rem] shadow-2xl">
+<section id="banner" class=" h-[70vh] overflow-hidden ">
     <div class="relative h-full">
         <img class="w-full h-full object-cover" src="{% static 'img/booking.webp' %}">
         <div class="cover z-10 absolute top-0 left-0 w-full h-full  bg-opacity-40">
@@ -16,8 +16,8 @@
     </div>
 </section>
 
-<section class="py-16">
-    <h2 class="head-1">Booking Form</h2>
+<section class="py-16 bg-blue-50">
+    <h2 class="head-1 text-primary-900">Booking Form</h2>
     <div class="container">
             <!-- {{ form|crispy }} -->
         <form method="post" class="booking-form grid gap-4 text-xl">
@@ -93,7 +93,7 @@
                 <label for="{{ form.more_info.id_for_label }}" class="form-label">Anything Else we should know</label>
                 {{ form.more_info }}
             </div>
-            <button type="submit" class="text-white bg-primary-900 p-2 px-4 mx-auto rounded-md max-w-fit">
+            <button type="submit" class="hover:bg-primary-950 bg-primary-900 w-fit text-black hover:text-black btn">
                 Submit Booking
             </button>
         </form>

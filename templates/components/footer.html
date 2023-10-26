@@ -1,6 +1,6 @@
 {% load static %}
 
-<footer class="bg-primary-900 py-16 px-2 shadow-2xl">
+<footer class="bg-primary-950 pt-12 pb-8 px-2 shadow-2xl">
     <div class="container text-grey-200">
         <h2 class="hidden">Footer</h2>
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -9,7 +9,7 @@
             </figure>
             <div>
                 <h3 class=" text-2xl font-semibold mb-4">Locate Us</h3>
-                <ol class="list-none grid gap-4">
+                <ol class="list-none grid gap-2">
                     <li><i class="fas fa-building w-4 mr-4"></i>Mukasa Towers, Ground Floor</li>
                     <li><i class="fas fa-road w-4 mr-4"></i>Seeta – Namilyango Road</li>
                     <li><i class="fas fa-box w-4 mr-4"></i>P O Box 8437, Mukono, Uganda</li>
@@ -30,22 +30,22 @@
                 </ol>
             </aside>
             <div class="mt-8 lg:mt-0">
-                <h3 class="text-2xl font-semibold mb-4">Get in Touch</h3>
-                <form class="grid gap-3" x-data="main" @submit.prevent="sendMail()">
+                <!-- <h3 class="text-2xl font-semibold mb-4">Get in Touch</h3> -->
+                <form class="grid gap-2" x-data="main" @submit.prevent="sendMail()">
                     <div id="token">{% csrf_token %}</div>
                     <input x-model="mail.name" type="text" placeholder="Your Name" name="your_name"
-                        class=" p-2 w-full rounded-md text-black">
+                        class="py-1 px-2 w-full rounded-sm text-white placeholder:text-primary-800 bg-primary-950 border-l-2 hover:border-l-8 border-primary-900 border-b focus-within:outline-none focus-within:bg-primary-900 transition-all">
                     <input x-model="mail.email" type="email" placeholder="Your email" name="your_email"
-                        class=" p-2 w-full rounded-md text-black">
-                    <textarea x-model="mail.message" name="your_message" cols="30" rows="4" placeholder="Your Message"
-                        class=" p-2 w-full rounded-md text-black"></textarea>
+                        class="py-1 px-2 w-full rounded-sm text-white placeholder:text-primary-800 bg-primary-950 border-l-2 hover:border-l-8 border-primary-900 border-b focus-within:outline-none focus-within:bg-primary-900 transition-all">
+                    <textarea x-model="mail.message" name="your_message" cols="30" rows="4" placeholder="How can we help you?"
+                        class="py-1 px-2 w-full rounded-sm text-white placeholder:text-primary-800 bg-primary-950 border-l-2 hover:border-l-8 border-primary-900 border-b focus-within:outline-none focus-within:bg-primary-900 transition-all"></textarea>
                     <button type="submit"
-                        class="bg-white w-fit text-primary-900 font-semibold mx-auto sm:ml-0 btn"
-                        >Submit</button> <span class="" x-text="status"></span>
+                        class="hover:bg-white outline-2 outline outline-white w-fit text-white hover:text-black btn"
+                        >Send a message</button> <span class="" x-text="status"></span>
                 </form>
             </div>
         </div>
-        <p class="text-center mt-8">
+        <p class="text-center mt-4 text-primary-100">
             © Copyright 2022 - Kaizen Safaris - All Rights Reserved.
         </p>
         <ul class=" list-none flex gap-4 justify-center text-xl">

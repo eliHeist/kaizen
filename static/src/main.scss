@@ -47,10 +47,10 @@
 }
 
 .btn{
-    @apply rounded-md text-base font-semibold py-3 px-6;
+    @apply text-base py-2 px-8;
 }
 .btn:hover{
-    @apply transition-all scale-95;
+    @apply transition-all scale-[1.05];
 }
 
 .head-1{
