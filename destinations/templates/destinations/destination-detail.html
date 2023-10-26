@@ -34,8 +34,10 @@
                             <div class="mt-auto filter p-2 backdrop-blur-md bg-gradient-to-t from-[rgba(0,0,0,0.4)]">
                                 <h2 class="text-white text-xl font-extrabold">{{ itinerary.name }}</h2>
                                 <div class="grid grid-cols-2 gap-2 text-gray-300 font-semibold transition-all duration-1000 show overflow-hidden h-0">
+                                    {% if itinerary.departure_date %}
                                     <span><i class="fa fa-calendar mr-2"></i>{{ itinerary.departure_date }}</span>
                                     <span><i class="fas fa-clock mr-2"></i>{{ itinerary.Duration }}</span>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
