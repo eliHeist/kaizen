@@ -32,7 +32,11 @@
                             class="w-full h-full object-cover">
                         <div class="absolute top-0 left-0 w-full h-full grid">
                             <div class="mt-auto filter p-2 backdrop-blur-md bg-gradient-to-t from-[rgba(0,0,0,0.4)]">
-                                <h2 class="text-white text-xl font-extrabold">{{ itinerary.name }}</h2>
+                                <h3 class="text-white text-xl font-semibold">
+                                    <a href="{% url 'destinations:itinerary-detail' itinerary.pk %}">
+                                        {{ itinerary.name }}
+                                    </a>
+                                </h3>
                                 <div class="grid grid-cols-2 gap-2 text-gray-300 font-semibold transition-all duration-1000 show overflow-hidden h-0">
                                     {% if itinerary.departure_date %}
                                     <span><i class="fa fa-calendar mr-2"></i>{{ itinerary.departure_date }}</span>
