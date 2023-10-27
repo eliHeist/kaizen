@@ -13,17 +13,17 @@
             <div class="h-full text-white container grid">
                 <div class="content lg:w-1/2 grid content-center">
                     <h2 class="grid gap-2">
-                        <span class="uppercase text-3xl font-semibold font-body">into the</span>
-                        <span class="uppercase text-6xl md:text-8xl font-black font-body">wild</span>
+                        <span class="uppercase text-3xl font-semibold font-body fade-in">into the</span>
+                        <span class="uppercase text-6xl md:text-8xl font-black font-body fade-in">wild</span>
                     </h2>
-                    <p class="my-12 border-l-2 pl-6 font-light">
+                    <p class="my-12 border-l-2 pl-6 font-light fade-in">
                         Embark on a Journey of a Lifetime! Discover the Heartbeat of Africa with Us. Explore Breathtaking Safaris, Vibrant Cultures, and Untamed Wilderness. Your Adventure Awaits – Dive into the Magic of Africa Today!
                     </p>
                     <div class="flex gap-2 md:gap-4 lg:gap-8">
-                        <a href="#" class="hover:bg-primary-900 bg-white w-fit text-black hover:text-black btn">
+                        <a href="#" class="hover:bg-primary-900 bg-white w-fit text-black hover:text-black btn slide-in-left">
                             Explore all trips
                         </a>
-                        <a href="#" class="hover:bg-primary-900 outline-2 outline outline-white w-fit text-white hover:text-black btn">Explore destinations</a>
+                        <a href="#" class="hover:bg-primary-900 outline-2 outline outline-white w-fit text-white hover:text-black btn slide-in-left">Explore destinations</a>
                     </div>
                 </div>
             </div>
@@ -33,14 +33,14 @@
 <!-- welcome section -->
 <section id="next" class="py-8 my-16 border-all">
     <div class="grid lg:grid-cols-2 content-center items-center">
-        <figure class="relative min-h-[10rem] aspect-surface lg:aspect-square xl:aspect-video">
+        <figure class="relative min-h-[10rem] aspect-surface lg:aspect-square xl:aspect-video slide-in-left">
             <img src="{% static 'img/rinho.webp' %}" alt="East Africa Tours" class="max-h-[70vh] object-cover w-full h-full absolute">
         </figure>
         <div class="hidden">
             <a href="https://www.freepik.com/free-ai-image/view-lion-wild_41690083.htm#fromView=search&term=lion&page=1&position=10&track=ais_ai_generated&regularType=ai">Image By freepik</a>
         </div>
         <article class="grid content-center items-start h-fit p-4 xl:ml-12">
-            <div class="flex content-center mb-8">
+            <div class="flex content-center mb-8 fade-in">
                 <h2 class="font-bold uppercase text-6xl lg:text-8xl my-auto">Africa</h2>
                 <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" class="max-h-[10rem]" viewBox="0 0 253.64 268.56">
                     <g id="Layer_1" data-name="Layer 1">
@@ -687,7 +687,7 @@
                     </g>
                 </svg>
             </div>
-            <p class="max-w-lg">
+            <p class="max-w-lg fade-in">
                 Kaizen Safaris welcomes you to Africa, the magnificent continent with inexhaustible natural, cultural and adventurous treasures. We have been dedicated to providing best services to our valued clients since our establishment, putting every single effort to make your trips memorable. 
                 <br><br>
                 Rich in nature and culture, events and festivals, flora and fauna, art and architecture, Africa boasts of being an awe-inspiring destination in all aspects. It has been fascinating travelers for more than half a century and continues to do so now and in the future. 
@@ -706,7 +706,7 @@
             <div class="grid grid-cols-4 gap-8">
                 
                 {% for n in topspots %}
-                    <article class="mb-4 pb-4 grid transition-all  hover:-translate-y-4">
+                    <article class="mb-4 pb-4 grid transition-all  hover:-translate-y-4 fade-in">
                         <figure class="aspect-video">
                             <img src="{{ n.image.url }}" alt="" class="object-cover h-full w-full">
                         </figure>
@@ -729,18 +729,18 @@
 <section class="pt-4 pb-8 bg-primary-900">
     <h2 class="head-1 text-white">Upcoming Tours</h2>
     <div class="container">
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-8">
             
             {% for safari in upcoming_tours %}
-                <div class="obs slide-in top overflow-hidden relative card hover:shadow-2xl hover:scale-[1.05] shadow-white group">
+                <div class="fade-in top overflow-hidden relative card hover:shadow-2xl hover:scale-[1.05] transition-all shadow-white group">
                     <img src="{{ safari.image.url }}" alt=""
                         class="w-full h-full aspect-square object-cover">
                     <div class="absolute top-0 left-0 w-full h-full grid">
                         <div class="mt-auto group-hover:filter p-2 backdrop-blur-md bg-gradient-to-t from-[rgba(0,0,0,0.4)]">
                             <a href="{% url 'destinations:itinerary-detail' safari.pk %}">
-                                <h2 class="text-white text-3xl font-semibold">{{ safari.name }}</h2>
+                                <h2 class="text-white text-xl font-semibold">{{ safari.name }}</h2>
                             </a>
-                            <div class="grid grid-cols-2 gap-2 text-gray-300 font-semibold transition-all duration-1000">
+                            <div class="grid grid-cols-2 gap-2 text-gray-300 transition-all duration-1000">
                                 {% if safari.departure_date %}
                                 <span><i class="fa fa-calendar mr-2"></i>{{ safari.departure_date }}</span>
                                 {% endif %}
@@ -750,7 +750,7 @@
                             </div>
                         </div>
                     </div>
-                    {% if safari.return_date %}
+                    {% if safari.price %}
                     <div class="flyer pl-4 pr-8 h-12 absolute top-6 right-0 bg-lime-500">
                         <h3 class="mx-auto h-full grid place-content-center text-center text-white text-xl font-bold font-sans">
                             {{ safari.price }}
@@ -775,11 +775,11 @@
         <div class="swiper-wrapper slide-content flex">
             
             {% for safari in tours %}
-                <div class="scroll-element swiper-slide shadow-2xl h-100">
-                    <div class="grid p-4">
+                <div class="scroll-element swiper-slide h-100 pb-8">
+                    <div class="grid p-2">
                         <img src="{{ safari.image.url }}" alt=""
-                        class=" rounded-2xl outline outline-5 outline-lime-600 aspect-video w-full object-cover">
-                    <h3 class=" mt-4 h-full"><a href="{% url 'destinations:itinerary-detail' safari.pk %}" class="link">{{ safari.name }}</a></h3>
+                        class="outline outline-5 outline-lime-600 aspect-video w-full object-cover">
+                        <h3 class="mt-4 h-full"><a href="{% url 'destinations:itinerary-detail' safari.pk %}" class="link">{{ safari.name }}</a></h3>
                     </div>
                 </div>
             {% endfor %}
@@ -815,12 +815,12 @@
 <!-- reviews -->
 <section class="py-16">
     <h2 class="head-1">What do our customers say?</h2>
-    <div class="container">
+    <div class="container overflow-hidden">
         <div class="swiper2">
             <div class="swiper-wrapper slide-content">
                 
                 {% for review in reviews %}
-                    <div class="scroll-element swiper-slide h-full">
+                    <div class="scroll-element swiper-slide h-full pb-8">
                         <div class="p-4 bg-white h-full rounded-lg">
                             <h3 class="text-lg font-semibold text-primary-900 mb-4">{{ review.reviewer }}</h3>
                             <p class="text-">{{ review.text }}</p>
@@ -891,10 +891,6 @@
         background-attachment: fixed;
     }
 
-    .gtc{
-        display: grid;
-        grid-template-columns: repeat(auto-fit, 100px);
-    }
     .fas--{
         display: grid;
     }
@@ -911,7 +907,7 @@
         fade: 'true',
         grabCursor: 'true',
         autoplay: {
-            delay: 2500,
+            delay: 5000,
             disableOnInteraction: false,
         },
         autoHeight: true,
@@ -946,7 +942,7 @@
         fade: 'true',
         grabCursor: 'true',
         autoplay: {
-            delay: 2500,
+            delay: 10000,
             disableOnInteraction: false,
         },
         pagination: {

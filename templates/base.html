@@ -24,6 +24,10 @@
     <title>Kaizen Safaris</title>
 </head>
 <body class="overflow-x-hidden bg-grey-50 selection:bg-primary-900 selection:text-white font-body">
+    <div class="opacity-0 pointer-events-none"></div>
+    <div id="loader" class="fixed z-[99999] inset-0 bg-primary-900 grid place-content-center transition-all">
+        <img src="{% static 'img/logo.webp' %}" alt="Kaizen Logo" class="animate-pulse">
+    </div>
     {% include 'components/header.html' %}
     {% block content %}
     {% endblock content %}

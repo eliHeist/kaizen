@@ -99,6 +99,16 @@ body{
     box-shadow: 0 0 15px rgb(0 0 0 / 70%);
 }
 
-form label{
-    /* @apply text-base font-semibold text-slate-900 */
+.gtc{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    figure{
+        @apply grayscale transition-all cursor-pointer p-4 bg-white;
+        max-width: 100px;
+
+        &:hover{
+            @apply grayscale-0 border-dashed border-grey-300 border;
+        }
+    }
 }

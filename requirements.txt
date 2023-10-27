@@ -12,3 +12,4 @@ sqlparse==0.4.2
 tzdata==2022.1
 whitenoise==6.3.0
 django-ckeditor==6.7.0
+django-jazzmin==2.6.0
