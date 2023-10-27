@@ -1,10 +1,11 @@
 from django.contrib import admin
 
-from main.models import Equipment, EquipmentType, Photo, Review, YTVideo
+from main.models import Equipment, EquipmentType, Photo, Review, TopSpot, YTVideo
 
 # Register your models here.
 # admin.site.register(Equipment)
 admin.site.register(Review)
+admin.site.register(TopSpot)
 
 class InlineEquipment(admin.StackedInline):
     model = Equipment
