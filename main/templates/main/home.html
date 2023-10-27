@@ -750,11 +750,13 @@
                             </div>
                         </div>
                     </div>
+                    {% if safari.return_date %}
                     <div class="flyer pl-4 pr-8 h-12 absolute top-6 right-0 bg-lime-500">
                         <h3 class="mx-auto h-full grid place-content-center text-center text-white text-xl font-bold font-sans">
-                            UGX 200,000
+                            {{ safari.price }}
                         </h3>
                     </div>
+                    {% endif %}
                 </div>
             {% endfor %}
                 
