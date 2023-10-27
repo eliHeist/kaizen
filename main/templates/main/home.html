@@ -741,8 +741,12 @@
                                 <h2 class="text-white text-3xl font-semibold">{{ safari.name }}</h2>
                             </a>
                             <div class="grid grid-cols-2 gap-2 text-gray-300 font-semibold transition-all duration-1000">
+                                {% if safari.departure_date %}
                                 <span><i class="fa fa-calendar mr-2"></i>{{ safari.departure_date }}</span>
+                                {% endif %}
+                                {% if safari.return_date %}
                                 <span><i class="fas fa-clock mr-2"></i>{{ safari.Duration }}</span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
