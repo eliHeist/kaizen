@@ -177,6 +177,11 @@ if not DEBUG:
 CKEDITOR_UPLOAD_PATH = "uploads/"  # Specify the upload path for media files
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'full',  # You can customize the toolbar as per your requirements
+        'toolbar': 'Full',  # Enable all toolbar features
+        'font_names': 'Poppins',  # Set default font to Poppins
+        'fontSize_sizes': '1rem/1rem',  # Set default font size to 1rem
+        'height': 300,  # Set the height of the editor
+        'width': '100%',  # Set the width of the editor to 100%
+        # Other CKEditor configurations if needed
     },
 }
