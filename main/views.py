@@ -12,8 +12,8 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['upcoming_tours'] = Itinerary.objects.filter(is_upcoming=True)
-        context['topspot'] = TopSpot.objects.all()
-        context['tours'] = Itinerary.objects.all()
+        context['topspots'] = TopSpot.objects.all().filter(feature=True)
+        context['tours'] = Itinerary.objects.all().filter(is_upcoming=False)
         context['reviews'] = Review.objects.all()
         return context
     
