@@ -3,7 +3,7 @@
 
 
 {% block content %}
-    <!-- <section class=" bg-lime-500">
+<!-- <section class=" bg-lime-500">
         <div id="hero-space"></div>
         <div class=" py-44 text-center">
             <h1 class=" text-5xl font-bold">{{ itinerary.name }}</h1>
@@ -11,161 +11,245 @@
         </div>
     </section> -->
 
-    <section id="banner" class="overflow-hidden h-[80vh]">
-        <div class="relative h-full">
-                <img src="{{ itinerary.image.url }}" alt="Kaizen Safaris {{ itinerary.name }}" class=" w-full h-full object-cover">
-            <div class="cover z-10 absolute top-0 left-0 w-full h-full bg-black bg-opacity-40">
-                <div id="hero-space"></div>
-                <div class="container content-space grid justify-center content-start h-full">
-                    <h1 class="shadowed text-5xl text-white uppercase mt-20 sm:mt-40 font-bold text-center">{{ itinerary.name }}</h1>
-                    <p class="shadowed mt-8 text-xl mb-16 mx-auto text-white">Highlights Of Your Journey</p>
-                </div>
+<section id="banner" class="overflow-hidden h-[80vh]">
+    <div class="relative h-full">
+        <img src="{{ itinerary.image.url }}" alt="Kaizen Safaris {{ itinerary.name }}"
+            class=" w-full h-full object-cover">
+        <div class="cover z-10 absolute top-0 left-0 w-full h-full bg-black bg-opacity-40">
+            <div id="hero-space"></div>
+            <div class="container content-space grid justify-center content-start h-full">
+                <h1 class="shadowed text-5xl text-white uppercase mt-20 sm:mt-40 font-bold text-center">
+                    {{ itinerary.name }}
+                </h1>
+                <p class="shadowed mt-8 text-xl mb-16 mx-auto text-white">Highlights Of Your Journey</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="pb-40">
-        <section class="cards relative">
-            <!-- start cards -->
-            
-            
+<section class="pb-40">
+    <section class="cards relative">
+        <!-- start cards -->
+
+
+        <div id="content" class="scroll-content">
             {% for day in itinerary.days.all %}
-                <div class="card grid sm:grid-cols-2 sm:gap-8 ">
-                    <figure class="card-item relative bg-slate-600">
-                        <figure class=" relative overflow-hidden">
-                            <img src="{{ day.image.url }}" alt="" class="w-full object-cover transition-all">
-                            <div class="overdrop bg-lime-500 hidden sm:block absolute z-10 top-0 left-0 w-full h-full opacity-30 transition-all"></div>
-                        </figure>
-                        <div class="circle transition-all absolute bg-slate-900 rounded-full aspect-square p-3 sm:p-3 sm:top-1/2 z-30 grid justify-center content-center text-xs">
-                            <span class="text-white font-bold">DAY {{ day.day }}</span>
+            <div class="card grid lg:grid-cols-2 lg:gap-8 ">
+                <div class="card-item relative bg-slate-600">
+                    <figure class=" relative overflow-hidden h-full">
+                        <img src="{{ day.image.url }}" alt="" class="w-full h-full object-cover transition-all">
+                        <div
+                            class="overdrop bg-lime-500 hidden sm:block absolute z-10 top-0 left-0 w-full h-full opacity-30 transition-all">
                         </div>
                     </figure>
-                    <article class="card-item pt-8 grid pl-1">
-                        <h3 class="mt-8 sm:mt-0 ml-6 font-semibold text-3xl">{{ day.title }}</h3>
-                        <p class="desc ml-6 text-lg my-8">
-                            {{ day.description }}
-                        </p>
-                        <div class=" ml-6 grid gap-4 sm:gap-1 mb-3 sm:mb-1 sm:grid-cols-2 text-lg">
-                            <div class="flex">
-                                <div class="icon text-2xl mr-4">
-                                    <i class="fas fa-ranking-star"></i>
-                                </div>
-                                <div>
-                                    <h4 class=" font-semibold">Tourist Attraction:</h4>
-                                    <p>{{ day.tourist_attraction }}</p>
-                                </div>
+                    <div
+                        class="circle transition-all absolute bg-slate-900 rounded-full aspect-square p-3 lg:p-3 lg:top-1/2 z-30 grid justify-center content-center text-xs">
+                        <span class="text-white font-bold">DAY {{ day.day }}</span>
+                    </div>
+                </div>
+                <article class="card-item pt-8 px-2 grid">
+                    <h3 class="mt-8 sm:mt-0 font-semibold text-3xl">{{ day.title }}</h3>
+                    <div class="desc  text-lg mt-8 text-grey-700 p-4 content">
+                        {{ day.description|safe }}
+                    </div>
+                    <div class="mt-8 ml-6 grid gap-4 sm:gap-1 mb-3 sm:mb-1 sm:grid-cols-2 text-lg">
+                        <div class="flex">
+                            <div class="icon text-2xl mr-4">
+                                <i class="fas fa-ranking-star"></i>
                             </div>
-                            <div class="flex">
-                                <div class="icon text-2xl mr-4">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                </div>
-                                <div>
-                                    <h4 class=" font-semibold">Best Buy Of This Place:</h4>
-                                    <p>{{ day.best_buy }}</p>
-                                </div>
-                            </div>
-                            <div class="flex">
-                                <div class="icon text-2xl mr-4">
-                                    <i class="fas fa-bowl-food"></i>
-                                </div>
-                                <div>
-                                    <h4 class=" font-semibold">Food Speciality:</h4>
-                                    <p>{{ day.food_speciality }}</p>
-                                </div>
-                            </div>
-                            <div class="flex">
-                                <div class="icon text-2xl mr-4">
-                                    <i class="fas fa-skiing"></i>
-                                </div>
-                                <div>
-                                    <h4 class=" font-semibold">Activity:</h4>
-                                    <p>{{ day.activity }}</p>
-                                </div>
+                            <div>
+                                <h4 class=" font-semibold">Tourist Attraction:</h4>
+                                <p>{{ day.tourist_attraction }}</p>
                             </div>
                         </div>
-                        <footer class=" p-6 bg-slate-900 text-white mt-auto">
-                            <i class="fas fa-bell mr-4"></i>
-                            <strong>Kaizen Safaris:</strong> Come tour with us
-                        </footer>
-                    </article>
-                </div>
-            {% endfor %}
-                
-
-            <!-- end cards -->
-            <!-- spacer -->
-            <div id="spacer" class="absolute bg-gray-700 p-1 sm:left-1/2 top-0 rounded-full flex flex-col justify-center text-white z-20">
-                <div class="endpts bg-gray-700 uppercase text-xs font-semibold text-center mt-4">start</div>
-                <div class="line w-0 h-full border-l-2 border-dashed mx-auto"></div>
-                <div class="endpts bg-gray-700 uppercase text-xs font-semibold text-center mb-4">end</div>
-                <img class="car" src="{% static 'img/car.png' %}"/>
+                        <div class="flex">
+                            <div class="icon text-2xl mr-4">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div>
+                                <h4 class=" font-semibold">Best Buy Of This Place:</h4>
+                                <p>{{ day.best_buy }}</p>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <div class="icon text-2xl mr-4">
+                                <i class="fas fa-bowl-food"></i>
+                            </div>
+                            <div>
+                                <h4 class=" font-semibold">Food Speciality:</h4>
+                                <p>{{ day.food_speciality }}</p>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <div class="icon text-2xl mr-4">
+                                <i class="fas fa-skiing"></i>
+                            </div>
+                            <div>
+                                <h4 class=" font-semibold">Activity:</h4>
+                                <p>{{ day.activity }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="-mx-2 p-6 bg-slate-900 text-white mt-auto">
+                        <i class="fas fa-bell mr-4"></i>
+                        <strong>Kaizen Safaris:</strong> Come tour with us
+                    </footer>
+                </article>
             </div>
-        </section>
+            {% endfor %}
+        </div>
+
+
+        <!-- end cards -->
+        <!-- spacer -->
+        <div id="spacer"
+            class="absolute bg-gray-700 p-1 lg:left-1/2 top-0 rounded-full flex flex-col justify-center text-white z-20">
+            <div class="endpts bg-gray-700 uppercase text-xs font-semibold text-center mt-4">start</div>
+            <div class="line w-0 h-full border-l-2 border-dashed mx-auto"></div>
+            <div class="endpts bg-gray-700 uppercase text-xs font-semibold text-center mb-4">end</div>
+            <img class="car fixed top-8" src="{% static 'img/car.png' %}" />
+        </div>
     </section>
+</section>
 {% endblock content %}
 
 
 {% block styles %}
-    <style>
-        #spacer{
-            height: calc(100% + 17rem);
-            transform: translateY(-10rem) translateX(-45%);
+<style>
+    #spacer {
+        height: calc(100% + 17rem);
+        transform: translateY(-10rem);
+    }
+
+    @media screen and (max-width: 1024px) {
+        .circle {
+            border: 6px solid white;
+            box-shadow: 0 0 10px #000000aa;
+            transform: translateY(-50%) translateX(-50%);
+            left: 50%;
         }
-        .endpts{
+
+        .card {}
+    }
+
+    @media screen and (min-width: 1024px) {
+        #spacer {
+            transform: translateX(-45%);
+        }
+
+        .endpts {
             transform: translateX(45%);
         }
-        
-        @media screen and (max-width: 640px) {
-            .circle{
-                border: 6px solid white;
-                box-shadow: 0 0 10px #000000aa;
-                transform: translateY(-50%) translateX(-50%);
-                left: 50%;
-            }
-        }
-        @media screen and (min-width: 640px) {
-            .circle{
-                border: 8px solid white;
-                box-shadow: 0 0 10px #000000aa;
-            }
-            #spacer{
-                height: calc(100% + 17rem);
-                transform: translateY(-10rem) translateX(-50%);
-            }
-            .endpts{
-                transform: translateX(0);
-            }
-            .card:nth-child(even) article .desc{
-                padding-right: 2rem;
-            }
-            .card:nth-child(even) .card-item:last-child{
-                order: -1;
-            }
-            .card:nth-child(even) .card-item .circle{
-                left: 0;
-                transform: translateY(-50%) translateX(calc(-50% - 1rem));
-            }
-            .card:nth-child(odd) .card-item .circle{
-                right: 0;
-                transform: translateY(-50%) translateX(calc(50% + 1rem));
-            }
-            .card:hover .overdrop{
-                opacity: 0;
-            }
+
+        .circle {
+            border: 8px solid white;
+            box-shadow: 0 0 10px #000000aa;
         }
 
-        
-
-        .card:hover .circle{
-            background-color: rgb(132 204 22 / var(--tw-bg-opacity));
+        #spacer {
+            height: calc(100% + 17rem);
+            transform: translateY(-10rem) translateX(-50%);
         }
 
-        .car{
-            position: absolute;
-            top: 2rem;
+        .endpts {
+            transform: translateX(0);
         }
-        
-    </style>
+
+        .card:nth-child(even) article .desc {
+            padding-right: 2rem;
+        }
+
+        .card:nth-child(even) .card-item:last-child {
+            order: -1;
+        }
+
+        .card:nth-child(even) .card-item .circle {
+            left: 0;
+            transform: translateY(-50%) translateX(calc(-50% - 1rem));
+        }
+
+        .card:nth-child(odd) .card-item .circle {
+            right: 0;
+            transform: translateY(-50%) translateX(calc(50% + 1rem));
+        }
+
+        .card:hover .overdrop {
+            opacity: 0;
+        }
+    }
+
+
+
+    .card:hover .circle {
+        background-color: rgb(132 204 22 / var(--tw-bg-opacity));
+    }
+
+    .car {
+        top: 2rem;
+    }
+</style>
+<script defer>
+    document.addEventListener("DOMContentLoaded", function () {
+        const divs = document.querySelectorAll('.content');
+
+        divs.forEach(div => {
+            const maxHeight = window.innerWidth >= 1024 ? 9 * parseFloat(window.getComputedStyle(div).lineHeight) : div.scrollHeight;
+
+            if (div.scrollHeight > maxHeight) {
+                div.style.overflow = 'hidden';
+                div.style.maxHeight = `${maxHeight}px`;
+
+                const moreButton = document.createElement('button');
+                moreButton.textContent = 'Show More';
+                moreButton.classList.add('more-button', 'text-sm', 'outline', 'outline-1', 'w-fit', 'mx-auto', 'mt-4', 'px-6', 'py-1');
+
+                moreButton.addEventListener('click', function () {
+                    if (div.style.maxHeight === 'none' || div.style.maxHeight === '') {
+                        div.style.maxHeight = `${maxHeight}px`;
+                        moreButton.textContent = 'Show More';
+                    } else {
+                        div.style.maxHeight = 'none';
+                        moreButton.textContent = 'Show Less';
+                    }
+                });
+
+                div.parentNode.insertBefore(moreButton, div.nextSibling);
+            }
+        });
+
+        const spacer = document.getElementById("spacer");
+        var car = document.querySelector(".car");
+        var scrollingContent = document.getElementById("content");
+        const startScroll = window.scrollY || window.pageYOffset;
+        console.log(startScroll)
+        console.log(car.style.top)
+        console.log(spacer.style.height)
+
+        document.addEventListener("scroll", function () {
+            var scrollPosition = document.scrollTop;
+            console.log(scrollPosition)
+            car.style.top = scrollPosition + "px"; // Update the top position based on the scroll position
+        });
+
+        const content = document.getElementById("content");
+        const cards = document.querySelectorAll(".card");
+
+        if (spacer && content) {
+            // Get the width of the spacer
+            const spacerWidth = spacer.offsetWidth;
+
+            // If window width is less than 1024, set left margin of content
+            if (window.innerWidth < 1024) {
+                content.style.marginLeft = spacerWidth + "px";
+            } else {
+                // If window width is greater than or equal to 1024, set gap between .card elements
+                cards.forEach(card => {
+                    card.style.gridGap = spacerWidth + "px";
+                });
+            }
+        }
+    });
+
+</script>
+
 {% endblock styles %}
-    
-    

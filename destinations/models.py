@@ -1,6 +1,5 @@
-from email.policy import default
-from pyexpat import model
 from django.db import models
+from ckeditor.fields import RichTextField
 
 # Create your models here.
 class Destination(models.Model):
@@ -20,7 +19,7 @@ class Itinerary(models.Model):
     return_date = models.DateField(blank=True, null=True)
     price = models.PositiveSmallIntegerField(null=True, blank=True)
     is_upcoming = models.BooleanField(default=False)
-    details = models.TextField(null=True, blank=True)
+    details = RichTextField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'Itinerary'
@@ -41,7 +40,7 @@ class Day(models.Model):
     image = models.ImageField(null=True, blank=True)
     day = models.CharField(max_length=6, null=True, blank=True)
     title = models.CharField(max_length=100, null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
+    description = RichTextField(null=True, blank=True)
     tourist_attraction = models.CharField(max_length=100, null=True, blank=True)
     best_buy = models.CharField(max_length=50, null=True, blank=True)
     food_speciality = models.CharField(max_length=50, null=True, blank=True)

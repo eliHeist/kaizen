@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'crispy_forms',
     'crispy_tailwind',
+    'ckeditor',
 
     'main',
     'destinations',
@@ -172,3 +173,10 @@ if not DEBUG:
             # }
         }
     }
+
+CKEDITOR_UPLOAD_PATH = "uploads/"  # Specify the upload path for media files
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',  # You can customize the toolbar as per your requirements
+    },
+}
