@@ -67,6 +67,9 @@ class TopSpot(models.Model):
     country = models.ForeignKey(Destination, on_delete=models.SET_NULL, null=True)
     description = models.TextField()
     feature = models.BooleanField(default=False)
+    
+    def __str__(self) -> str:
+        return self.title
 
 # class ReviewLink(models.Model):
 #     link = models.URLField()
