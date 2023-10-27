@@ -706,12 +706,12 @@
             <div class="grid grid-cols-4 gap-8">
                 
                 {% for n in topspots %}
-                    <article class="mb-4 pb-4 grid transition-all  hover:-translate-y-4 fade-in">
-                        <figure class="aspect-video">
+                    <article class="pb-4 grid content-start overflow-hidden w-full transition-all hover:-translate-y-4 fade-in">
+                        <figure class="aspect-video overflow-hidden">
                             <img src="{{ n.image.url }}" alt="" class="object-cover h-full w-full">
                         </figure>
                         <h3 class="mt-8 font-bold font-body text-xl">{{ n.title }}</h3>
-                        <span class="block text-grey-500 font-bold font-body text-lg">{{ n.country }}</span>
+                        <p class="text-grey-500 font-bold font-body text-lg">{{ n.country }}</p>
                         <p class="my-8">
                             {{ n.description }}
                         </p>
