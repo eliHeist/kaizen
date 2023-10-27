@@ -708,14 +708,13 @@
                 {% for n in topspots %}
                     <article class="mb-4 pb-4 grid transition-all  hover:-translate-y-4">
                         <figure class="aspect-video">
-                            <img src="{% static 'images/images (7).jpeg' %}" alt="" class="object-cover h-full w-full">
+                            <img src="{{ n.image.url }}" alt="" class="object-cover h-full w-full">
                         </figure>
-                        <h3 class="mt-8 font-bold font-body text-xl">Queen Elizabeth National Park</h3>
-                        <span class="block text-grey-500 font-bold font-body text-lg">Uganda</span>
+                        <h3 class="mt-8 font-bold font-body text-xl">{{ n.title }}</h3>
+                        <span class="block text-grey-500 font-bold font-body text-lg">{{ n.country }}</span>
                         <p class="my-8">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Necessitatibus recusandae ad, eaque ipsum odit dignissimos obcaecati fugiat dolores distinctio voluptates voluptatem dicta eos libero possimus maiores omnis nam! At, possimus?
+                            {{ n.description }}
                         </p>
-                        <a href="#" class="mt-auto font-semibold text-primary-900">explore more</a>
                     </article>
                 {% endfor %}
                     

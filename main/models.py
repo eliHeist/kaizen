@@ -62,6 +62,7 @@ class Review(models.Model):
         return self.reviewer
 
 class TopSpot(models.Model):
+    image = models.ImageField()
     title = models.CharField(max_length=50)
     country = models.ForeignKey(Destination, on_delete=models.SET_NULL, null=True)
     description = models.TextField()
