@@ -732,14 +732,12 @@
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             
             {% for safari in upcoming_tours %}
-                <div class="fade-in top overflow-hidden relative card hover:shadow-2xl hover:scale-[1.05] transition-all shadow-white group">
+                <a href="{% url 'destinations:itinerary-detail' safari.pk %}" class="fade-in top overflow-hidden relative card hover:shadow-2xl hover:scale-[1.05] transition-all shadow-white group">
                     <img src="{{ safari.image.url }}" alt=""
                         class="w-full h-full aspect-square object-cover">
                     <div class="absolute top-0 left-0 w-full h-full grid">
                         <div class="mt-auto group-hover:filter p-2 backdrop-blur-md bg-gradient-to-t from-[rgba(0,0,0,0.4)]">
-                            <a href="{% url 'destinations:itinerary-detail' safari.pk %}">
                                 <h2 class="text-white text-xl font-semibold">{{ safari.name }}</h2>
-                            </a>
                             <div class="grid grid-cols-2 gap-2 text-gray-300 transition-all duration-1000">
                                 {% if safari.departure_date %}
                                 <span><i class="fa fa-calendar mr-2"></i>{{ safari.departure_date }}</span>
@@ -757,7 +755,7 @@
                         </h3>
                     </div>
                     {% endif %}
-                </div>
+                </a>
             {% endfor %}
                 
         </div>
