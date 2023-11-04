@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from destinations.models import Destination, Itinerary
-from main.models import EquipmentType, Photo, Review, TopSpot, YTVideo
+from main.models import EquipmentType, HoneymoonSpot, Photo, Review, TopSpot, YTVideo
 
 # Create your views here.
 
@@ -13,6 +13,7 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['upcoming_tours'] = Itinerary.objects.filter(is_upcoming=True)
         context['topspots'] = TopSpot.objects.all().filter(feature=True)
+        context['honeymoonspots'] = HoneymoonSpot.objects.all()
         context['tours'] = Itinerary.objects.all().filter(is_upcoming=False)
         context['reviews'] = Review.objects.all()
         return context

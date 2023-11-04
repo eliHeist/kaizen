@@ -71,6 +71,24 @@ class TopSpot(models.Model):
     def __str__(self) -> str:
         return self.title
 
-# class ReviewLink(models.Model):
-#     link = models.URLField()
-#     review = models.ForeignKey()
+
+class HoneymoonSpot(models.Model):
+    name = models.CharField(max_length=50)
+    image = models.ImageField()
+    destination = models.ForeignKey(Destination, on_delete=models.CASCADE, null=True)
+    
+    description = models.TextField()
+    
+    def __str__(self) -> str:
+        return self.name
+
+class HoneymoonImages(models.Model):
+    class Meta:
+        verbose_name = 'ímage'
+        verbose_name_plural = 'ímages'
+    
+    spot = models.ForeignKey(HoneymoonSpot, on_delete=models.CASCADE)
+    image = models.ImageField()
+
+    def __str__(self) -> str:
+        return self.spot.name + 'photo'
