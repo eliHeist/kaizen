@@ -87,7 +87,7 @@ class HoneymoonImages(models.Model):
         verbose_name = 'ímage'
         verbose_name_plural = 'ímages'
     
-    spot = models.ForeignKey(HoneymoonSpot, on_delete=models.CASCADE)
+    spot = models.ForeignKey(HoneymoonSpot, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField()
 
     def __str__(self) -> str:

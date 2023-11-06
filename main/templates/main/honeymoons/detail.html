@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ spot.name }}{% endblock %}
+
+{% block content %}
+<section class=" h-[70vh] overflow-hidden" id="banner">
+    <div class="relative h-full">
+        <img src="{{ spot.image.url }}" alt="{{ spot.name }}" class="w-full h-full object-cover">
+        <div class="cover z-10 absolute top-0 left-0 bottom-0 w-full bg-primary-950 bg-opacity-10">
+            <!-- <div id="hero-space"></div> -->
+            <div class="content-center grid justify-center h-full relative">
+                <!-- <h1 class="shadowed text-6xl text-white uppercase font-bold text-center h-fit">Kaizen Safaris' Gallery</h1> -->
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="py-16">
+    <div class="container">
+        <h2 class="text-4xl font-semibold text-center lead">{{ spot.name }}</h2>
+        <p class="mt-8">{{ spot.description|safe }}</p>
+        <div class="grid mt-8 gap-4 md:grid-cols-2">
+            {% for img in spot.images.all %}
+                <img src="{{ img.image.url }}" alt="{{ spot.name }} | {{ spot.destination }}" class="w-full h-full object-cover rounded-md transition-all duration-500 hover:scale-[1.01]">
+            {% endfor %}
+        </div>
+
+        <form method="post"></form>
+    </div>
+</main>
+{% endblock content %}

@@ -1355,7 +1355,7 @@
 <!-- top spots -->
 {% if topspots %}
 <section class="mt-16 py-16">
-    <h2 class="head-1">Top Spots</h2>
+    <h2 class="head-1"><span class="lead">Top</span> Spots</h2>
     <div class="container">
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
@@ -1379,7 +1379,7 @@
 
 <!-- upcoming tours -->
 {% if upcoming_tours %}
-<svg viewBox="0 0 1440 128" >
+<svg viewBox="0 0 1440 128" class="translate-y-1">
     <defs>
         <style>
             .cls-1 {
@@ -1393,7 +1393,7 @@
         transform="translate(0 -6.72)" />
 </svg>
 <section class="pt-4 pb-8 bg-primary-900">
-    <h2 class="head-1 text-white">Upcoming Tours</h2>
+    <h2 class="head-1 text-white"><span class="lead-light">Upcoming</span> Tours</h2>
     <div class="container">
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
@@ -1428,7 +1428,6 @@
 
         </div>
     </div>
-
 </section>
 <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 79.72" class="-translate-y-1">
     <defs>
@@ -1444,12 +1443,13 @@
 </svg>
 {% endif %}
 
+<!-- honeymoon -->
 <section class="py-16">
     <div class="container">
         <div class="grid grid-cols-1 lg:grid-cols-2">
             <header class="mb-8">
-                <h2 class="text-4xl text-center font-bold lg:text-left lg:text-5xl">
-                    <span class="text-primary-900">Honeymoon</span>
+                <h2 class="text-4xl text-center lg:text-left lg:text-5xl">
+                    <span class="lead mb-1">Honeymoon</span>
                     <p>Destinations</p>
                 </h2>
                 <p class="text-center mt-4 lg:text-left">
@@ -1465,10 +1465,11 @@
                             <div class="grid p-2">
                                 <img src="{{ spot.image.url }}" alt=""
                                     class="aspect-video w-full object-cover">
-                                <h3 class="mt-4 h-full"><a href="{% url 'destinations:itinerary-detail' spot.pk %}"
-                                        class="link">{{ spot.name }}</a></h3>
+                                <h3 class="mt-4 h-full">
+                                    <a class="link">{{ spot.name }}</a>
+                                </h3>
                                 <p class="text-grey-500 uppercase font-bold text-sm">{{ spot.destination }}</p>
-                                <a href="#" class="text-primary-900 font-medium text-sm mt-2">
+                                <a href="{% url 'main:honeymoon-detail' spot.pk %}" class="text-primary-900 font-medium text-sm mt-2">
                                     Get a quote
                                     <i class="fas fa-arrow-right-long ml-2"></i>
                                 </a>
@@ -1489,7 +1490,7 @@
 {% if tours %}
 <!-- Featured safaris -->
 <aside class=" py-16">
-    <h2 class="head-1 mb-8">Featured Safaris</h2>
+    <h2 class="head-1 mb-8"><span class="lead">Featured</span> Safaris</h2>
     <div class="swiper container">
         <div class="swiper-wrapper slide-content flex">
 
@@ -1516,7 +1517,7 @@
 <section class="parallax overflow-hidden">
     <div class="py-16 bg-black bg-opacity-60 grid">
         <div class="container text-white text-center py-16">
-            <h2 class="head-1">Didn’t find the trip you’re looking for?</h2>
+            <h2 class="head-1"><span class="lead-light block">Didn’t find </span>the trip you’re looking for?</h2>
             <p class=" max-w-6xl text-xl mx-auto my-4 p-4">
                 Tailor-made trips offer you the flexibility to design your own trip exactly how you like it. You can
                 decide how and when to travel, the level of service and the hotel standard. Pack in as many activities
@@ -1537,7 +1538,7 @@
 
 <!-- reviews -->
 <section class="py-16">
-    <h2 class="head-1">What do our customers say?</h2>
+    <h2 class="head-1"><span class="lead block">What</span> do our customers say?</h2>
     <div class="container overflow-hidden">
         <div class="swiper2">
             <div class="swiper-wrapper slide-content">
@@ -1561,7 +1562,7 @@
 
 <!-- affiliations -->
 <section class="py-16 mb-16">
-    <h2 class="head-1">Affiliations</h2>
+    <h2 class="head-1"><span class="lead block">Our</span> Patners</h2>
     <div class="gtc gap-3 lg:gap-16 container justify-center">
         <figure class="aspect-square grid place-content-center">
             <img class="aspect-square object-contain" src="{% static 'img/affiliations/safaribookings.webp' %}" alt="">

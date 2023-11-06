@@ -25,7 +25,8 @@ module.exports = {
                 }
             },
             fontFamily: {
-                body: ['Poppins', 'sans-serif']
+                body: ['Poppins', 'sans-serif'],
+                lead: ['Courgette', 'cursive'],
             },
             aspectRatio: {
                 surface: "4 / 3",

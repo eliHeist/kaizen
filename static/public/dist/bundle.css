@@ -858,14 +858,6 @@ video {
   height: 100vh;
 }
 
-.h-96 {
-  height: 24rem;
-}
-
-.h-24 {
-  height: 6rem;
-}
-
 .max-h-\[10rem\] {
   max-height: 10rem;
 }
@@ -929,13 +921,13 @@ video {
   border-collapse: collapse;
 }
 
-.translate-y-1 {
-  --tw-translate-y: 0.25rem;
+.-translate-y-1 {
+  --tw-translate-y: -0.25rem;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-.-translate-y-1 {
-  --tw-translate-y: -0.25rem;
+.translate-y-1 {
+  --tw-translate-y: 0.25rem;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
@@ -1234,6 +1226,10 @@ video {
   background-color: rgb(255 255 255/var(--tw-bg-opacity));
 }
 
+.bg-opacity-10 {
+  --tw-bg-opacity: 0.1;
+}
+
 .bg-opacity-40 {
   --tw-bg-opacity: 0.4;
 }
@@ -1438,6 +1434,10 @@ video {
   font-family: Poppins, sans-serif;
 }
 
+.font-lead {
+  font-family: Courgette, cursive;
+}
+
 .font-sans {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
@@ -1503,12 +1503,12 @@ video {
   font-weight: 300;
 }
 
-.font-semibold {
-  font-weight: 600;
-}
-
 .font-medium {
   font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
 }
 
 .uppercase {
@@ -1638,10 +1638,6 @@ video {
   outline-color: #fff;
 }
 
-.outline-primary-900 {
-  outline-color: #797931;
-}
-
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
@@ -1660,6 +1656,10 @@ video {
 
 .duration-1000 {
   transition-duration: 1000ms;
+}
+
+.duration-500 {
+  transition-duration: 500ms;
 }
 
 .ease-in-out {
@@ -1747,7 +1747,24 @@ video {
   text-align: center;
   font-size: 2.25rem;
   line-height: 2.5rem;
-  font-weight: 700;
+  font-weight: 500;
+}
+
+.lead {
+  font-family: Courgette, cursive;
+  font-weight: 800;
+  --tw-text-opacity: 1;
+  color: rgb(121 121 49/var(--tw-text-opacity));
+}
+.lead-light {
+  font-family: Courgette, cursive;
+}
+.lead-light {
+  font-weight: 800;
+}
+.lead-light {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255/var(--tw-text-opacity));
 }
 
 .card .show {
@@ -1924,6 +1941,12 @@ body {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
+.hover\:scale-\[1\.01\]:hover {
+  --tw-scale-x: 1.01;
+  --tw-scale-y: 1.01;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
 .hover\:scale-\[1\.05\]:hover {
   --tw-scale-x: 1.05;
   --tw-scale-y: 1.05;
@@ -2092,33 +2115,19 @@ body {
   .lg\:p-3 {
     padding: 0.75rem;
   }
-  .lg\:p-8 {
-    padding: 2rem;
-  }
   .lg\:p-4 {
     padding: 1rem;
   }
   .lg\:text-left {
     text-align: left;
   }
-  .lg\:text-8xl {
-    font-size: 6rem;
-    line-height: 1;
-  }
-  .lg\:text-7xl {
-    font-size: 4.5rem;
-    line-height: 1;
-  }
-  .lg\:text-6xl {
-    font-size: 3.75rem;
-    line-height: 1;
-  }
   .lg\:text-5xl {
     font-size: 3rem;
     line-height: 1;
   }
-  .lg\:font-black {
-    font-weight: 900;
+  .lg\:text-8xl {
+    font-size: 6rem;
+    line-height: 1;
   }
 }
 @media (min-width: 1280px) {
@@ -2127,9 +2136,6 @@ body {
   }
   .xl\:aspect-video {
     aspect-ratio: 16/9;
-  }
-  .xl\:p-8 {
-    padding: 2rem;
   }
 }
 @media (min-width: 1536px) {

@@ -16,12 +16,17 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
     </style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courgette&display=swap');
+      </style>
     
     <!-- component styles -->
     {% block styles %}
     {% endblock styles %}
     
-    <title>Kaizen Safaris</title>
+    <title>
+        {% block title %}{% endblock %} | Kaizen Safaris
+    </title>
 </head>
 <body class="overflow-x-hidden bg-grey-50 selection:bg-primary-900 selection:text-white font-body">
     <div class="opacity-0 pointer-events-none"></div>

@@ -54,7 +54,13 @@
 }
 
 .head-1{
-    @apply text-4xl font-bold text-center mb-8;
+    @apply text-4xl font-medium text-center mb-8;
+}
+.lead{
+    @apply text-primary-900 font-extrabold font-lead;
+    &-light{
+        @apply text-white font-extrabold font-lead;
+    }
 }
 
 .card .show{

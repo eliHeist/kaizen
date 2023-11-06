@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
+from django.views import View
 
 from destinations.models import Destination, Itinerary
 from main.models import EquipmentType, HoneymoonSpot, Photo, Review, TopSpot, YTVideo
@@ -44,3 +45,12 @@ def galleryView(request):
 
 def error404View(request, exception):
     return render(request, '404.html')
+
+class HoneymoonView(View):
+    def get(self, request, pk, **kwargs):
+        honeymoon = HoneymoonSpot.objects.get(pk=pk)
+        template_name = 'main/honeymoons/detail.html'
+        context = {
+            'spot': honeymoon
+        }
+        return render(request, template_name, context)
