@@ -61,11 +61,13 @@ class HoneymoonView(View):
         return render(request, template_name, context)
     
     def post(self, request, pk):
+        print('hmoon post')
         honeymoon = HoneymoonSpot.objects.get(pk=pk)
         template_name = 'main/honeymoons/success.html'
         name = request.POST.get('name')
         email = request.POST.get('email')
         phone = request.POST.get('phone')
+        print('gotten')
         
         try:
             message = f'''
