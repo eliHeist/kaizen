@@ -27,7 +27,20 @@
             {% endfor %}
         </div>
 
-        <form method="post"></form>
+        <form method="post" action="{% url 'main:honeymoon-detail' spot.pk %}" id="quote" class="grid md:grid-flow-col content-end items-end gap-4 flex-wrap py-16">
+            {% csrf_token %}
+            <fieldset class="grid">
+                <label for="name">Name</label>
+                <input type="text" name="name" class="p-2 w-full rounded-sm text-white placeholder:text-primary-950 bg-primary-800 focus-within:outline-none focus-within:bg-primary-900 transition-all" required>
+            </fieldset>
+            <fieldset class="grid">
+                <label for="email">Email</label>
+                <input type="email" name="email" class="p-2 w-full rounded-sm text-white placeholder:text-primary-950 bg-primary-800 focus-within:outline-none focus-within:bg-primary-900 transition-all" required>
+            </fieldset>
+            <button class="btn bg-primary-950 text-white">
+                Request a quote
+            </button>
+        </form>
     </div>
 </main>
 {% endblock content %}

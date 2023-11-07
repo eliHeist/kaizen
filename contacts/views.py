@@ -29,7 +29,7 @@ class BookingView(FormView):
       return super(BookingView, self).form_valid(form)
 
    def form_invalid(self, form):
-      # form.send_mail()
+    #   form.send_mail()
       return super(BookingView, self).form_invalid(form)
    
 

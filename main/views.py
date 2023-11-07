@@ -1,9 +1,14 @@
+from django.http import BadHeaderError, HttpResponse
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.views import View
+from django.conf import settings
+from django.core.mail import send_mail
 
 from destinations.models import Destination, Itinerary
 from main.models import EquipmentType, HoneymoonSpot, Photo, Review, TopSpot, YTVideo
+from contacts.models import Receipient
 
 # Create your views here.
 
@@ -51,6 +56,31 @@ class HoneymoonView(View):
         honeymoon = HoneymoonSpot.objects.get(pk=pk)
         template_name = 'main/honeymoons/detail.html'
         context = {
+            'spot': honeymoon
+        }
+        return render(request, template_name, context)
+    
+    def post(self, request, pk):
+        honeymoon = HoneymoonSpot.objects.get(pk=pk)
+        template_name = 'main/honeymoons/success.html'
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        
+        try:
+            message = f'''
+                Name: {name}
+                Email: {email}
+                Spot: {honeymoon.name}
+                Link: kaizensafaris.com{reverse_lazy('main:honeymoon-detail', kwargs={"pk": honeymoon.pk})}
+            '''
+            subject = f'Quotation for {honeymoon.name}'
+            send_mail(subject, message, settings.EMAIL_HOST_USER, [r.email for r in Receipient.objects.all()], fail_silently=False)
+            # print(message)
+        except BadHeaderError:
+            return HttpResponse('Invalid header found. ')
+        
+        context = {
+            'message': "honeymoon",
             'spot': honeymoon
         }
         return render(request, template_name, context)

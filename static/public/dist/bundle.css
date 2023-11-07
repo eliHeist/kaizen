@@ -913,6 +913,14 @@ video {
   max-width: 32rem;
 }
 
+.max-w-xl {
+  max-width: 36rem;
+}
+
+.max-w-3xl {
+  max-width: 48rem;
+}
+
 .table-auto {
   table-layout: auto;
 }
@@ -974,6 +982,10 @@ video {
   appearance: none;
 }
 
+.grid-flow-col {
+  grid-auto-flow: column;
+}
+
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
 }
@@ -1006,8 +1018,16 @@ video {
   align-content: flex-start;
 }
 
+.content-end {
+  align-content: flex-end;
+}
+
 .items-start {
   align-items: flex-start;
+}
+
+.items-end {
+  align-items: flex-end;
 }
 
 .items-center {
@@ -1226,6 +1246,11 @@ video {
   background-color: rgb(255 255 255/var(--tw-bg-opacity));
 }
 
+.bg-primary-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(240 234 134/var(--tw-bg-opacity));
+}
+
 .bg-opacity-10 {
   --tw-bg-opacity: 0.1;
 }
@@ -1304,6 +1329,14 @@ video {
   padding: 1.5rem;
 }
 
+.p-24 {
+  padding: 6rem;
+}
+
+.p-8 {
+  padding: 2rem;
+}
+
 .px-2 {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
@@ -1374,6 +1407,11 @@ video {
   padding-bottom: 2rem;
 }
 
+.py-48 {
+  padding-top: 12rem;
+  padding-bottom: 12rem;
+}
+
 .pb-3 {
   padding-bottom: 0.75rem;
 }
@@ -1430,12 +1468,12 @@ video {
   text-align: center;
 }
 
-.font-body {
-  font-family: Poppins, sans-serif;
+.align-bottom {
+  vertical-align: bottom;
 }
 
-.font-lead {
-  font-family: Courgette, cursive;
+.font-body {
+  font-family: Poppins, sans-serif;
 }
 
 .font-sans {
@@ -1591,6 +1629,11 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255/var(--tw-text-opacity));
+}
+
+.text-primary-950 {
+  --tw-text-opacity: 1;
+  color: rgb(63 63 19/var(--tw-text-opacity));
 }
 
 .opacity-0 {
@@ -1910,6 +1953,16 @@ body {
   color: rgb(216 209 133/var(--tw-text-opacity));
 }
 
+.placeholder\:text-primary-950::-moz-placeholder {
+  --tw-text-opacity: 1;
+  color: rgb(63 63 19/var(--tw-text-opacity));
+}
+
+.placeholder\:text-primary-950::placeholder {
+  --tw-text-opacity: 1;
+  color: rgb(63 63 19/var(--tw-text-opacity));
+}
+
 .focus-within\:bg-primary-900:focus-within {
   --tw-bg-opacity: 1;
   background-color: rgb(121 121 49/var(--tw-bg-opacity));
@@ -2060,6 +2113,9 @@ body {
   }
   .md\:h-24 {
     height: 6rem;
+  }
+  .md\:grid-flow-col {
+    grid-auto-flow: column;
   }
   .md\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
