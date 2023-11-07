@@ -917,10 +917,6 @@ video {
   max-width: 36rem;
 }
 
-.max-w-3xl {
-  max-width: 48rem;
-}
-
 .table-auto {
   table-layout: auto;
 }
@@ -980,10 +976,6 @@ video {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-}
-
-.grid-flow-col {
-  grid-auto-flow: column;
 }
 
 .grid-cols-1 {
@@ -1201,6 +1193,11 @@ video {
   background-color: rgb(132 204 22/var(--tw-bg-opacity));
 }
 
+.bg-primary-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(240 234 134/var(--tw-bg-opacity));
+}
+
 .bg-primary-800 {
   --tw-bg-opacity: 1;
   background-color: rgb(216 209 133/var(--tw-bg-opacity));
@@ -1244,11 +1241,6 @@ video {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255/var(--tw-bg-opacity));
-}
-
-.bg-primary-100 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(240 234 134/var(--tw-bg-opacity));
 }
 
 .bg-opacity-10 {
@@ -1329,10 +1321,6 @@ video {
   padding: 1.5rem;
 }
 
-.p-24 {
-  padding: 6rem;
-}
-
 .p-8 {
   padding: 2rem;
 }
@@ -1407,11 +1395,6 @@ video {
   padding-bottom: 2rem;
 }
 
-.py-48 {
-  padding-top: 12rem;
-  padding-bottom: 12rem;
-}
-
 .pb-3 {
   padding-bottom: 0.75rem;
 }
@@ -1466,10 +1449,6 @@ video {
 
 .text-center {
   text-align: center;
-}
-
-.align-bottom {
-  vertical-align: bottom;
 }
 
 .font-body {
@@ -1616,6 +1595,11 @@ video {
   color: rgb(121 121 49/var(--tw-text-opacity));
 }
 
+.text-primary-950 {
+  --tw-text-opacity: 1;
+  color: rgb(63 63 19/var(--tw-text-opacity));
+}
+
 .text-red-500 {
   --tw-text-opacity: 1;
   color: rgb(239 68 68/var(--tw-text-opacity));
@@ -1629,11 +1613,6 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255/var(--tw-text-opacity));
-}
-
-.text-primary-950 {
-  --tw-text-opacity: 1;
-  color: rgb(63 63 19/var(--tw-text-opacity));
 }
 
 .opacity-0 {
@@ -1787,10 +1766,13 @@ video {
 
 .head-1 {
   margin-bottom: 2rem;
-  text-align: center;
   font-size: 2.25rem;
   line-height: 2.5rem;
   font-weight: 500;
+}
+
+.head-1:default {
+  text-align: center;
 }
 
 .lead {
@@ -2113,9 +2095,6 @@ body {
   }
   .md\:h-24 {
     height: 6rem;
-  }
-  .md\:grid-flow-col {
-    grid-auto-flow: column;
   }
   .md\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));

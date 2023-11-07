@@ -119,6 +119,37 @@
             <img class="car fixed top-8" src="{% static 'img/car.png' %}" />
         </div>
     </section>
+    <div class="cta mt-20 container">
+        <div class="grid md:grid-cols-2 gap-4 py-16">
+            <div class=" text-center">
+                <h2 class="head-1">
+                    <span class="lead block">Request a quote</span>
+                    <span> for this itinerary.</span>
+                </h2>
+                <p class="mt-4">
+                    We will get back to you within a week
+                </p>
+            </div>
+            <form method="post" action="{% url 'destinations:itinerary-detail' itinerary.pk %}" id="quote" class="grid content-end items-end gap-4">
+                {% csrf_token %}
+                <fieldset class="grid">
+                    <label for="name">Name*</label>
+                    <input type="text" name="name" class="p-2 w-full rounded-sm text-white placeholder:text-primary-950 bg-primary-800 focus-within:outline-none focus-within:bg-primary-900 transition-all" required>
+                </fieldset>
+                <fieldset class="grid">
+                    <label for="email">Email*</label>
+                    <input type="email" name="email" class="p-2 w-full rounded-sm text-white placeholder:text-primary-950 bg-primary-800 focus-within:outline-none focus-within:bg-primary-900 transition-all" required>
+                </fieldset>
+                <fieldset class="grid">
+                    <label for="phone">Phone*</label>
+                    <input type="tel" name="phone" class="p-2 w-full rounded-sm text-white placeholder:text-primary-950 bg-primary-800 focus-within:outline-none focus-within:bg-primary-900 transition-all" required>
+                </fieldset>
+                <button class="btn bg-primary-950 text-white rounded-sm">
+                    Request a quote
+                </button>
+            </form>
+        </div>
+    </div>
 </section>
 {% endblock content %}
 

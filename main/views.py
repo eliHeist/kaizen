@@ -65,11 +65,13 @@ class HoneymoonView(View):
         template_name = 'main/honeymoons/success.html'
         name = request.POST.get('name')
         email = request.POST.get('email')
+        phone = request.POST.get('phone')
         
         try:
             message = f'''
                 Name: {name}
                 Email: {email}
+                Phone: {phone}
                 Spot: {honeymoon.name}
                 Link: kaizensafaris.com{reverse_lazy('main:honeymoon-detail', kwargs={"pk": honeymoon.pk})}
             '''
