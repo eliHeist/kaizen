@@ -77,8 +77,11 @@ class HoneymoonView(View):
                 Spot: {honeymoon.name}
                 Link: kaizensafaris.com{reverse_lazy('main:honeymoon-detail', kwargs={"pk": honeymoon.pk})}
             '''
+            print(message)
             subject = f'Quotation for {honeymoon.name}'
+            print(subject)
             send_mail(subject, message, settings.EMAIL_HOST_USER, [r.email for r in Receipient.objects.all()], fail_silently=False)
+            print('Sent')
             # print(message)
         except BadHeaderError:
             return HttpResponse('Invalid header found. ')
