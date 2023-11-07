@@ -1086,18 +1086,9 @@ video {
   border-radius: 0.125rem;
 }
 
-.rounded-xl {
-  border-radius: 0.75rem;
-}
-
 .rounded-b {
   border-bottom-right-radius: 0.25rem;
   border-bottom-left-radius: 0.25rem;
-}
-
-.rounded-b-\[3rem\] {
-  border-bottom-right-radius: 3rem;
-  border-bottom-left-radius: 3rem;
 }
 
 .rounded-l-none {
@@ -1766,13 +1757,13 @@ video {
 
 .head-1 {
   margin-bottom: 2rem;
+  text-align: center;
   font-size: 2.25rem;
   line-height: 2.5rem;
   font-weight: 500;
 }
-
-.head-1:default {
-  text-align: center;
+.head-1.start {
+  text-align: left;
 }
 
 .lead {

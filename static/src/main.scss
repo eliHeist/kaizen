@@ -54,7 +54,10 @@
 }
 
 .head-1{
-    @apply text-4xl font-medium default:text-center mb-8;
+    @apply text-4xl font-medium text-center mb-8;
+    &.start{
+        @apply text-left;
+    }
 }
 .lead{
     @apply text-primary-900 font-extrabold font-lead;
