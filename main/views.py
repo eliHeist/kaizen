@@ -15,10 +15,16 @@ from contacts.models import Receipient
 import logging
 
 def server_error500(request):
-    logger = logging.getLogger(__name__)
-    logger.error('Internal Server Error (500)')
-    # Add any additional logging or handling here
-    return render(request, '500.html', status=500)
+    # Get the exception information
+    exception_info = {'error_message': 'Internal Server Error'}  # Default message
+
+    # If there's an actual exception, you can capture its message
+    if 'exc_info' in request:
+        exception = request.exc_info[1]
+        if exception:
+            exception_info['error_message'] = str(exception)
+
+    return render(request, '500.html', exception_info, status=500)
 
 def error404View(request, exception):
     return render(request, '404.html')

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Internal Server Error (500){% endblock %}
+
+{% block content %}
+<main class="grid content-center">
+    <h1>Internal Server Error (500)</h1>
+    <p>{{ error_message }}</p>
+    <p>Oops! Something went wrong on our end. We're working to fix the issue. Please try again later.</p>
+</main>
+{% endblock %}
