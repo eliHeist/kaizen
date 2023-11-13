@@ -83,8 +83,8 @@ class HoneymoonView(View):
             send_mail(subject, message, settings.EMAIL_HOST_USER, [r.email for r in Receipient.objects.all()], fail_silently=False)
             print('Sent')
             # print(message)
-        except BadHeaderError:
-            return HttpResponse('Invalid header found. ')
+        except Exception as ex:
+            return HttpResponse(f'Error: {ex.message}')
         
         context = {
             'message': "honeymoon",
