@@ -31,8 +31,9 @@ class Itinerary(models.Model):
     def Duration(self):
         if self.return_date and self.departure_date:
             difference = str(self.return_date - self.departure_date)[:-9]
+            dayz = difference.split(' ')[0]
             # include the last day
-            days = int(difference) + 1
+            days = int(dayz) + 1
             return days
         else:
             return 0
