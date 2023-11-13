@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaizen Safaris</title>
+    <link rel="shortcut icon" href="{{ host }}{% static 'img/logo.webp' %}" type="image/x-icon">
+</head>
+<body>
+    <main>
+        <div>
+            <p>Name: <strong>{{ name }}</strong></p>
+            <p>Email: <strong><a href="mailto:{{ email }}">{{ email }}</a></strong></p>
+            <p>Contact: <strong><a href="tel:{{ phone }}">{{ phone }}</a></strong></p>
+            <p>Itinerary: <strong>{{ itinerary.name }}</strong></p>
+            <p>View Itinerary: <strong><a href="{{ link }}">{{ link }}</a></strong></p>
+            <p>Date: <strong>{{ date }}</strong></p>
+        </div>
+    </main>
+    <footer>
+        <div style="background-color: #797931; color: #eeeee4; padding: 2rem 1rem; text-align: center;display: grid;justify-content: center;">
+            <!-- Logo -->
+            <!-- <img src="{{ host }}{% static 'img/logo.webp' %}" alt="Kaizen Safaris" style="max-width: 200px;"> -->
+            <h2>Kaizen Safaris</h2>
+        
+            <!-- Contact Information -->
+            <div style="display: grid;gap: 0.5rem;">
+                <p style="margin-top: 10px;">Call us at: <strong><a href="tel:+256393243933">(+256) 393 243 933</a></strong></p>
+                <p style="margin-top: 10px;">WhatsApp: <strong><a href="tel:+256755312238">(+256) 755 312 238</a></strong></p>
+                <p>Email: <a href="mailto:info@kaizensafaris.com" style="color: white; text-decoration: none;">info@kaizensafaris.com</a></p>
+                <p>Website: <a href="kaizensafaris.com" style="color: white; text-decoration: none;">kaizensafaris.com</a></p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

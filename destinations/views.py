@@ -1,9 +1,12 @@
+from datetime import datetime
 from django.conf import settings
 from django.http import BadHeaderError, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 from contacts.models import Receipient
 
@@ -44,20 +47,36 @@ class ItineraryDetailView(View):
         name = request.POST.get('name')
         email = request.POST.get('email')
         phone = request.POST.get('phone')
+        host = request.get_host()
+        current_datetime = datetime.now()
+        current_datetime_string = current_datetime.strftime("%A, %d %B %Y  -  %I:%M %p")
+        
+        obj = {
+            'itinerary': itinerary,
+            'name': name,
+            'email': email,
+            'phone': phone,
+            'host': host,
+            'date': current_datetime_string,
+            "link": f"{host}{reverse_lazy('destinations:itinerary-detail', kwargs={'pk': itinerary.pk})}"
+        }
         
         try:
-            message = f'''
-                Name: {name}
-                Email: {email}
-                Phone: {phone}
-                Itinerary: {itinerary.name}
-                Link: kaizensafaris.com{reverse_lazy('destinations:itinerary-detail', kwargs={"pk": itinerary.pk})}
-            '''
+            email_html_message = render_to_string('emails/itineraryemail_template.html', obj)
+            email_plain_message = strip_tags(email_html_message)
             subject = f'Quotation for {itinerary.name}'
-            send_mail(subject, message, settings.EMAIL_HOST_USER, [r.email for r in Receipient.objects.all()], fail_silently=False)
+            
+            send_mail(
+                subject, 
+                email_plain_message, 
+                settings.EMAIL_HOST_USER, 
+                [r.email for r in Receipient.objects.all()], 
+                fail_silently=False,
+                html_message=email_html_message,
+            )
             # print(message)
-        except BadHeaderError:
-            return HttpResponse('Invalid header found. ')
+        except Exception as ex:
+            return HttpResponse(f'Error: {ex.message}')
         context = {
             'itinerary': itinerary,
         }
