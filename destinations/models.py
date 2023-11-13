@@ -17,7 +17,7 @@ class Itinerary(models.Model):
     destination = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='itineraries')
     departure_date = models.DateField(blank=True, null=True)
     return_date = models.DateField(blank=True, null=True)
-    price = models.PositiveSmallIntegerField(null=True, blank=True)
+    price = models.PositiveIntegerField(null=True, blank=True)
     is_upcoming = models.BooleanField(default=False)
     details = RichTextField(null=True, blank=True)
 
