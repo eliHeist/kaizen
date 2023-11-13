@@ -108,7 +108,7 @@ class HoneymoonView(View):
             print('Sent')
             # print(message)
         except Exception as ex:
-            return HttpResponse(f'Error: {ex.message}')
+            return HttpResponse(f'Error: {ex}')
         
         context = {
             'message': "honeymoon",

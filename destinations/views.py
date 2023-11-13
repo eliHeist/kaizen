@@ -76,7 +76,7 @@ class ItineraryDetailView(View):
             )
             # print(message)
         except Exception as ex:
-            return HttpResponse(f'Error: {ex.message}')
+            return HttpResponse(f'Error: {ex}')
         context = {
             'itinerary': itinerary,
         }
