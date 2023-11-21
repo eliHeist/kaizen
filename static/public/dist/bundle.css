@@ -761,6 +761,10 @@ video {
   margin-top: auto;
 }
 
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
 .block {
   display: block;
 }
@@ -1432,6 +1436,18 @@ video {
 
 .pt-8 {
   padding-top: 2rem;
+}
+
+.pt-20 {
+  padding-top: 5rem;
+}
+
+.pt-24 {
+  padding-top: 6rem;
+}
+
+.pt-28 {
+  padding-top: 7rem;
 }
 
 .text-left {

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static custom_filters %}
+
+{% block title %}Kaizen Safaris{% endblock %}
+
+{% block content %}
+<main class="pt-28">
+    <div class="container">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pb-8">
+            {% for spot in spots %}
+            <div class="">
+                <div class="grid p-2">
+                    <img src="{{ spot.image.url }}" alt=""
+                        class="aspect-video w-full object-cover">
+                    <h3 class="mt-4 h-full">
+                        <a class="link">{{ spot.name }}</a>
+                    </h3>
+                    <p class="text-grey-500 uppercase font-bold text-sm">{{ spot.destination }}</p>
+                    <a href="{% url 'main:honeymoon-detail' spot.pk %}" class="text-primary-900 font-medium text-sm mt-2">
+                        Get a quote
+                        <i class="fas fa-arrow-right-long ml-2"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+{% endblock content %}

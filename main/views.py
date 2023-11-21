@@ -66,12 +66,20 @@ def galleryView(request):
     return render(request, template_name, context)
 
 class HoneymoonView(View):
-    def get(self, request, pk, **kwargs):
-        honeymoon = HoneymoonSpot.objects.get(pk=pk)
-        template_name = 'main/honeymoons/detail.html'
-        context = {
-            'spot': honeymoon
-        }
+    def get(self, request, pk=None, **kwargs):
+        if pk:
+            honeymoon = HoneymoonSpot.objects.get(pk=pk)
+            template_name = 'main/honeymoons/detail.html'
+            context = {
+                'spot': honeymoon
+            }
+        else:
+            honeymoons = HoneymoonSpot.objects.all()
+            template_name = 'main/honeymoons/list.html'
+            context = {
+                'spots': honeymoons
+            }
+            
         return render(request, template_name, context)
     
     def post(self, request, pk):

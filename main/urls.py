@@ -9,5 +9,6 @@ urlpatterns = [
     path('equipment/', equipmentView, name='equipment-view'),
     path('gallery/', galleryView, name='gallery-view'),
     path('booking/', bookingView, name='booking-view'),
-    path('honeymoon/<int:pk>/', HoneymoonView.as_view(), name='honeymoon-detail'),
+    path('spots/', HoneymoonView.as_view(), name='honeymoon-list'),
+    path('spots/<int:pk>/', HoneymoonView.as_view(), name='honeymoon-detail'),
 ]
