@@ -17,7 +17,8 @@ Alpine.data('main', () => ({
         message: '',
     },
     csrf() {
-        return document.getElementById('token')?.firstElementChild?.value;
+        let csrfElement = document.getElementById('token')?.firstElementChild as HTMLInputElement
+        return csrfElement.value;
     },
     sendMail() {
         this.status = 'sending...'
