@@ -1,33 +1,54 @@
 from django.contrib import admin
+from django.shortcuts import redirect
+from django.urls import reverse
 
-from main.models import Equipment, EquipmentType, HoneymoonImages, HoneymoonSpot, Photo, Review, TopSpot, YTVideo
-
-# Register your models here.
-# admin.site.register(Equipment)
-admin.site.register(Review)
-admin.site.register(TopSpot)
-
-class InlineEquipment(admin.StackedInline):
-    model = Equipment
-    extra = 1
-    show_change_link = True
-    can_delete = True
+from destinations.admin import thumb
+from main.models import Photo, Review, SiteSettings, Video
 
 
-@admin.register(EquipmentType)
-class ItineraryAdmin(admin.ModelAdmin):
-    inlines = [InlineEquipment]
+@admin.register(SiteSettings)
+class SiteSettingsAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ('Business', {'fields': ('site_name', 'tagline', 'description')}),
+        ('Contact', {'fields': ('email', 'phone', 'whatsapp')}),
+        ('Address', {'fields': ('address_line1', 'address_line2', 'city', 'po_box', 'country', 'map_url')}),
+        ('Social media', {'fields': ('facebook', 'instagram', 'x', 'linkedin', 'youtube', 'tripadvisor')}),
+        ('Reservations', {'fields': ('payment_instructions',)}),
+    )
 
-class InlineHoneymoonImages(admin.TabularInline):
-    model = HoneymoonImages
-    extra = 0
-    show_change_link = True
-    can_delete = True
+    def changelist_view(self, request, extra_context=None):
+        # There is only ever one settings row: go straight to editing it.
+        obj = SiteSettings.load()
+        return redirect(reverse('admin:main_sitesettings_change', args=[obj.pk]))
 
-@admin.register(HoneymoonSpot)
-class HoneymoonSpotAdmin(admin.ModelAdmin):
-    inlines = [InlineHoneymoonImages]
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
-admin.site.register(Photo)
-admin.site.register(YTVideo)
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('name', 'country', 'rating', 'itinerary', 'source', 'is_published')
+    list_editable = ('is_published',)
+    list_filter = ('rating', 'is_published', 'source')
+    search_fields = ('name', 'text')
+    autocomplete_fields = ('itinerary',)
+
+
+@admin.register(Photo)
+class PhotoAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'preview', 'destination', 'order')
+    list_editable = ('order',)
+    list_filter = ('destination',)
+
+    @admin.display(description='Photo')
+    def preview(self, obj):
+        return thumb(obj.image)
+
+
+@admin.register(Video)
+class VideoAdmin(admin.ModelAdmin):
+    list_display = ('title', 'url', 'order')
+    list_editable = ('order',)

@@ -1,11 +1,11 @@
 from django.urls import path
 
-from destinations.views import destinationDetailView, ItineraryDetailView, itineraryListView
+from destinations import views
 
 app_name = 'destinations'
 
 urlpatterns = [
-    path('<int:pk>/', destinationDetailView, name='detail'),
-    path('<int:pk>/itineraries/', itineraryListView, name='itinerary-list'),
-    path('itineraries/<int:pk>/', ItineraryDetailView.as_view(), name='itinerary-detail'),
+    path('', views.destination_list, name='list'),
+    path('<slug:slug>/', views.destination_detail, name='detail'),
+    path('<slug:destination>/<slug:slug>/', views.place_detail, name='place'),
 ]

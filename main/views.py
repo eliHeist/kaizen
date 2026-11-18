@@ -1,131 +1,75 @@
-from datetime import datetime
-from django.http import BadHeaderError, HttpResponse
-from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.views.generic import TemplateView
-from django.views import View
 from django.conf import settings
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.urls import reverse
+from django.views.decorators.cache import cache_control
 
-from destinations.models import Destination, Itinerary
-from main.models import EquipmentType, HoneymoonSpot, Photo, Review, TopSpot, YTVideo
-from contacts.models import Receipient
-import logging
+from blog.models import Post
+from destinations.models import Destination, Place, TripStyle
+from main.models import Photo, Review, Video
+from tours.models import Departure, Itinerary
 
-def server_error500(request):
-    # Get the exception information
-    exception_info = {'error_message': 'Internal Server Error'}  # Default message
 
-    # If there's an actual exception, you can capture its message
-    if 'exc_info' in request:
-        exception = request.exc_info[1]
-        if exception:
-            exception_info['error_message'] = str(exception)
+def home(request):
+    tours = Itinerary.objects.published().prefetch_related('destinations')
+    return render(request, 'main/home.html', {
+        'destinations': Destination.objects.published(),
+        'styles': TripStyle.objects.published(),
+        'featured_tours': tours.filter(is_featured=True)[:6] or tours[:6],
+        'departures': (
+            Departure.objects.upcoming().with_seats().filter(itinerary__is_published=True)
+            .select_related('itinerary')[:4]
+        ),
+        'places': Place.objects.published().filter(is_featured=True).select_related('destination')[:8],
+        'reviews': Review.objects.filter(is_published=True)[:9],
+        'posts': Post.objects.published().select_related('category')[:3],
+    })
 
-    return render(request, '500.html', exception_info, status=500)
 
-def error404View(request, exception):
-    return render(request, '404.html')
-# Create your views here.
+def gallery(request):
+    photos = Photo.objects.select_related('destination')
+    return render(request, 'main/gallery.html', {
+        'photos': photos,
+        'videos': Video.objects.all(),
+        'breadcrumbs': [('Gallery', None)],
+    })
 
-class HomeView(TemplateView):
-    template_name = "main/home.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['upcoming_tours'] = Itinerary.objects.filter(is_upcoming=True)
-        context['topspots'] = TopSpot.objects.all().filter(feature=True)
-        context['honeymoonspots'] = HoneymoonSpot.objects.all()
-        context['tours'] = Itinerary.objects.all().filter(is_upcoming=False)
-        context['reviews'] = Review.objects.all()
-        return context
-    
-def bookingView(request):
-    template_name = 'main/booking.html'
-    context = {}
-    return render(request, template_name, context)
+def error_404(request, exception):
+    return render(request, '404.html', {'noindex': True}, status=404)
 
-def equipmentView(request):
-    template_name = 'main/equipment.html'
-    types = EquipmentType.objects.all()
-    context = {
-        "types": types
-    }
-    return render(request, template_name, context)
 
-def galleryView(request):
-    template_name = 'main/gallery.html'
-    photos = Photo.objects.all()
-    videos = YTVideo.objects.all()
-    context = {
-        "photos": photos,
-        "videos": videos,
-    }
-    return render(request, template_name, context)
+def error_500(request):
+    # Rendered without context processors' database work so it can't fail itself.
+    return render(request, '500.html', status=500)
 
-class HoneymoonView(View):
-    def get(self, request, pk=None, **kwargs):
-        if pk:
-            honeymoon = HoneymoonSpot.objects.get(pk=pk)
-            template_name = 'main/honeymoons/detail.html'
-            context = {
-                'spot': honeymoon
-            }
-        else:
-            honeymoons = HoneymoonSpot.objects.all()
-            template_name = 'main/honeymoons/list.html'
-            context = {
-                'spots': honeymoons
-            }
-            
-        return render(request, template_name, context)
-    
-    def post(self, request, pk):
-        print('hmoon post')
-        honeymoon = HoneymoonSpot.objects.get(pk=pk)
-        template_name = 'main/honeymoons/success.html'
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        print('gotten')
-        host = request.get_host()
-        current_datetime = datetime.now()
-        current_datetime_string = current_datetime.strftime("%A, %d %B %Y  -  %I:%M %p")
-        
-        obj = {
-            'honeymoon': honeymoon,
-            'name': name,
-            'email': email,
-            'phone': phone,
-            'host': host,
-            'date': current_datetime_string,
-            "link": f"{host}{reverse_lazy('main:honeymoon-detail', kwargs={'pk': honeymoon.pk})}"
-        }
-        
-        try:
-            email_html_message = render_to_string('emails/honeymoonemail_template.html', obj)
-            email_plain_message = strip_tags(email_html_message)
-            subject = f'Quotation for {honeymoon.name}'
-            print(subject)
-            
-            send_mail(
-                subject, 
-                email_plain_message, 
-                settings.EMAIL_HOST_USER, 
-                [r.email for r in Receipient.objects.all()], 
-                fail_silently=False,
-                html_message=email_html_message,
-            )
-            
-            print('Sent')
-            # print(message)
-        except Exception as ex:
-            return HttpResponse(f'Error: {ex}')
-        
-        context = {
-            'message': "honeymoon",
-            'spot': honeymoon
-        }
-        return render(request, template_name, context)
+
+@cache_control(max_age=86400)
+def robots_txt(request):
+    lines = [
+        'User-agent: *',
+        'Disallow: /admin/',
+        'Disallow: /ckeditor/',
+        'Disallow: /thank-you/',
+        'Disallow: /tours/reservation/',
+        'Disallow: /*/reserve/',
+        '',
+        f'Sitemap: {settings.SITE_URL}{reverse("sitemap")}',
+    ]
+    return HttpResponse('\n'.join(lines) + '\n', content_type='text/plain')
+
+
+@cache_control(max_age=86400)
+def humans_txt(request):
+    body = (
+        '/* TEAM */\n'
+        'Client: Kaizen Safaris\n'
+        'Site: ' + settings.SITE_URL + '\n\n'
+        'Developer: DakdotCreations Limited\n'
+        'Site: https://dakdot.com\n'
+        'Location: Uganda\n\n'
+        '/* SITE */\n'
+        'Standards: HTML5, CSS3\n'
+        'Components: Django, Tailwind CSS, Alpine.js, GSAP\n'
+    )
+    return HttpResponse(body, content_type='text/plain; charset=utf-8')

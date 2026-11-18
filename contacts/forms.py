@@ -1,170 +1,132 @@
-# from main.models import Subscriber
+from datetime import date
+
 from django import forms
-from django.core.mail import send_mail, BadHeaderError
-from django.http import HttpResponse
-from django.conf import settings
+from django.db.models import Model
 
-from contacts.models import Receipient
-
-
-# class NewsletterForm(forms.ModelForm):
-#     class Meta:
-#         model = Subscriber
-#         fields = (
-#             'email',
-#         )
-
-class ContactForm(forms.Form):
-    your_name = forms.CharField(required=False)
-    your_email = forms.EmailField(required=True)
-    subject = forms.CharField(required=True)
-    your_message = forms.CharField(widget=forms.Textarea, required=True)
-    # message = forms.CharField(widget=forms.Textarea, required=True)
-
-    def send_email(self, subject, email, text, name):
-        subject = subject
-        email = email
-        text = text
-        name = name
-        message = f"{name}: {email}\n\n{text}"
-
-        try:
-            send_mail(subject, message, settings.EMAIL_HOST_USER, ['amartislab@gmail.com','elijahtriumph@amartislab.com','support@amartislab.com'], fail_silently=False)
-        except BadHeaderError:
-            return HttpResponse('Invalid header found.')
-
-CONTACT_CHOICES = [
-    ('Email', 'Email'),
-    ('Phone', 'Phone'),
-    ('Either', 'Either'),
-]
-
-TIME_CHOICES = [
-    ('8AM - 11AM', '8AM - 4AM'),
-    ('12PM - 4PM', '12PM - 4PM'),
-    ('5PM - 10PM', '5PM - 10PM'),
-]
-
-SLEEPER_CHOICES = [
-    ('1-2 Sleeper', '1-2 Sleeper'),
-    ('3-4 Sleeper', '3-4 Sleeper'),
-]
-
-CAR_CHOICES = [
-    ('7-8 seater', '7-8 seater'),
-    ('4 seater', '4 seater'),
-    ('6 seater', '6 seater'),
-]
-
-class BookingForm(forms.Form):
-    first_name = forms.CharField(label='First Name', required=True)
-    last_name = forms.CharField(label='Last Name', required=True)
-    email = forms.EmailField(label='Email', required=True)
-    phone = forms.CharField(label='Phone Number', max_length=15, required=False)
-    visit_date = forms.DateField(label='When are you planning to visit?', widget=forms.SelectDateWidget)
-    no = forms.IntegerField(label='How many are you?', required=False)
-    group_no = forms.IntegerField(label='If a group, How many People are in the group?', required=False)
-    tour = forms.CharField(label='Which Tour or Visit are you intrested in?', required=False)
-    contact_choice = forms.ChoiceField(label="What's the best way to contact you?", choices=CONTACT_CHOICES, widget=forms.RadioSelect, required=False)
-    time_choice = forms.ChoiceField(label='If phone what is the best time to call you? (EAT)', choices=TIME_CHOICES, widget=forms.RadioSelect, required=False)
-    more_info = forms.CharField(label='Anything Else we should know', widget=forms.Textarea, required=False)
-
-    def send_mail(self):
-        first_name = self.cleaned_data.get('first_name')
-        last_name = self.cleaned_data.get('last_name')
-        email = self.cleaned_data.get('email')
-        phone = self.cleaned_data.get('phone')
-        visit_date = self.cleaned_data.get('visit_date')
-        no = self.cleaned_data.get('no')
-        group_no = self.cleaned_data.get('group_no')
-        tour = self.cleaned_data.get('tour')
-        contact_choice = self.cleaned_data.get('contact_choice')
-        time_choice = self.cleaned_data.get('time_choice')
-        more_info = self.cleaned_data.get('more_info')
-
-        try:
-            message = f'Name: {first_name} {last_name}\nEmail: {email}\nPhone: {phone}\nWhen they want to visit: {visit_date}\nNumber of people: {no}\nNumber in group: {group_no}\nTour interested in: {tour}\nPrefered contact method: {contact_choice}\nPrefered time of contact: {time_choice}\nMore information: {more_info}'
-            subject = 'Booking'
-            send_mail(subject, message, settings.EMAIL_HOST_USER, [r.email for r in Receipient.objects.all()], fail_silently=False)
-            # print(message)
-        except BadHeaderError:
-            return HttpResponse('Invalid header found.')
+from contacts.models import Enquiry
+from destinations.models import Destination, TripStyle
+from rentals.models import RentalItem
 
 
-class TentHireForm(forms.Form):
-    first_name = forms.CharField(label='First Name', required=True)
-    last_name = forms.CharField(label='Last Name', required=True)
-    email = forms.EmailField(label='Email', required=True)
-    phone = forms.CharField(label='Phone Number', max_length=15, required=True)
-    sleepers = forms.ChoiceField(label="Tent type", choices=SLEEPER_CHOICES, widget=forms.RadioSelect, required=False)
-    contact_choice = forms.ChoiceField(label="What's the best way to contact you?", choices=CONTACT_CHOICES, widget=forms.RadioSelect, required=False)
-    time_choice = forms.ChoiceField(label='If phone what is the best time to call you? (EAT)', choices=TIME_CHOICES, widget=forms.RadioSelect, required=False)
-    more_info = forms.CharField(label='Anything Else we should know', widget=forms.Textarea, required=False)
+class HoneypotMixin(forms.Form):
+    """A field hidden from people with CSS. Bots that fill it in are rejected."""
+    website = forms.CharField(required=False, label='Leave this empty', widget=forms.TextInput(attrs={'autocomplete': 'off', 'tabindex': '-1'}))
 
-    def send_mail(self):
-        print('sending')
-        first_name = self.cleaned_data.get('first_name')
-        last_name = self.cleaned_data.get('last_name')
-        email = self.cleaned_data.get('email')
-        phone = self.cleaned_data.get('phone')
-        tent = self.cleaned_data.get('sleepers')
-        contact_choice = self.cleaned_data.get('contact_choice')
-        time_choice = self.cleaned_data.get('time_choice')
-        more_info = self.cleaned_data.get('more_info')
-
-        try:
-            message = f'Name: {first_name} {last_name}\nEmail: {email}\nPhone: {phone}\nAction: hire {tent} tent\n\nPrefered contact method: {contact_choice}\nPrefered time of contact: {time_choice}\nMore information: {more_info}'
-            subject = 'Tent Hire'
-            send_mail(subject, message, settings.EMAIL_HOST_USER, [r.email for r in Receipient.objects.all()], fail_silently=False)
-            # print(message)
-        except BadHeaderError:
-            return HttpResponse('Invalid header found.')
+    def clean_website(self):
+        if self.cleaned_data.get('website'):
+            raise forms.ValidationError('Spam check failed.')
+        return ''
 
 
-class CarHireForm(forms.Form):
-    first_name = forms.CharField(label='First Name', required=True)
-    last_name = forms.CharField(label='Last Name', required=True)
-    email = forms.EmailField(label='Email', required=True)
-    phone = forms.CharField(label='Phone Number', max_length=15, required=True)
-    vehicle = forms.ChoiceField(label="Number of seats of vehicle", choices=CAR_CHOICES, widget=forms.RadioSelect, required=False)
-    contact_choice = forms.ChoiceField(label="What's the best way to contact you?", choices=CONTACT_CHOICES, widget=forms.RadioSelect, required=False)
-    time_choice = forms.ChoiceField(label='If phone what is the best time to call you? (EAT)', choices=TIME_CHOICES, widget=forms.RadioSelect, required=False)
-    more_info = forms.CharField(label='Anything Else we should know', widget=forms.Textarea, required=False)
+class EnquiryForm(HoneypotMixin):
+    """Base for forms stored as an Enquiry. Extra fields end up in ``details``."""
+    kind = Enquiry.Kind.GENERAL
+    core_fields = ('name', 'email', 'phone', 'message', 'travel_date', 'travellers')
 
-    def send_mail(self):
-        first_name = self.cleaned_data.get('first_name')
-        last_name = self.cleaned_data.get('last_name')
-        email = self.cleaned_data.get('email')
-        phone = self.cleaned_data.get('phone')
-        vehicle = self.cleaned_data.get('vehicle')
-        contact_choice = self.cleaned_data.get('contact_choice')
-        time_choice = self.cleaned_data.get('time_choice')
-        more_info = self.cleaned_data.get('more_info')
+    name = forms.CharField(max_length=120, widget=forms.TextInput(attrs={'autocomplete': 'name'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'autocomplete': 'email'}))
+    phone = forms.CharField(
+        max_length=40, required=False, label='Phone / WhatsApp',
+        widget=forms.TextInput(attrs={'autocomplete': 'tel', 'inputmode': 'tel'}),
+    )
 
-        try:
-            message = f'Name: {first_name} {last_name}\nEmail: {email}\nPhone: {phone}\nAction: hire {vehicle} vehicle\n\nPrefered contact method: {contact_choice}\nPrefered time of contact: {time_choice}\nMore information: {more_info}'
-            subject = 'Car Hire'
-            send_mail(subject, message, settings.EMAIL_HOST_USER, [r.email for r in Receipient.objects.all()], fail_silently=False)
-            # print(message)
-        except BadHeaderError:
-            return HttpResponse('Invalid header found.')
+    def save(self, request=None, itinerary=None):
+        data = self.cleaned_data
+        details = {}
+        for key, value in data.items():
+            if key in self.core_fields or key == 'website' or value in (None, '', [], ()):
+                continue
+            details[key] = _plain(value)
+        return Enquiry.objects.create(
+            kind=self.kind,
+            name=data['name'],
+            email=data['email'],
+            phone=data.get('phone', ''),
+            message=data.get('message', ''),
+            travel_date=data.get('travel_date'),
+            travellers=data.get('travellers'),
+            itinerary=itinerary,
+            details=details,
+            page_url=request.build_absolute_uri() if request else '',
+        )
 
-# class ContactForm(forms.Form):
-#     your_name = forms.CharField(required=False)
-#     your_email = forms.EmailField(required=True)
-#     subject = forms.CharField(required=True)
-#     your_message = forms.CharField(widget=forms.Textarea, required=True)
-#     # message = forms.CharField(widget=forms.Textarea, required=True)
 
-#     def send_email(self):
-#         subject = self.cleaned_data.get('subject')
-#         email = self.cleaned_data.get('your_email')
-#         text = self.cleaned_data.get('your_message')
-#         name = self.cleaned_data.get('your_name')
-#         message = f"{name}: {email}\n\n{text}"
-#         print(message)
+def _plain(value):
+    """Turn form values into something JSON can store and people can read."""
+    if isinstance(value, date):
+        return value.isoformat()
+    if isinstance(value, Model):
+        return str(value)
+    if hasattr(value, '__iter__') and not isinstance(value, str):
+        return [str(v) for v in value]
+    return value
 
-#         try:
-#             send_mail(subject, message, settings.EMAIL_HOST_USER, ['amartissebaggala@gmail.com','eliyang256@outlook.com', 'kayimaoscul@gmail.com', 'ogocharles231@gmail.com'], fail_silently=False)
-#         except BadHeaderError:
-#             return HttpResponse('Invalid header found.')
+
+DATE_INPUT = forms.DateInput(attrs={'type': 'date'})
+
+
+class ContactForm(EnquiryForm):
+    message = forms.CharField(widget=forms.Textarea(attrs={'rows': 5}), label='How can we help?')
+
+
+class QuoteForm(EnquiryForm):
+    kind = Enquiry.Kind.QUOTE
+    travel_date = forms.DateField(required=False, widget=DATE_INPUT, label='Preferred start date')
+    travellers = forms.IntegerField(min_value=1, max_value=99, initial=2, label='Travellers')
+    message = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 3}), label='Anything we should know?')
+
+
+class TripPlanForm(EnquiryForm):
+    kind = Enquiry.Kind.TRIP_PLAN
+
+    BUDGETS = [
+        ('', 'Select a budget'),
+        ('under-1500', 'Under US$1,500 per person'),
+        ('1500-3000', 'US$1,500–3,000 per person'),
+        ('3000-6000', 'US$3,000–6,000 per person'),
+        ('6000+', 'Over US$6,000 per person'),
+        ('unsure', 'Not sure yet'),
+    ]
+
+    country = forms.CharField(max_length=80, required=False, label='Country of residence')
+    destinations = forms.ModelMultipleChoiceField(
+        queryset=Destination.objects.none(), required=False, widget=forms.CheckboxSelectMultiple,
+        label='Where would you like to go?',
+    )
+    styles = forms.ModelMultipleChoiceField(
+        queryset=TripStyle.objects.none(), required=False, widget=forms.CheckboxSelectMultiple,
+        label='What interests you?',
+    )
+    travel_date = forms.DateField(required=False, widget=DATE_INPUT, label='Approximate start date')
+    days = forms.IntegerField(min_value=1, max_value=60, required=False, label='Number of days')
+    travellers = forms.IntegerField(min_value=1, max_value=99, initial=2, label='Adults')
+    children = forms.IntegerField(min_value=0, max_value=20, required=False, label='Children')
+    budget = forms.ChoiceField(choices=BUDGETS, required=False)
+    message = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 5}), label='Tell us about your dream trip')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['destinations'].queryset = Destination.objects.published()
+        self.fields['styles'].queryset = TripStyle.objects.published()
+
+
+class RentalForm(EnquiryForm):
+    kind = Enquiry.Kind.RENTAL
+    items = forms.ModelMultipleChoiceField(
+        queryset=RentalItem.objects.none(), widget=forms.CheckboxSelectMultiple, label='What would you like to hire?',
+    )
+    travel_date = forms.DateField(widget=DATE_INPUT, label='Pick-up date')
+    return_date = forms.DateField(widget=DATE_INPUT, label='Return date')
+    with_driver = forms.BooleanField(required=False, label='I need a driver/guide')
+    message = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 3}), label='Anything else?')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['items'].queryset = RentalItem.objects.filter(is_available=True).select_related('category')
+
+    def clean(self):
+        data = super().clean()
+        start, end = data.get('travel_date'), data.get('return_date')
+        if start and end and end < start:
+            self.add_error('return_date', 'The return date must be after the pick-up date.')
+        return data

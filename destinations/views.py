@@ -1,83 +1,51 @@
-from datetime import datetime
-from django.conf import settings
-from django.http import BadHeaderError, HttpResponse
-from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.views import View
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 
-from contacts.models import Receipient
+from destinations.models import Destination, Place
+from tours.models import Itinerary
 
-from destinations.models import Destination, Itinerary
 
-# Create your views here.
-def destinationDetailView(request, pk):
-    template_name = 'destinations/destination-detail.html'
-    destination = Destination.objects.get(id=pk)
-    itineraries = Itinerary.objects.filter(destination=destination)
-    context = {
-        "destination": destination,
-        "itineraries": itineraries
-    }
-    return render(request, template_name, context)
+def destination_list(request):
+    destinations = Destination.objects.published()
+    return render(request, 'destinations/destination_list.html', {
+        'destinations': destinations,
+        'breadcrumbs': [('Destinations', None)],
+    })
 
-def itineraryListView(request, pk):
-    template_name = 'destinations/itinerary-list.html'
-    destination = Destination.objects.get(id=pk)
-    itineraries = Itinerary.objects.filter(destination=destination)
-    context = {
-        "itineraries": itineraries
-    }
-    return render(request, template_name, context)
 
-class ItineraryDetailView(View):
-    def get(self, request, pk):
-        template_name = 'destinations/itinerary-detail.html'
-        itinerary = Itinerary.objects.get(id=pk)
-        context = {
-            'itinerary': itinerary,
-        }
-        return render(request, template_name, context)
-    
-    def post(self, request, pk):
-        template_name = 'main/honeymoons/success.html'
-        itinerary = Itinerary.objects.get(id=pk)
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        host = request.get_host()
-        current_datetime = datetime.now()
-        current_datetime_string = current_datetime.strftime("%A, %d %B %Y  -  %I:%M %p")
-        
-        obj = {
-            'itinerary': itinerary,
-            'name': name,
-            'email': email,
-            'phone': phone,
-            'host': host,
-            'date': current_datetime_string,
-            "link": f"{host}{reverse_lazy('destinations:itinerary-detail', kwargs={'pk': itinerary.pk})}"
-        }
-        
-        try:
-            email_html_message = render_to_string('emails/itineraryemail_template.html', obj)
-            email_plain_message = strip_tags(email_html_message)
-            subject = f'Quotation for {itinerary.name}'
-            
-            send_mail(
-                subject, 
-                email_plain_message, 
-                settings.EMAIL_HOST_USER, 
-                [r.email for r in Receipient.objects.all()], 
-                fail_silently=False,
-                html_message=email_html_message,
-            )
-            # print(message)
-        except Exception as ex:
-            return HttpResponse(f'Error: {ex}')
-        context = {
-            'itinerary': itinerary,
-        }
-        return render(request, template_name, context)
+def destination_detail(request, slug):
+    destination = get_object_or_404(Destination.objects.published(), slug=slug)
+    places = destination.places.published()
+    tours = (
+        Itinerary.objects.published().filter(destinations=destination)
+        .prefetch_related('destinations').distinct()
+    )
+    posts = destination.posts.published()[:3]
+    return render(request, 'destinations/destination_detail.html', {
+        'destination': destination,
+        'places': places,
+        'tours': tours,
+        'posts': posts,
+        'breadcrumbs': [('Destinations', reverse('destinations:list')), (destination.name, None)],
+    })
+
+
+def place_detail(request, destination, slug):
+    place = get_object_or_404(
+        Place.objects.published().select_related('destination'),
+        destination__slug=destination, destination__is_published=True, slug=slug,
+    )
+    tours = place.itineraries.published().prefetch_related('destinations')
+    nearby = place.destination.places.published().exclude(pk=place.pk)[:3]
+    return render(request, 'destinations/place_detail.html', {
+        'place': place,
+        'images': place.images.all(),
+        'tours': tours,
+        'nearby': nearby,
+        'posts': place.posts.published()[:3],
+        'breadcrumbs': [
+            ('Destinations', reverse('destinations:list')),
+            (place.destination.name, place.destination.get_absolute_url()),
+            (place.name, None),
+        ],
+    })
