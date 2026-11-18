@@ -39,7 +39,7 @@
     {% include 'components/footer.html' %}
     
     
-    <script src="{% static 'dist/bundle.js' %}" defer></script>
+    <script type="module" src="{% static 'dist/bundle.js' %}"></script>
     {% block scripts %}
     {% endblock scripts %}
     

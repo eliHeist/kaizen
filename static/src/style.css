@@ -1,11 +1,11 @@
+/* External @imports must come before everything else or browsers drop them. */
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap');
 @import "tailwindcss";
 
-/* Django template discovery */
-@source "../templates";
-@source "../**/templates";
-
-
-@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap');
+/* Django template discovery (paths are relative to this file: static/src/) */
+@source "../../templates";
+@source "../../*/templates/**/*.html";
+@source "./**/*.{ts,js}";
 
 /* Brand colors, typography, and design tokens */
 @theme {

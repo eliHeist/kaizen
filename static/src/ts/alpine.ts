@@ -22,7 +22,8 @@ Alpine.data('main', () => ({
     },
     sendMail() {
         this.status = 'sending...'
-        fetch(`{% url 'contacts:send_mail' %}`, {
+        // Bundled TS isn't rendered by Django, so template tags can't be used here.
+        fetch('/contact/sendmail/', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
