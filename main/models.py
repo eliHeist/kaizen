@@ -70,7 +70,7 @@ class SiteSettings(models.Model):
             ('X', 'fa-brands fa-x-twitter', self.x),
             ('LinkedIn', 'fa-brands fa-linkedin-in', self.linkedin),
             ('YouTube', 'fa-brands fa-youtube', self.youtube),
-            ('Tripadvisor', 'fa-brands fa-tripadvisor', self.tripadvisor),
+            ('Tripadvisor', 'fa-solid fa-star', self.tripadvisor),
         ]
         return [(label, icon, url) for label, icon, url in pairs if url]
 

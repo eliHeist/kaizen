@@ -10,6 +10,15 @@ from main.models import Photo, Review, Video
 from tours.models import Departure, Itinerary
 
 
+PARTNER_LOGOS = [
+    ('img/affiliations/safaribookings.webp', 'SafariBookings'),
+    ('img/affiliations/auto.webp', 'Association of Uganda Tour Operators'),
+    ('img/affiliations/uwa.webp', 'Uganda Wildlife Authority'),
+    ('img/affiliations/uta.webp', 'Uganda Tourism Association'),
+    ('img/affiliations/utb.webp', 'Uganda Tourism Board'),
+]
+
+
 def home(request):
     tours = Itinerary.objects.published().prefetch_related('destinations')
     return render(request, 'main/home.html', {
@@ -23,6 +32,7 @@ def home(request):
         'places': Place.objects.published().filter(is_featured=True).select_related('destination')[:8],
         'reviews': Review.objects.filter(is_published=True)[:9],
         'posts': Post.objects.published().select_related('category')[:3],
+        'partner_logos': PARTNER_LOGOS,
     })
 
 

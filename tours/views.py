@@ -11,6 +11,7 @@ from django.urls import reverse
 from contacts import notify
 from contacts.forms import QuoteForm
 from destinations.models import Destination, TripStyle
+from main import seo
 from main.models import Review
 from tours.forms import ReservationForm
 from tours.models import Departure, Itinerary, Reservation
@@ -51,6 +52,8 @@ def tour_list(request):
         'formats': Itinerary.Format.choices,
         'active': active,
         'querystring': urlencode(active),
+        # Filtered and searched listings are near-duplicates of the main list.
+        'noindex': bool(set(active) - {'page'}),
         'breadcrumbs': [('Tours & safaris', None)],
     })
 
@@ -93,10 +96,13 @@ def tour_detail(request, slug):
         Itinerary.objects.published().filter(destinations__in=tour.destinations.all())
         .exclude(pk=tour.pk).distinct().prefetch_related('destinations')[:3]
     )
+    days = list(tour.days.select_related('place__destination')) if tour.is_day_by_day else []
+    departures = list(tour.departures.upcoming().with_seats())
     return render(request, 'tours/tour_detail.html', {
         'tour': tour,
-        'days': tour.days.select_related('place') if tour.is_day_by_day else [],
-        'departures': tour.departures.upcoming().with_seats(),
+        'days': days,
+        'departures': departures,
+        'jsonld': seo.tour(tour, departures, days),
         'reviews': Review.objects.filter(is_published=True, itinerary=tour)[:6],
         'related': related,
         'posts': tour.posts.published()[:3],
@@ -136,6 +142,7 @@ def reserve(request, slug, pk):
         'tour': tour,
         'departure': departure,
         'form': form,
+        'noindex': True,
         'breadcrumbs': [
             ('Tours & safaris', reverse('tours:list')),
             (tour.name, tour.get_absolute_url()),

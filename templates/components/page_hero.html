@@ -1,0 +1,21 @@
+{% comment %}
+Full-bleed banner with the page title.
+Params: title, kicker, text, image (url), video (url), size ('lg' or default).
+Pages using it should include the header with overlay=True.
+{% endcomment %}
+<section class="relative isolate flex items-end overflow-hidden bg-primary-950 {% if size == 'lg' %}min-h-[78vh]{% else %}min-h-[52vh] md:min-h-[60vh]{% endif %}">
+    {% if video %}
+        <video class="hero-video -z-10" autoplay muted loop playsinline preload="metadata" {% if image %}poster="{{ image }}"{% endif %}>
+            <source src="{% if video.url %}{{ video.url }}{% else %}{{ video }}{% endif %}" type="video/mp4">
+        </video>
+    {% elif image %}
+        <img src="{{ image }}" alt="" class="absolute inset-0 -z-10 h-full w-full object-cover" fetchpriority="high">
+    {% endif %}
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-black/80 via-black/35 to-black/30"></div>
+    <div class="container w-full pb-12 pt-32 text-white md:pb-16">
+        {% include 'components/breadcrumbs.html' with class='text-white/75 mb-5' %}
+        {% if kicker %}<span class="kicker-light">{{ kicker }}</span>{% endif %}
+        <h1 class="max-w-4xl text-4xl font-bold tracking-tight text-white md:text-6xl">{{ title }}</h1>
+        {% if text %}<p class="mt-5 max-w-2xl text-lg text-white/85 md:text-xl">{{ text }}</p>{% endif %}
+    </div>
+</section>

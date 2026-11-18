@@ -1,0 +1,23 @@
+{% extends 'emails/base_email.html' %}
+{% load kaizen %}
+{% block body %}
+{% with dep=reservation.departure %}
+<h1 style="margin:0 0 6px;font-size:20px;">New seat reservation {{ reservation.reference }}</h1>
+<p style="margin:0 0 20px;color:#616161;">Please confirm availability and send payment details to the traveller.</p>
+<table role="presentation" cellpadding="6" cellspacing="0" style="width:100%;border-collapse:collapse;font-size:14px;">
+    <tr><td style="color:#828282;width:35%;">Trip</td><td><strong>{{ dep.itinerary.name }}</strong></td></tr>
+    <tr><td style="color:#828282;">Departure</td><td>{{ dep.start_date|date:'j F Y' }}{% if dep.end_date %} – {{ dep.end_date|date:'j F Y' }}{% endif %}</td></tr>
+    <tr><td style="color:#828282;">Travellers</td><td>{{ reservation.travellers }} ({{ dep.seats_left }} seat{{ dep.seats_left|pluralize }} now left)</td></tr>
+    {% if reservation.amount_due %}<tr><td style="color:#828282;">Amount due</td><td><strong>{{ reservation.amount_due|money:dep.currency }}</strong></td></tr>{% endif %}
+    <tr><td style="color:#828282;">Name</td><td>{{ reservation.full_name }}</td></tr>
+    <tr><td style="color:#828282;">Email</td><td><a href="mailto:{{ reservation.email }}" style="color:#797931;">{{ reservation.email }}</a></td></tr>
+    <tr><td style="color:#828282;">Phone</td><td>{{ reservation.phone }}</td></tr>
+    {% if reservation.country %}<tr><td style="color:#828282;">Country</td><td>{{ reservation.country }}</td></tr>{% endif %}
+</table>
+{% if reservation.message %}
+<p style="margin:20px 0 6px;color:#828282;font-size:13px;">Special requests</p>
+<div style="background:#f6f3ea;border-radius:8px;padding:14px 16px;white-space:pre-line;">{{ reservation.message }}</div>
+{% endif %}
+<p style="margin:24px 0 0;"><a href="{{ SITE_URL }}/admin/tours/reservation/{{ reservation.pk }}/change/" style="display:inline-block;background:#797931;color:#fff;padding:10px 18px;border-radius:999px;text-decoration:none;">Manage reservation</a></p>
+{% endwith %}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Destinations: Uganda, Kenya, Tanzania &amp; Rwanda | {{ site.site_name }}{% endblock %}
+{% block meta_description %}Explore the East African countries we travel in, from Uganda’s gorilla forests to the Serengeti and the beaches of Zanzibar.{% endblock %}
+{% block og_title %}Destinations | {{ site.site_name }}{% endblock %}
+
+{% block header %}{% include 'components/header.html' with overlay=True %}{% endblock %}
+
+{% block content %}
+{% static 'img/lionafrica.webp' as hero %}
+{% include 'components/page_hero.html' with title='Where will you go?' kicker='Destinations' text='Gorilla forests, endless savannah, crater lakes and spice islands, all within a few hours of each other.' image=hero %}
+
+<section class="section">
+    <div class="container grid gap-8">
+        {% for d in destinations %}
+            <article class="fade-in group grid overflow-hidden rounded-3xl bg-white ring-1 ring-black/5 md:grid-cols-2 {% cycle '' 'md:[&>figure]:order-2' %}">
+                <figure class="relative aspect-surface overflow-hidden md:aspect-auto md:min-h-[24rem]">
+                    <img src="{{ d.cover.url }}" alt="{{ d.name }}" loading="lazy" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105">
+                </figure>
+                <div class="flex flex-col justify-center p-8 lg:p-14">
+                    {% if d.tagline %}<span class="kicker">{{ d.tagline }}</span>{% endif %}
+                    <h2 class="section-title"><a href="{{ d.get_absolute_url }}" class="hover:text-primary-900">{{ d.name }}</a></h2>
+                    <p class="mt-4 text-lg text-grey-600">{{ d.summary }}</p>
+                    <dl class="mt-6 grid grid-cols-2 gap-4 text-sm">
+                        <div><dt class="text-grey-500">Highlights</dt><dd class="font-semibold text-grey-900">{{ d.places.count }} place{{ d.places.count|pluralize }}</dd></div>
+                        <div><dt class="text-grey-500">Trips</dt><dd class="font-semibold text-grey-900">{{ d.itineraries.count }} itinerar{{ d.itineraries.count|pluralize:'y,ies' }}</dd></div>
+                        {% if d.best_time_to_visit %}<div class="col-span-2"><dt class="text-grey-500">Best time to visit</dt><dd class="font-semibold text-grey-900">{{ d.best_time_to_visit }}</dd></div>{% endif %}
+                    </dl>
+                    <a href="{{ d.get_absolute_url }}" class="btn btn-primary mt-8 w-fit">Explore {{ d.name }}</a>
+                </div>
+            </article>
+        {% empty %}
+            <p class="text-center text-grey-500">Destinations are coming soon.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

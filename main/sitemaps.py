@@ -1,3 +1,7 @@
+from types import SimpleNamespace
+from urllib.parse import urlsplit
+
+from django.conf import settings
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
@@ -7,7 +11,10 @@ from tours.models import Itinerary
 
 
 class BaseSitemap(Sitemap):
-    protocol = 'https'
+    def get_urls(self, page=1, site=None, protocol=None):
+        # Always list canonical URLs, whichever host name the request came in on.
+        canonical = urlsplit(settings.SITE_URL)
+        return super().get_urls(page=page, site=SimpleNamespace(domain=canonical.netloc), protocol=canonical.scheme)
 
     def lastmod(self, obj):
         return getattr(obj, 'updated_at', None)

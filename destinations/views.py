@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 from destinations.models import Destination, Place
+from main import seo
 from tours.models import Itinerary
 
 
@@ -26,6 +27,7 @@ def destination_detail(request, slug):
         'places': places,
         'tours': tours,
         'posts': posts,
+        'jsonld': seo.destination(destination),
         'breadcrumbs': [('Destinations', reverse('destinations:list')), (destination.name, None)],
     })
 
@@ -43,6 +45,7 @@ def place_detail(request, destination, slug):
         'tours': tours,
         'nearby': nearby,
         'posts': place.posts.published()[:3],
+        'jsonld': seo.place(place),
         'breadcrumbs': [
             ('Destinations', reverse('destinations:list')),
             (place.destination.name, place.destination.get_absolute_url()),

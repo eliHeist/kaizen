@@ -1,0 +1,14 @@
+{# Use inside an element with x-data="lightbox". #}
+<template x-teleport="body">
+    <div x-show="open" x-cloak x-transition.opacity x-trap.noscroll="open" role="dialog" aria-modal="true" aria-label="Photo viewer"
+         @keydown.escape.window="open = false" @keydown.arrow-right.window="open && next()" @keydown.arrow-left.window="open && prev()"
+         class="fixed inset-0 z-[90] grid place-items-center bg-black/90 p-4" @click.self="open = false">
+        <figure class="grid max-h-full max-w-6xl gap-3">
+            <img :src="current.src" :alt="current.caption" class="max-h-[80vh] w-auto rounded-xl object-contain">
+            <figcaption class="text-center text-sm text-white/80" x-text="current.caption"></figcaption>
+        </figure>
+        <button type="button" @click="open = false" class="absolute right-4 top-4 grid size-12 place-content-center rounded-full bg-white/10 text-2xl text-white hover:bg-white/20" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        <button type="button" x-show="items.length > 1" @click="prev()" class="absolute left-4 top-1/2 grid size-12 -translate-y-1/2 place-content-center rounded-full bg-white/10 text-xl text-white hover:bg-white/20" aria-label="Previous photo"><i class="fa-solid fa-chevron-left"></i></button>
+        <button type="button" x-show="items.length > 1" @click="next()" class="absolute right-4 top-1/2 grid size-12 -translate-y-1/2 place-content-center rounded-full bg-white/10 text-xl text-white hover:bg-white/20" aria-label="Next photo"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+</template>

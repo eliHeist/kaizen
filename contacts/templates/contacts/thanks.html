@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Thank you | {{ site.site_name }}{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container max-w-2xl text-center">
+        <span class="mx-auto grid size-20 place-content-center rounded-full bg-emerald-100 text-4xl text-emerald-700"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+        <h1 class="mt-6 text-3xl font-bold tracking-tight md:text-4xl">Thank you, we’ve got your message</h1>
+        <p class="mt-4 text-lg text-grey-600">A member of our team will reply within one working day{% if tour %} about <strong>{{ tour.name }}</strong>{% endif %}. For anything urgent, message us on WhatsApp.</p>
+        <div class="mt-10 flex flex-wrap justify-center gap-4">
+            <a href="{{ back_url }}" class="btn btn-outline">{% if tour %}Back to the trip{% else %}Back to home{% endif %}</a>
+            <a href="https://wa.me/{{ site.whatsapp_digits }}" target="_blank" rel="noopener" class="btn btn-primary"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> WhatsApp us</a>
+        </div>
+        <p class="mt-12 text-sm text-grey-500">While you wait, <a href="{% url 'blog:list' %}" class="font-semibold text-primary-900 underline">read our travel tips</a>.</p>
+    </div>
+</section>
+{% endblock %}

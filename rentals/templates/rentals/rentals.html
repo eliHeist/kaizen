@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static kaizen %}
+
+{% block title %}Car Hire &amp; Camping Equipment Rental in Uganda | {{ site.site_name }}{% endblock %}
+{% block meta_description %}Hire safari 4x4s with or without a driver, rooftop tents and complete camping kits in Uganda. Check prices and send a rental enquiry online.{% endblock %}
+{% block og_title %}Rentals: safari vehicles &amp; camping gear | {{ site.site_name }}{% endblock %}
+
+{% block header %}{% include 'components/header.html' with overlay=True %}{% endblock %}
+
+{% block content %}
+{% static 'video/tents.mp4' as hero_video %}{% static 'img/car.webp' as hero_img %}
+{% include 'components/page_hero.html' with title='Car & camping hire' kicker='Rentals' text='Reliable safari vehicles and quality camping gear for self-drive adventures, or with one of our driver-guides.' video=hero_video image=hero_img %}
+
+<div class="container grid gap-12 py-12 lg:grid-cols-[1fr_24rem] lg:py-16">
+    <div class="grid gap-16">
+        {% for category in categories %}
+            <section id="{{ category.slug }}" class="scroll-mt-24">
+                <div class="flex items-center gap-4">
+                    {% if category.icon %}<span class="grid size-12 place-content-center rounded-full bg-primary-50 text-xl text-primary-900"><i class="{{ category.icon }}" aria-hidden="true"></i></span>{% endif %}
+                    <div>
+                        <h2 class="text-2xl font-bold md:text-3xl">{{ category.name }}</h2>
+                        {% if category.summary %}<p class="text-grey-600">{{ category.summary }}</p>{% endif %}
+                    </div>
+                </div>
+                <div class="mt-8 grid gap-5 sm:grid-cols-2">
+                    {% for item in category.items.all %}
+                        <article class="card group fade-in">
+                            <div class="card-media aspect-surface"><img src="{{ item.image.url }}" alt="{{ item.name }}" loading="lazy"></div>
+                            <div class="flex flex-1 flex-col p-5">
+                                <h3 class="text-lg font-semibold">{{ item.name }}</h3>
+                                {% if item.capacity %}<p class="mt-1 text-sm text-primary-900"><i class="fa-solid fa-circle-info mr-1" aria-hidden="true"></i>{{ item.capacity }}</p>{% endif %}
+                                {% if item.summary %}<p class="mt-2 text-sm text-grey-600">{{ item.summary }}</p>{% endif %}
+                                <div class="mt-auto flex items-center justify-between gap-3 pt-5">
+                                    <p><span class="text-lg font-bold">{{ item.price|money:item.currency }}</span>{% if item.price %} <span class="text-sm text-grey-500">{{ item.price_unit }}</span>{% endif %}</p>
+                                    <a href="?item={{ item.pk }}#enquire" class="btn btn-outline px-4 py-2">Enquire</a>
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+        {% empty %}
+            <p class="rounded-3xl bg-sand p-10 text-center text-grey-600">Our rental fleet is being updated. Please contact us for availability.</p>
+        {% endfor %}
+    </div>
+
+    <aside>
+        <div id="enquire" class="scroll-mt-24 rounded-3xl bg-white p-6 shadow-xl ring-1 ring-black/5 lg:sticky lg:top-24 md:p-8">
+            <h2 class="text-xl font-bold">Rental enquiry</h2>
+            <p class="mt-1 text-sm text-grey-600">Tell us what you need and we’ll confirm availability and price.</p>
+            <form method="post" action="#enquire" class="mt-6 grid gap-5" novalidate>
+                {% csrf_token %}
+                {% field form.items %}
+                <div class="grid grid-cols-2 gap-3">
+                    {% field form.travel_date %}
+                    {% field form.return_date %}
+                </div>
+                {% field form.with_driver %}
+                {% field form.name %}
+                {% field form.email %}
+                {% field form.phone %}
+                {% field form.message %}
+                <div class="honeypot" aria-hidden="true">{{ form.website }}</div>
+                <button type="submit" class="btn btn-primary btn-lg w-full">Send enquiry</button>
+            </form>
+        </div>
+    </aside>
+</div>
+{% endblock %}

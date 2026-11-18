@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load kaizen %}
+
+{% block title %}Reservation {{ reservation.reference }} received | {{ site.site_name }}{% endblock %}
+
+{% block content %}
+{% with dep=reservation.departure tour=reservation.departure.itinerary %}
+<section class="section">
+    <div class="container max-w-3xl">
+        <div class="text-center">
+            <span class="mx-auto grid size-20 place-content-center rounded-full bg-emerald-100 text-4xl text-emerald-700"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+            <h1 class="mt-6 text-3xl font-bold tracking-tight md:text-4xl">Thank you, {{ reservation.full_name }}!</h1>
+            <p class="mt-3 text-lg text-grey-600">Your seat request has been received. We’ll confirm it within one working day.</p>
+        </div>
+
+        <div class="mt-10 rounded-3xl bg-white p-8 ring-1 ring-black/5">
+            <dl class="grid gap-4 text-sm sm:grid-cols-2">
+                <div><dt class="text-grey-500">Reference</dt><dd class="font-mono text-xl font-bold tracking-wider text-primary-900">{{ reservation.reference }}</dd></div>
+                <div><dt class="text-grey-500">Trip</dt><dd class="font-medium">{{ tour.name }}</dd></div>
+                <div><dt class="text-grey-500">Dates</dt><dd class="font-medium">{{ dep.start_date|date:'j M Y' }}{% if dep.end_date %} – {{ dep.end_date|date:'j M Y' }}{% endif %}</dd></div>
+                <div><dt class="text-grey-500">Travellers</dt><dd class="font-medium">{{ reservation.travellers }}</dd></div>
+                {% if reservation.amount_due %}<div class="sm:col-span-2"><dt class="text-grey-500">Estimated total</dt><dd class="text-xl font-bold">{{ reservation.amount_due|money:dep.currency }}</dd></div>{% endif %}
+            </dl>
+        </div>
+
+        <div class="mt-6 rounded-3xl bg-sand p-8">
+            <h2 class="text-lg font-semibold">What happens next</h2>
+            <ol class="mt-4 grid gap-3 text-grey-700">
+                <li>1. We check availability and confirm your seat by email{% if reservation.phone %} or WhatsApp{% endif %}.</li>
+                <li>2. You pay the deposit using the details below, quoting <strong>{{ reservation.reference }}</strong>.</li>
+                <li>3. We send your final travel documents before departure.</li>
+            </ol>
+            {% if site.payment_instructions %}
+                <h3 class="mt-8 font-semibold">Payment details</h3>
+                <div class="prose mt-3 max-w-none text-base">{{ site.payment_instructions|safe }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mt-10 flex flex-wrap justify-center gap-4">
+            <a href="{{ tour.get_absolute_url }}" class="btn btn-outline">Back to the trip</a>
+            <a href="https://wa.me/{{ site.whatsapp_digits }}?text={{ 'Hi! My reservation reference is '|add:reservation.reference|urlencode }}" target="_blank" rel="noopener" class="btn btn-primary"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Message us</a>
+        </div>
+    </div>
+</section>
+{% endwith %}
+{% endblock %}

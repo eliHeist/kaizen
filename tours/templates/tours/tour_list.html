@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static kaizen %}
+
+{% block title %}Tours &amp; Safaris in Uganda and East Africa{% if page.number > 1 %} (page {{ page.number }}){% endif %} | {{ site.site_name }}{% endblock %}
+{% block meta_description %}Browse gorilla treks, wildlife safaris, honeymoons and tailor-made trips in Uganda, Kenya, Tanzania and Rwanda. Day-by-day itineraries, flexible trips and scheduled group departures.{% endblock %}
+{% block og_title %}Tours &amp; safaris | {{ site.site_name }}{% endblock %}
+{% block canonical %}{{ request.path|absolute }}{% if page.number > 1 %}?page={{ page.number }}{% endif %}{% endblock %}
+
+{% block header %}{% include 'components/header.html' with overlay=True %}{% endblock %}
+
+{% block content %}
+{% static 'img/elephants.webp' as hero %}
+{% include 'components/page_hero.html' with title='Tours & safaris' kicker='Find your adventure' text='Ready-made day-by-day itineraries, flexible trips you shape yourself, and group departures you can join.' image=hero %}
+
+<section class="section pt-10">
+    <div class="container grid gap-10 lg:grid-cols-[16rem_1fr]">
+        <aside x-data="{ open: false }" class="lg:sticky lg:top-24 lg:h-fit">
+            <button type="button" @click="open = !open" class="btn btn-outline w-full lg:hidden" :aria-expanded="open">
+                <i class="fa-solid fa-sliders" aria-hidden="true"></i> Filters{% if active %} ({{ active|length }}){% endif %}
+            </button>
+            <form method="get" class="mt-4 hidden gap-6 lg:mt-0 lg:grid" :class="open && '!grid'" x-ref="filters">
+                <div class="field">
+                    <label for="q" class="field-label">Search</label>
+                    <input id="q" type="search" name="q" value="{{ active.q }}" placeholder="Gorillas, Mara, Zanzibar…" class="control">
+                </div>
+                <div class="field">
+                    <label for="f-dest" class="field-label">Destination</label>
+                    <select id="f-dest" name="destination" class="control" @change="$refs.filters.submit()">
+                        <option value="">All destinations</option>
+                        {% for d in destinations %}<option value="{{ d.slug }}" {% if active.destination == d.slug %}selected{% endif %}>{{ d.name }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="f-style" class="field-label">Trip style</label>
+                    <select id="f-style" name="style" class="control" @change="$refs.filters.submit()">
+                        <option value="">All styles</option>
+                        {% for s in styles %}<option value="{{ s.slug }}" {% if active.style == s.slug %}selected{% endif %}>{{ s.name }}</option>{% endfor %}
+                    </select>
+                </div>
+                <fieldset class="field">
+                    <legend class="field-label mb-1.5">Itinerary type</legend>
+                    <div class="grid gap-2 text-sm">
+                        <label class="flex items-center gap-2"><input type="radio" name="format" value="" class="accent-primary-900" {% if not active.format %}checked{% endif %} @change="$refs.filters.submit()"> Any</label>
+                        {% for value, label in formats %}
+                            <label class="flex items-center gap-2"><input type="radio" name="format" value="{{ value }}" class="accent-primary-900" {% if active.format == value %}checked{% endif %} @change="$refs.filters.submit()"> {{ label }}</label>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+                <label class="flex items-center gap-2 text-sm">
+                    <input type="checkbox" name="scheduled" value="1" class="size-4 accent-primary-900" {% if active.scheduled %}checked{% endif %} @change="$refs.filters.submit()">
+                    Only trips with group dates
+                </label>
+                <div class="field">
+                    <label for="f-sort" class="field-label">Sort by</label>
+                    <select id="f-sort" name="sort" class="control" @change="$refs.filters.submit()">
+                        <option value="">Recommended</option>
+                        <option value="price" {% if active.sort == 'price' %}selected{% endif %}>Price: low to high</option>
+                        <option value="duration" {% if active.sort == 'duration' %}selected{% endif %}>Length: short to long</option>
+                    </select>
+                </div>
+                <div class="flex gap-3">
+                    <button type="submit" class="btn btn-primary flex-1">Apply</button>
+                    {% if active %}<a href="{% url 'tours:list' %}" class="btn btn-outline">Clear</a>{% endif %}
+                </div>
+            </form>
+        </aside>
+
+        <div>
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <p class="text-sm text-grey-600"><strong class="text-grey-900">{{ page.paginator.count }}</strong> trip{{ page.paginator.count|pluralize }} found</p>
+                <a href="{% url 'tours:departures' %}" class="link-arrow text-sm"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i> See group departure dates</a>
+            </div>
+            <div class="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                {% for tour in tours %}
+                    {% include 'components/tour_card.html' with class='fade-in' %}
+                {% empty %}
+                    <div class="col-span-full rounded-3xl bg-sand p-10 text-center">
+                        <p class="text-lg font-semibold">No trips match those filters.</p>
+                        <p class="mt-2 text-grey-600">We can build one just for you.</p>
+                        <a href="{% url 'contacts:plan' %}" class="btn btn-primary mt-6">Plan a custom trip</a>
+                    </div>
+                {% endfor %}
+            </div>
+            {% include 'components/pagination.html' %}
+        </div>
+    </div>
+</section>
+{% endblock %}

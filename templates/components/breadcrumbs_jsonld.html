@@ -1,0 +1,6 @@
+{% load kaizen %}<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+{"@type":"ListItem","position":1,"name":"Home","item":{{ '/'|absolute|jsonld }}}{% for label, url in breadcrumbs %},
+{"@type":"ListItem","position":{{ forloop.counter|add:1 }},"name":{{ label|jsonld }},"item":{% if url %}{{ url|absolute|jsonld }}{% else %}{{ request.path|absolute|jsonld }}{% endif %}}{% endfor %}
+]}
+</script>

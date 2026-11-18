@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load kaizen %}
+
+{% block title %}{{ destination.meta_title|default:destination.name }} Safaris &amp; Tours | {{ site.site_name }}{% endblock %}
+{% block meta_description %}{{ destination.meta_description|default:destination.summary }}{% endblock %}
+{% block og_title %}{{ destination.name }} | {{ site.site_name }}{% endblock %}
+{% block og_description %}{{ destination.summary }}{% endblock %}
+{% block og_image %}{{ destination.cover.url|absolute }}{% endblock %}
+{% block structured_data %}<script type="application/ld+json">{{ jsonld|jsonld }}</script>{% endblock %}
+
+{% block header %}{% include 'components/header.html' with overlay=True %}{% endblock %}
+
+{% block content %}
+{% include 'components/page_hero.html' with title=destination.name kicker=destination.tagline text=destination.summary image=destination.cover.url video=destination.hero_video size='lg' %}
+
+<section class="section">
+    <div class="container grid gap-12 lg:grid-cols-[2fr_1fr]">
+        <div class="prose max-w-none">{{ destination.body|safe }}</div>
+        <aside class="h-fit rounded-3xl bg-sand p-8 lg:sticky lg:top-28">
+            <h2 class="text-lg font-semibold">At a glance</h2>
+            <dl class="mt-5 grid gap-4 text-sm">
+                {% if destination.best_time_to_visit %}<div><dt class="text-grey-500">Best time to visit</dt><dd class="font-medium text-grey-900">{{ destination.best_time_to_visit }}</dd></div>{% endif %}
+                <div><dt class="text-grey-500">Places to see</dt><dd class="font-medium text-grey-900">{{ places|length }}</dd></div>
+                <div><dt class="text-grey-500">Ready-made trips</dt><dd class="font-medium text-grey-900">{{ tours|length }}</dd></div>
+            </dl>
+            <a href="{% url 'contacts:plan' %}?destinations={{ destination.pk }}" class="btn btn-primary mt-8 w-full">Plan a trip to {{ destination.name }}</a>
+            <a href="https://wa.me/{{ site.whatsapp_digits }}?text={{ 'Hi! I am interested in travelling to '|add:destination.name|urlencode }}" target="_blank" rel="noopener" class="btn btn-outline mt-3 w-full"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Ask on WhatsApp</a>
+        </aside>
+    </div>
+</section>
+
+{% if places %}
+<section class="section bg-sand">
+    <div class="container">
+        <header>
+            <span class="kicker">Highlights</span>
+            <h2 class="section-title">Places to visit in {{ destination.name }}</h2>
+        </header>
+        <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {% for place in places %}{% include 'components/place_card.html' with class='aspect-surface fade-in' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if tours %}
+<section class="section">
+    <div class="container">
+        <header class="flex flex-wrap items-end justify-between gap-6">
+            <div>
+                <span class="kicker">Tours</span>
+                <h2 class="section-title">Trips in {{ destination.name }}</h2>
+            </div>
+            <a href="{% url 'tours:list' %}?destination={{ destination.slug }}" class="link-arrow">All {{ destination.name }} tours <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </header>
+        <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {% for tour in tours|slice:':6' %}{% include 'components/tour_card.html' with class='fade-in' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if posts %}
+<section class="section bg-sand">
+    <div class="container">
+        <span class="kicker">Read before you go</span>
+        <h2 class="section-title">{{ destination.name }} travel guides</h2>
+        <div class="mt-10 grid gap-6 md:grid-cols-3">
+            {% for post in posts %}{% include 'components/post_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,24 @@
+<div class="field{% if f.errors %} has-error{% endif %}{% if span %} sm:col-span-2{% endif %}">
+    {% if is_checkbox %}
+        <label class="flex items-start gap-3 text-sm text-grey-700 cursor-pointer">
+            {{ f }}
+            <span>{{ label }}{% if f.field.required %} <span class="text-red-700" aria-hidden="true">*</span>{% endif %}</span>
+        </label>
+    {% elif is_choices %}
+        <fieldset class="grid gap-2">
+            <legend class="field-label mb-1.5">{{ label }}</legend>
+            <div class="choices">
+                {% for opt in f %}
+                    <label class="choice">{{ opt.tag }} {{ opt.choice_label }}</label>
+                {% endfor %}
+            </div>
+        </fieldset>
+    {% else %}
+        <label for="{{ f.id_for_label }}" class="field-label">
+            {{ label }}{% if f.field.required %} <span class="text-red-700" aria-hidden="true">*</span>{% endif %}
+        </label>
+        {{ f }}
+    {% endif %}
+    {% if f.help_text %}<p class="field-help">{{ f.help_text }}</p>{% endif %}
+    {% for error in f.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+</div>

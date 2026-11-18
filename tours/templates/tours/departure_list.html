@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Group Safari Departures: Fixed Dates, Join a Trip | {{ site.site_name }}{% endblock %}
+{% block meta_description %}Join a scheduled small-group safari or gorilla trek in Uganda and East Africa. See dates, seats left and prices, and reserve your seat online.{% endblock %}
+{% block og_title %}Group departures | {{ site.site_name }}{% endblock %}
+
+{% block header %}{% include 'components/header.html' with overlay=True %}{% endblock %}
+
+{% block content %}
+{% static 'img/crestedcrane.webp' as hero %}
+{% include 'components/page_hero.html' with title='Group departures' kicker='Fixed dates' text='Travel with a small group on set dates. Reserve your seat online and pay by mobile money or bank transfer once we confirm.' image=hero %}
+
+<section class="section">
+    <div class="container grid gap-12 lg:grid-cols-[1fr_20rem]">
+        <div>
+            {% regroup departures by start_date|date:'F Y' as months %}
+            {% for month in months %}
+                <h2 class="mb-4 mt-10 text-xl font-semibold first:mt-0">{{ month.grouper }}</h2>
+                <ul class="grid gap-3">
+                    {% for dep in month.list %}{% include 'components/departure_row.html' with show_tour=True %}{% endfor %}
+                </ul>
+            {% empty %}
+                <div class="rounded-3xl bg-sand p-10 text-center">
+                    <p class="text-lg font-semibold">No group departures are scheduled right now.</p>
+                    <p class="mt-2 text-grey-600">Every trip can also run privately on the dates you choose.</p>
+                    <a href="{% url 'tours:list' %}" class="btn btn-primary mt-6">Browse trips</a>
+                </div>
+            {% endfor %}
+        </div>
+        <aside class="h-fit rounded-3xl bg-sand p-8 lg:sticky lg:top-28">
+            <h2 class="text-lg font-semibold">How reserving works</h2>
+            <ol class="mt-5 grid gap-5 text-sm text-grey-700">
+                <li class="flex gap-3"><span class="grid size-7 shrink-0 place-content-center rounded-full bg-primary-900 text-xs font-bold text-white">1</span>Choose a date and reserve your seats. It takes two minutes and costs nothing.</li>
+                <li class="flex gap-3"><span class="grid size-7 shrink-0 place-content-center rounded-full bg-primary-900 text-xs font-bold text-white">2</span>We confirm availability within one working day and send payment details.</li>
+                <li class="flex gap-3"><span class="grid size-7 shrink-0 place-content-center rounded-full bg-primary-900 text-xs font-bold text-white">3</span>Pay your deposit by mobile money or bank transfer to secure your place.</li>
+            </ol>
+            <p class="mt-6 text-sm text-grey-600">Questions? <a href="https://wa.me/{{ site.whatsapp_digits }}" class="font-semibold text-primary-900 underline" target="_blank" rel="noopener">WhatsApp us</a>.</p>
+        </aside>
+    </div>
+</section>
+{% endblock %}

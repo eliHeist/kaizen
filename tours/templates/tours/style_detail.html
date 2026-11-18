@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static kaizen %}
+
+{% block title %}{{ style.meta_title|default:style.name }} Tours in Uganda &amp; East Africa | {{ site.site_name }}{% endblock %}
+{% block meta_description %}{{ style.meta_description|default:style.summary }}{% endblock %}
+{% block og_title %}{{ style.name }} trips | {{ site.site_name }}{% endblock %}
+{% block og_description %}{{ style.summary }}{% endblock %}
+{% block og_image %}{% if style.cover %}{{ style.cover.url|absolute }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+{% block header %}{% include 'components/header.html' with overlay=True %}{% endblock %}
+
+{% block content %}
+{% static 'img/lion.webp' as fallback %}
+{% if style.cover %}
+    {% include 'components/page_hero.html' with title=style.name kicker='Trip style' text=style.summary image=style.cover.url %}
+{% else %}
+    {% include 'components/page_hero.html' with title=style.name kicker='Trip style' text=style.summary image=fallback %}
+{% endif %}
+
+{% if style.body %}
+<section class="section pb-0">
+    <div class="container max-w-3xl prose">{{ style.body|safe }}</div>
+</section>
+{% endif %}
+
+<section class="section">
+    <div class="container">
+        <span class="kicker">{{ style.name }}</span>
+        <h2 class="section-title">Trips for you</h2>
+        <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {% for tour in tours %}
+                {% include 'components/tour_card.html' with class='fade-in' %}
+            {% empty %}
+                <div class="col-span-full rounded-3xl bg-sand p-10 text-center">
+                    <p class="text-lg font-semibold">We tailor-make {{ style.name|lower }} trips.</p>
+                    <a href="{% url 'contacts:plan' %}?styles={{ style.pk }}" class="btn btn-primary mt-6">Plan yours</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% if places %}
+<section class="section bg-sand">
+    <div class="container">
+        <span class="kicker">Where to go</span>
+        <h2 class="section-title">Places perfect for {{ style.name|lower }}</h2>
+        <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {% for place in places %}{% include 'components/place_card.html' with class='aspect-surface fade-in' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="section">
+    <div class="container rounded-3xl bg-primary-950 px-6 py-14 text-center text-white md:px-16">
+        <span class="kicker-light">Tailor-made</span>
+        <h2 class="section-title text-white">Want it your way?</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-white/80">Tell us your dates and wishes, and we’ll design a {{ style.name|lower }} trip around you.</p>
+        <a href="{% url 'contacts:plan' %}?styles={{ style.pk }}" class="btn btn-light btn-lg mt-8">Plan my trip</a>
+    </div>
+</section>
+{% endblock %}

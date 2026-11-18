@@ -1,70 +1,57 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Photo &amp; Video Gallery | {{ site.site_name }}{% endblock %}
+{% block meta_description %}Photos and videos from our safaris, gorilla treks and adventures across Uganda and East Africa.{% endblock %}
+{% block og_title %}Gallery | {{ site.site_name }}{% endblock %}
 
-{% block styles %}
-    <link rel="stylesheet" href="{% static 'lightbox2/dist/css/lightbox.min.css' %}">
-    <script src="{% static 'lightbox2/dist/js/lightbox-plus-jquery.min.js' %}"></script>
-{% endblock styles %}
-
-{% block title %}Gallery | Kaizen Safaris{% endblock %}
-    
+{% block header %}{% include 'components/header.html' with overlay=True %}{% endblock %}
 
 {% block content %}
-<section class=" h-[70vh] overflow-hidden" id="banner">
-    <div class="relative h-full">
-        <video autoplay muted loop class=" w-full h-full object-cover">
-            <source src="{% static 'video/gallery.m4v' %}" type="video/mp4">
-        </video>
-        <div class="cover z-10 absolute top-0 left-0 bottom-0 w-full bg-black bg-opacity-40">
-            <!-- <div id="hero-space"></div> -->
-            <div class="content-center grid justify-center h-full relative">
-                <!-- <h1 class="shadowed text-6xl text-white uppercase font-bold text-center h-fit">Kaizen Safaris' Gallery</h1> -->
+{% static 'video/gallery.m4v' as hero_video %}{% static 'img/lion.webp' as hero_img %}
+{% include 'components/page_hero.html' with title='Gallery' kicker='Moments from the wild' text='A glimpse of what awaits: wildlife, landscapes and the people who make every trip special.' video=hero_video image=hero_img %}
 
-            </div>
+<section class="section" x-data="lightbox">
+    <div class="container">
+        <div class="columns-2 gap-4 md:columns-3 lg:columns-4 [&>*]:mb-4">
+            {% for photo in photos %}
+                <button type="button" @click="show({{ forloop.counter0 }})" data-lightbox="{{ photo.image.url }}" data-caption="{{ photo.caption }}"
+                        class="group relative block w-full break-inside-avoid overflow-hidden rounded-2xl" aria-label="Open photo{% if photo.caption %}: {{ photo.caption }}{% endif %}">
+                    <img src="{{ photo.image.url }}" alt="{{ photo.caption|default:'Safari photo' }}" loading="lazy" decoding="async" class="w-full transition duration-700 group-hover:scale-105">
+                    {% if photo.caption %}<span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 p-3 text-left text-sm text-white opacity-0 transition group-hover:opacity-100">{{ photo.caption }}</span>{% endif %}
+                </button>
+            {% empty %}
+                <p class="text-grey-500">Photos coming soon.</p>
+            {% endfor %}
+        </div>
+    </div>
+    {% include 'components/lightbox.html' %}
+</section>
+
+{% if videos %}
+<section class="section bg-sand">
+    <div class="container">
+        <span class="kicker">Watch</span>
+        <h2 class="section-title">Videos</h2>
+        <div class="mt-10 grid gap-6 md:grid-cols-2">
+            {% for video in videos %}
+                {% if video.youtube_id %}
+                <figure x-data="{ play: false }" class="overflow-hidden rounded-2xl bg-black">
+                    <div class="relative aspect-video">
+                        <template x-if="play">
+                            <iframe class="absolute inset-0 h-full w-full" :src="'https://www.youtube-nocookie.com/embed/{{ video.youtube_id }}?autoplay=1'" title="{{ video.title }}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                        </template>
+                        <button type="button" x-show="!play" @click="play = true" class="group absolute inset-0" aria-label="Play {{ video.title }}">
+                            <img src="https://i.ytimg.com/vi/{{ video.youtube_id }}/hqdefault.jpg" alt="" loading="lazy" class="h-full w-full object-cover opacity-80 transition group-hover:opacity-100">
+                            <span class="absolute left-1/2 top-1/2 grid size-16 -translate-x-1/2 -translate-y-1/2 place-content-center rounded-full bg-white/90 text-2xl text-primary-950 transition group-hover:scale-110"><i class="fa-solid fa-play" aria-hidden="true"></i></span>
+                        </button>
+                    </div>
+                    <figcaption class="bg-white p-4 font-medium">{{ video.title }}</figcaption>
+                </figure>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
 </section>
-
-<main class="my-8">
-    <div class="container grid">
-        <h2 class="head-1 text-primary-800"><span class="lead">Photos</span></h2>
-        <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-8 pb-8" id="photo-box">
-            
-            {% for photo in photos %}
-                <figure class="photo aspect-1610 overflow-hidden  hover:shadow-2xl scale-100 hover:z-30 hover:scale-125 transition-all rounded">
-                    <a href="{{ photo.image.url }}" data-lightbox="gallery" data-title="{{ photo.description }}">
-                        <img src="{{ photo.image.url }}" alt="{{ photo.description }}" class=" sm:scale-125 sm:grayscale sm:hover:grayscale-0 transition-all object-cover">
-                    </a>
-                </figure>
-            {% endfor %}
-                
-        </div>
-        <!-- <a class="link more-link ml-auto cursor-pointer" data-class="photo" data-number="4">more..</a> -->
-    </div>
-    <div class="container mt-16 grid">
-        <h2 class="head-1 text-primary-800"><span class="lead">Videos</span></h2>
-        <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8" id="photo-box">
-            
-            {% for video in videos %}
-            <iframe class="aspect-video w-full ytVideo  transform scale-100 hover:scale-105 transition-all" allowfullscreen
-            src="{{ video.link }}">
-            </iframe>
-            {% endfor %}
-                
-        </div>
-        <!-- <a class="link more-link ml-auto cursor-pointer" data-class="ytVideo" data-number="3">more..</a> -->
-    </div>
-</main>
-{% endblock content %}
-
-
-{% block scripts %}
-    <script>
-        ShowMore('ytVideo', 6)
-        ShowMore('photo', 8)
-    </script>
-{% endblock scripts %}
-    
-
-    
+{% endif %}
+{% endblock %}

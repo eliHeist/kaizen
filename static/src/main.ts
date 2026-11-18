@@ -1,117 +1,134 @@
 import './style.css'
 import './fontawesome/css/all.min.css'
 
-import './js/main.js'
-import './js/scroll.js'
-
-import "./ts/alpine.js"
-
 import Alpine from 'alpinejs'
-import ajax from '@imacrayon/alpine-ajax'
-import mask from "@alpinejs/mask"
-import collapse from "@alpinejs/collapse"
-import anchor from '@alpinejs/anchor'
+import collapse from '@alpinejs/collapse'
 import focus from '@alpinejs/focus'
-
-import { gsap } from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
+import { gsap } from 'gsap'
 
 declare global {
   interface Window {
-    Alpine: typeof Alpine;
+    Alpine: typeof Alpine
   }
 }
 
-window.Alpine = Alpine
-Alpine.plugin(mask)
-Alpine.plugin(collapse)
-Alpine.plugin(ajax)
-Alpine.plugin(anchor)
-Alpine.plugin(focus)
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+// ---------------------------------------------------------------------------
+// Alpine components
+// ---------------------------------------------------------------------------
+
+/** Site header: transparent over a hero, solid once scrolled, hides on scroll down. */
+Alpine.data('siteHeader', (overlay: boolean = false) => ({
+  overlay,
+  scrolled: false,
+  hidden: false,
+  menuOpen: false,
+  lastY: 0,
+  init() {
+    this.onScroll()
+    window.addEventListener('scroll', () => this.onScroll(), { passive: true })
+    this.$watch('menuOpen', (open: boolean) => document.documentElement.classList.toggle('overflow-hidden', open))
+  },
+  onScroll() {
+    const y = window.scrollY
+    this.scrolled = y > 40
+    this.hidden = !this.menuOpen && y > 300 && y > this.lastY
+    this.lastY = y
+  },
+  get solid() {
+    return !this.overlay || this.scrolled || this.menuOpen
+  },
+}))
+
+/** Image lightbox for galleries. Items are read from [data-lightbox] children. */
+Alpine.data('lightbox', () => ({
+  open: false,
+  index: 0,
+  items: [] as { src: string; caption: string }[],
+  init() {
+    this.items = Array.from(this.$el.querySelectorAll<HTMLElement>('[data-lightbox]')).map((el) => ({
+      src: el.dataset.lightbox || '',
+      caption: el.dataset.caption || '',
+    }))
+  },
+  show(i: number) {
+    this.index = i
+    this.open = true
+  },
+  next() {
+    this.index = (this.index + 1) % this.items.length
+  },
+  prev() {
+    this.index = (this.index - 1 + this.items.length) % this.items.length
+  },
+  get current() {
+    return this.items[this.index] || { src: '', caption: '' }
+  },
+}))
+
+/** Prev/next buttons for a horizontal .rail scroller. */
+Alpine.data('rail', () => ({
+  atStart: true,
+  atEnd: false,
+  init() {
+    const el = this.$refs.track as HTMLElement
+    const update = () => {
+      this.atStart = el.scrollLeft < 8
+      this.atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 8
+    }
+    el.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    update()
+  },
+  scroll(dir: 1 | -1) {
+    const el = this.$refs.track as HTMLElement
+    const card = el.firstElementChild as HTMLElement | null
+    const step = card ? card.offsetWidth + 20 : el.clientWidth * 0.8
+    el.scrollBy({ left: dir * step, behavior: reduceMotion ? 'auto' : 'smooth' })
+  },
+}))
+
+window.Alpine = Alpine
+Alpine.plugin(collapse)
+Alpine.plugin(focus)
 Alpine.start()
 
+// ---------------------------------------------------------------------------
+// Scroll reveal animations (.fade-in, .slide-in-left/right/top)
+// ---------------------------------------------------------------------------
 
-// transitions on scroll
-gsap.registerPlugin(ScrollTrigger);
-
-class CardAnimation {
-    static init() {
-        const fadeInElements = document.querySelectorAll(".fade-in");
-        const slideInLeftElements = document.querySelectorAll(".slide-in-left");
-        const slideInRightElements = document.querySelectorAll(".slide-in-right");
-        const slideInTopElements = document.querySelectorAll(".slide-in-top");
-
-        gsap.set('.fade-in', { opacity: 0 })
-        gsap.set('.slide-in-left', { opacity: .5, x: -100 })
-        gsap.set('.slide-in-right', { opacity: .5, x: 100 })
-        gsap.set('.slide-in-top', { opacity: .5, y: 100 })
-
-        const observerOptions = {
-            threshold: 0.2, // Intersection threshold (20% of the element must be visible)
-        };
-
-        // Intersection Observer for fade-in and slide-in from the left
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // Fade in and slide in from the left for elements with class "fade-in" and "slide-in-left"
-                    if (entry.target.classList.contains("fade-in")) {
-                        gsap.to(entry.target, {
-                            opacity: 1, // Start with opacity 0 (fade in effect)
-                            duration: .5,
-                        });
-                    }
-                    if (entry.target.classList.contains("slide-in-left")) {
-                        gsap.to(entry.target, {
-                            x: 0, // Move element from the left (slide in from the left)
-                            opacity: 1, // Start with opacity 0 (fade in effect)
-                            duration: .5,
-                        });
-                    }
-                    // Slide in from the right for elements with class "slide-in-right"
-                    if (entry.target.classList.contains("slide-in-right")) {
-                        gsap.to(entry.target, {
-                            x: 0, // Move element from the right (slide in from the right)
-                            opacity: 1, // Start with opacity 0 (fade in effect)
-                            duration: .5,
-                        });
-                    }
-                    if (entry.target.classList.contains("slide-in-top")) {
-                        gsap.to(entry.target, {
-                            y: 0, // Move element from the right (slide in from the right)
-                            opacity: 1, // Start with opacity 0 (fade in effect)
-                            duration: .5,
-                        });
-                    }
-
-                    observer.unobserve(entry.target); // Stop observing once animated
-                }
-                setTimeout(function () {}, 1000);
-            });
-        }, observerOptions);
-
-        // Start observing elements for fade-in and slide-in animations
-        fadeInElements.forEach(element => {
-            observer.observe(element);
-        });
-        slideInLeftElements.forEach(element => {
-            observer.observe(element);
-        });
-        slideInRightElements.forEach(element => {
-            observer.observe(element);
-        });
-        slideInTopElements.forEach(element => {
-            observer.observe(element);
-        });
-    }
+const REVEALS: Record<string, gsap.TweenVars> = {
+  'fade-in': {},
+  'slide-in-left': { x: -60 },
+  'slide-in-right': { x: 60 },
+  'slide-in-top': { y: 60 },
 }
 
-// Initialize the animations when the DOM is ready
-document.addEventListener("DOMContentLoaded", () => {
-    CardAnimation.init();
-});
+function initReveals() {
+  const selector = Object.keys(REVEALS).map((c) => `.${c}`).join(',')
+  const elements = document.querySelectorAll<HTMLElement>(selector)
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    elements.forEach((el) => (el.style.opacity = '1'))
+    return
+  }
+  elements.forEach((el) => {
+    const cls = Object.keys(REVEALS).find((c) => el.classList.contains(c))!
+    gsap.set(el, { opacity: 0, ...REVEALS[cls] })
+  })
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return
+        const el = entry.target as HTMLElement
+        const delay = Number(el.dataset.delay || 0)
+        gsap.to(el, { opacity: 1, x: 0, y: 0, duration: 0.7, delay, ease: 'power3.out' })
+        observer.unobserve(el)
+      })
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -40px 0px' },
+  )
+  elements.forEach((el) => observer.observe(el))
+}
 
-
-
-document.getElementById('loader')?.classList.add('opacity-0', 'pointer-events-none')
+initReveals()

@@ -1,0 +1,36 @@
+{% load kaizen %}
+{% comment %}One scheduled departure. Params: dep, show_tour (bool).{% endcomment %}
+<li class="flex flex-col gap-4 rounded-2xl bg-white p-5 ring-1 ring-black/5 sm:flex-row sm:items-center">
+    <div class="flex shrink-0 items-center gap-4 sm:w-60">
+        <div class="grid size-16 shrink-0 place-content-center rounded-xl bg-primary-950 text-center text-white">
+            <span class="text-[11px] uppercase tracking-widest text-primary-100">{{ dep.start_date|date:'M' }}</span>
+            <span class="text-2xl font-bold leading-none">{{ dep.start_date|date:'j' }}</span>
+        </div>
+        <div class="text-sm">
+            <p class="font-semibold text-grey-900">{{ dep.start_date|date:'D j M' }}{% if dep.end_date %} – {{ dep.end_date|date:'D j M Y' }}{% else %} {{ dep.start_date|date:'Y' }}{% endif %}</p>
+            {% if dep.status == 'guaranteed' %}<span class="badge mt-1 bg-emerald-100 text-emerald-800">Guaranteed to run</span>{% endif %}
+        </div>
+    </div>
+    <div class="flex-1 text-sm">
+        {% if show_tour %}<a href="{{ dep.itinerary.get_absolute_url }}" class="font-semibold text-grey-900 hover:text-primary-900">{{ dep.itinerary.name }}</a>{% endif %}
+        {% if dep.notes %}<p class="text-grey-600">{{ dep.notes }}</p>{% endif %}
+        {% with left=dep.seats_left %}
+        <p class="mt-1 {% if left <= 3 %}font-semibold text-amber-700{% else %}text-grey-600{% endif %}">
+            <i class="fa-solid fa-user-group mr-1" aria-hidden="true"></i>
+            {% if left == 0 %}Fully booked{% else %}{{ left }} of {{ dep.seats_total }} seat{{ dep.seats_total|pluralize }} left{% endif %}
+            {% if dep.booking_deadline %}<span class="font-normal text-grey-500"> · book by {{ dep.booking_deadline|date:'j M' }}</span>{% endif %}
+        </p>
+        {% endwith %}
+    </div>
+    <div class="flex items-center justify-between gap-4 sm:justify-end">
+        <p class="text-right">
+            <span class="block text-[11px] uppercase tracking-wide text-grey-500">per person</span>
+            <span class="text-lg font-bold text-grey-900">{{ dep.effective_price|money:dep.currency }}</span>
+        </p>
+        {% if dep.is_bookable %}
+            <a href="{{ dep.get_reserve_url }}" class="btn btn-primary">Reserve a seat</a>
+        {% else %}
+            <span class="btn pointer-events-none bg-grey-100 text-grey-500">{% if dep.seats_left == 0 %}Full{% else %}Closed{% endif %}</span>
+        {% endif %}
+    </div>
+</li>

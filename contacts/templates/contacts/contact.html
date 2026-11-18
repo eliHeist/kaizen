@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load kaizen %}
+
+{% block title %}Contact Us | {{ site.site_name }}{% endblock %}
+{% block meta_description %}Get in touch with {{ site.site_name }} in {{ site.city }}, {{ site.country }}. Call {{ site.phone }}, WhatsApp {{ site.whatsapp }} or send us a message.{% endblock %}
+{% block og_title %}Contact {{ site.site_name }}{% endblock %}
+
+{% block content %}
+<section class="section pt-10">
+    <div class="container">
+        {% include 'components/breadcrumbs.html' %}
+        <div class="mt-8 grid gap-12 lg:grid-cols-2">
+            <div>
+                <span class="kicker">Say hello</span>
+                <h1 class="section-title">We’d love to hear from you</h1>
+                <p class="mt-4 max-w-lg text-lg text-grey-600">Questions about a trip, a rental or travel in Uganda? Our team replies within one working day, and faster on WhatsApp.</p>
+
+                <div class="mt-10 grid gap-4 sm:grid-cols-2">
+                    <a href="https://wa.me/{{ site.whatsapp_digits }}" target="_blank" rel="noopener" class="rounded-2xl bg-white p-6 ring-1 ring-black/5 transition hover:shadow-lg">
+                        <i class="fa-brands fa-whatsapp text-3xl text-[#25d366]" aria-hidden="true"></i>
+                        <p class="mt-3 font-semibold">WhatsApp</p><p class="text-sm text-grey-600">{{ site.whatsapp }}</p>
+                    </a>
+                    <a href="tel:{{ site.phone_digits }}" class="rounded-2xl bg-white p-6 ring-1 ring-black/5 transition hover:shadow-lg">
+                        <i class="fa-solid fa-phone text-3xl text-primary-900" aria-hidden="true"></i>
+                        <p class="mt-3 font-semibold">Call the office</p><p class="text-sm text-grey-600">{{ site.phone }}</p>
+                    </a>
+                    <a href="mailto:{{ site.email }}" class="rounded-2xl bg-white p-6 ring-1 ring-black/5 transition hover:shadow-lg">
+                        <i class="fa-solid fa-envelope text-3xl text-primary-900" aria-hidden="true"></i>
+                        <p class="mt-3 font-semibold">Email</p><p class="text-sm text-grey-600 break-all">{{ site.email }}</p>
+                    </a>
+                    <div class="rounded-2xl bg-white p-6 ring-1 ring-black/5">
+                        <i class="fa-solid fa-location-dot text-3xl text-primary-900" aria-hidden="true"></i>
+                        <p class="mt-3 font-semibold">Visit us</p>
+                        <p class="text-sm text-grey-600">{{ site.address_line1 }}{% if site.address_line2 %}, {{ site.address_line2 }}{% endif %}, {{ site.city }}</p>
+                        {% if site.map_url %}<a href="{{ site.map_url }}" target="_blank" rel="noopener" class="link-arrow mt-2 text-sm">Open map</a>{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <form method="post" class="h-fit rounded-3xl bg-white p-6 shadow-xl ring-1 ring-black/5 md:p-10" novalidate>
+                {% csrf_token %}
+                <h2 class="text-2xl font-bold">Send a message</h2>
+                <div class="form-grid mt-6">
+                    {% field form.name %}
+                    {% field form.email %}
+                    {% field form.phone span=True %}
+                    {% field form.message span=True %}
+                </div>
+                <div class="honeypot" aria-hidden="true">{{ form.website }}</div>
+                <button type="submit" class="btn btn-primary btn-lg mt-8 w-full sm:w-auto">Send message <i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
+                <p class="mt-6 text-sm text-grey-500">Planning a holiday? The <a href="{% url 'contacts:plan' %}" class="font-semibold text-primary-900 underline">trip planner</a> helps us quote faster.</p>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,47 +1,84 @@
-{% load static %}
-<!DOCTYPE html>
+{% load static kaizen %}<!DOCTYPE html>
+<!--
+    Kaizen Safaris · {{ SITE_URL }}
+    Designed and developed by DakdotCreations Limited · https://dakdot.com
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        // Enables scroll-reveal styles; removed again if the bundle never loads.
+        document.documentElement.classList.add('js');
+        setTimeout(function () { if (!window.Alpine) document.documentElement.classList.remove('js'); }, 3000);
+    </script>
 
-    <meta name="author" content="amartislab">
-    <meta name="description" content="Free Web tutorials">
-    <meta name="keywords" content="Tour, Travel, Uganda, Kenya, East Africa, Tanzania, Rwanda, Burundi, Congo, Safari, Camping">
+    <title>{% block title %}{{ site.site_name }} | {{ site.tagline }}{% endblock %}</title>
+    <meta name="description" content="{% filter striptags|truncatechars:160 %}{% block meta_description %}{{ site.description }}{% endblock %}{% endfilter %}">
+    <link rel="canonical" href="{% block canonical %}{{ request.path|absolute }}{% endblock %}">
+    {% if noindex %}<meta name="robots" content="noindex, follow">{% else %}<meta name="robots" content="index, follow, max-image-preview:large">{% endif %}
 
+    <meta name="author" content="{{ site.site_name }}">
+    <meta name="designer" content="DakdotCreations Limited, https://dakdot.com">
+    <link rel="author" href="{% url 'main:humans' %}">
+    <meta name="theme-color" content="#3f3f13">
+
+    {# Open Graph / social previews #}
+    <meta property="og:site_name" content="{{ site.site_name }}">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}{{ site.site_name }}{% endblock %}">
+    <meta property="og:description" content="{% filter striptags|truncatechars:200 %}{% block og_description %}{{ site.description }}{% endblock %}{% endfilter %}">
+    <meta property="og:url" content="{{ request.path|absolute }}">
+    <meta property="og:image" content="{% block og_image %}{% static 'img/lion.webp' as default_og %}{{ default_og|absolute }}{% endblock %}">
+    <meta name="twitter:card" content="summary_large_image">
+    {% block extra_meta %}{% endblock %}
+
+    <link rel="icon" href="{% static 'img/logo.webp' %}" type="image/webp">
+    <link rel="apple-touch-icon" href="{% static 'img/logo.webp' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courgette&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap">
     <link rel="stylesheet" href="{% static 'dist/bundle.css' %}">
-    <link rel="shortcut icon" href="{% static 'img/logo.webp' %}" type="image/x-icon">
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
-    </style>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Courgette&display=swap');
-      </style>
-    
-    <!-- component styles -->
-    {% block styles %}
-    {% endblock styles %}
-    
-    <title>
-        {% block title %}{% endblock %}
-    </title>
-</head>
-<body class="overflow-x-hidden bg-grey-50 selection:bg-primary-900 selection:text-white font-body">
-    <div class="opacity-0 pointer-events-none"></div>
-    <div id="loader" class="fixed z-[99999] inset-0 bg-primary-900 grid place-content-center transition-all">
-        <img src="{% static 'img/logo.webp' %}" alt="Kaizen Logo" class="animate-pulse">
-    </div>
-    {% include 'components/header.html' %}
-    {% block content %}
-    {% endblock content %}
-    {% include 'components/footer.html' %}
-    
-    
+    {% block preload %}{% endblock %}
     <script type="module" src="{% static 'dist/bundle.js' %}"></script>
-    {% block scripts %}
-    {% endblock scripts %}
-    
+
+    <script type="application/ld+json">{{ org_jsonld|jsonld }}</script>
+    {% if breadcrumbs %}{% include 'components/breadcrumbs_jsonld.html' %}{% endif %}
+    {% block structured_data %}{% endblock %}
+    {% block styles %}{% endblock %}
+</head>
+<body class="min-h-screen flex flex-col">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] btn btn-light">Skip to content</a>
+
+    {% block header %}{% include 'components/header.html' with overlay=header_overlay %}{% endblock %}
+
+    {% if messages %}
+        <div class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 grid gap-2 w-[min(32rem,calc(100%-2rem))]" role="status">
+            {% for message in messages %}
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 7000)" x-transition
+                     class="flex items-start gap-3 rounded-2xl bg-primary-950 text-white px-5 py-4 shadow-2xl">
+                    <i class="fa-solid fa-circle-check mt-1 text-primary-100" aria-hidden="true"></i>
+                    <p class="flex-1 text-sm">{{ message }}</p>
+                    <button type="button" @click="show = false" class="text-white/60 hover:text-white" aria-label="Dismiss"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main id="main" class="flex-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'components/footer.html' %}
+
+    <a href="https://wa.me/{{ site.whatsapp_digits }}" target="_blank" rel="noopener"
+       class="fixed bottom-5 right-5 z-40 grid size-14 place-content-center rounded-full bg-[#25d366] text-white text-3xl shadow-xl transition hover:scale-110"
+       aria-label="Chat with us on WhatsApp">
+        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+    </a>
+
+    {% block scripts %}{% endblock %}
 </body>
 </html>

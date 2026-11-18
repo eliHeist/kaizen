@@ -1,0 +1,11 @@
+{% if breadcrumbs %}
+<nav aria-label="Breadcrumb" class="{{ class|default:'text-grey-500' }}">
+    <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-sm">
+        <li><a href="{% url 'main:home' %}" class="hover:underline">Home</a></li>
+        {% for label, url in breadcrumbs %}
+            <li aria-hidden="true" class="opacity-50">/</li>
+            <li>{% if url %}<a href="{{ url }}" class="hover:underline">{{ label }}</a>{% else %}<span aria-current="page" class="opacity-80">{{ label|truncatechars:60 }}</span>{% endif %}</li>
+        {% endfor %}
+    </ol>
+</nav>
+{% endif %}

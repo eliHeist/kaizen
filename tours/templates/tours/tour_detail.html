@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load kaizen %}
+
+{% block title %}{{ tour.meta_title|default:tour.name }} | {{ site.site_name }}{% endblock %}
+{% block meta_description %}{{ tour.meta_description|default:tour.summary }}{% endblock %}
+{% block og_type %}product{% endblock %}
+{% block og_title %}{{ tour.name }}{% endblock %}
+{% block og_description %}{{ tour.summary }}{% endblock %}
+{% block og_image %}{{ tour.cover.url|absolute }}{% endblock %}
+{% block structured_data %}<script type="application/ld+json">{{ jsonld|jsonld }}</script>{% endblock %}
+
+{% block header %}{% include 'components/header.html' with overlay=True %}{% endblock %}
+
+{% block content %}
+<section class="relative isolate flex min-h-[70vh] items-end overflow-hidden bg-primary-950">
+    <img src="{{ tour.cover.url }}" alt="" class="absolute inset-0 -z-10 h-full w-full object-cover" fetchpriority="high">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-black/85 via-black/35 to-black/30"></div>
+    <div class="container w-full pb-12 pt-32 text-white md:pb-16">
+        {% include 'components/breadcrumbs.html' with class='text-white/75 mb-5' %}
+        <div class="flex flex-wrap gap-2">
+            <span class="chip-dark">{% if tour.is_day_by_day %}<i class="fa-solid fa-route" aria-hidden="true"></i> Day-by-day itinerary{% else %}<i class="fa-solid fa-shuffle" aria-hidden="true"></i> Flexible itinerary{% endif %}</span>
+            <span class="chip-dark"><i class="fa-regular fa-clock" aria-hidden="true"></i> {{ tour.duration_label }}</span>
+            {% for d in tour.destinations.all %}<a href="{{ d.get_absolute_url }}" class="chip-dark hover:bg-black/70"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ d.name }}</a>{% endfor %}
+        </div>
+        <h1 class="mt-5 max-w-4xl text-4xl font-bold tracking-tight text-white md:text-6xl">{{ tour.name }}</h1>
+        <p class="mt-5 max-w-2xl text-lg text-white/85">{{ tour.summary }}</p>
+    </div>
+</section>
+
+{# In-page navigation #}
+<nav class="sticky top-0 z-30 border-b border-grey-200 bg-white/95 backdrop-blur" aria-label="On this page">
+    <div class="container flex gap-6 overflow-x-auto scrollbar-none text-sm font-medium text-grey-600">
+        <a href="#overview" class="shrink-0 py-4 hover:text-primary-900">Overview</a>
+        <a href="#plan" class="shrink-0 py-4 hover:text-primary-900">{% if tour.is_day_by_day %}Day by day{% else %}Highlights{% endif %}</a>
+        <a href="#dates" class="shrink-0 py-4 hover:text-primary-900">Dates &amp; prices</a>
+        {% if tour.inclusions or tour.exclusions %}<a href="#included" class="shrink-0 py-4 hover:text-primary-900">What’s included</a>{% endif %}
+        {% if reviews %}<a href="#reviews" class="shrink-0 py-4 hover:text-primary-900">Reviews</a>{% endif %}
+        <a href="#enquire" class="shrink-0 py-4 font-semibold text-primary-900">Get a quote</a>
+    </div>
+</nav>
+
+<div class="container grid gap-12 py-12 lg:grid-cols-[1fr_22rem] lg:py-16">
+    <div class="min-w-0">
+        <section id="overview" class="scroll-mt-20">
+            <span class="kicker">Overview</span>
+            <h2 class="section-title">About this trip</h2>
+            {% if tour.styles.exists %}
+                <div class="mt-5 flex flex-wrap gap-2">
+                    {% for s in tour.styles.all %}<a href="{{ s.get_absolute_url }}" class="chip hover:bg-primary-100"><i class="{{ s.icon|default:'fa-solid fa-compass' }}" aria-hidden="true"></i> {{ s.name }}</a>{% endfor %}
+                </div>
+            {% endif %}
+            <div class="prose mt-8 max-w-none">{{ tour.overview|safe }}</div>
+        </section>
+
+        <section id="plan" class="mt-16 scroll-mt-20">
+            {% if tour.is_day_by_day and days %}
+                <span class="kicker">Itinerary</span>
+                <h2 class="section-title">Day by day</h2>
+                <ol class="timeline mt-10 grid gap-10">
+                    {% for day in days %}
+                        <li class="relative pl-16 md:pl-20">
+                            <span class="absolute left-0 top-0 grid size-10 place-content-center rounded-full bg-primary-900 text-sm font-bold text-white ring-8 ring-grey-50 md:size-12">{{ day.day_from }}</span>
+                            <p class="text-xs font-semibold uppercase tracking-widest text-primary-900">{{ day.label }}</p>
+                            <h3 class="mt-1 text-xl font-semibold md:text-2xl">{{ day.title }}</h3>
+                            {% if day.place %}<a href="{{ day.place.get_absolute_url }}" class="mt-1 inline-flex items-center gap-1.5 text-sm text-grey-600 hover:text-primary-900"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ day.place.name }}</a>{% endif %}
+                            <div class="mt-5 grid gap-5 {% if day.image %}md:grid-cols-[1fr_15rem]{% endif %}">
+                                <div class="prose max-w-none text-base">{{ day.description|safe }}</div>
+                                {% if day.image %}<img src="{{ day.image.url }}" alt="{{ day.title }}" loading="lazy" class="aspect-1610 w-full rounded-2xl object-cover md:order-last md:aspect-square">{% endif %}
+                            </div>
+                            {% if day.accommodation or day.meals %}
+                                <dl class="mt-5 flex flex-wrap gap-x-8 gap-y-2 rounded-xl bg-sand px-5 py-4 text-sm">
+                                    {% if day.accommodation %}<div class="flex gap-2"><dt><i class="fa-solid fa-bed text-primary-900" aria-hidden="true"></i><span class="sr-only">Accommodation</span></dt><dd>{{ day.accommodation }}</dd></div>{% endif %}
+                                    {% if day.meals %}<div class="flex gap-2"><dt><i class="fa-solid fa-utensils text-primary-900" aria-hidden="true"></i><span class="sr-only">Meals</span></dt><dd>{{ day.meals|join:', ' }}</dd></div>{% endif %}
+                                </dl>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ol>
+            {% else %}
+                <span class="kicker">Make it yours</span>
+                <h2 class="section-title">Highlights you can mix and match</h2>
+                <p class="mt-4 max-w-2xl text-lg text-grey-600">This is a flexible itinerary, not locked to a daily schedule. Tell us your dates, pace and budget and we’ll arrange the days around you.</p>
+                {% with highlights=tour.places.all %}
+                {% if highlights %}
+                    <div class="mt-10 grid gap-5 sm:grid-cols-2">
+                        {% for place in highlights %}{% include 'components/place_card.html' with class='aspect-surface' %}{% endfor %}
+                    </div>
+                {% endif %}
+                {% endwith %}
+            {% endif %}
+        </section>
+
+        <section id="dates" class="mt-16 scroll-mt-20">
+            <span class="kicker">Dates &amp; prices</span>
+            <h2 class="section-title">{% if departures %}Join a scheduled departure{% else %}Travel when it suits you{% endif %}</h2>
+            {% if departures %}
+                <p class="mt-4 max-w-2xl text-grey-600">Reserve a seat now and pay after we confirm, by mobile money or bank transfer. Prefer a private trip? <a href="#enquire" class="font-semibold text-primary-900 underline">Ask for your own dates</a>.</p>
+                <ul class="mt-8 grid gap-3">
+                    {% for dep in departures %}{% include 'components/departure_row.html' %}{% endfor %}
+                </ul>
+            {% else %}
+                <div class="mt-6 flex flex-col gap-6 rounded-2xl bg-sand p-6 sm:flex-row sm:items-center">
+                    <i class="fa-regular fa-calendar-check text-4xl text-primary-900" aria-hidden="true"></i>
+                    <p class="flex-1 text-grey-700">There are no fixed group dates for this trip. It runs privately on any date you choose{% if tour.price_from %}, from <strong>{{ tour.price_from|money:tour.currency }}</strong> {{ tour.price_note }}{% else %}, and we quote it to match your plans{% endif %}.</p>
+                    <a href="#enquire" class="btn btn-primary">Request your dates</a>
+                </div>
+            {% endif %}
+        </section>
+
+        {% if tour.inclusions or tour.exclusions %}
+        <section id="included" class="mt-16 grid scroll-mt-20 gap-8 md:grid-cols-2">
+            {% if tour.inclusions %}
+            <div class="rounded-2xl bg-white p-7 ring-1 ring-black/5">
+                <h2 class="text-xl font-semibold">Included</h2>
+                <ul class="mt-5 grid gap-3 text-sm text-grey-700">
+                    {% for item in tour.inclusions_list %}<li class="flex gap-3"><i class="fa-solid fa-check mt-0.5 text-emerald-600" aria-hidden="true"></i>{{ item }}</li>{% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% if tour.exclusions %}
+            <div class="rounded-2xl bg-white p-7 ring-1 ring-black/5">
+                <h2 class="text-xl font-semibold">Not included</h2>
+                <ul class="mt-5 grid gap-3 text-sm text-grey-700">
+                    {% for item in tour.exclusions_list %}<li class="flex gap-3"><i class="fa-solid fa-xmark mt-0.5 text-red-600" aria-hidden="true"></i>{{ item }}</li>{% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </section>
+        {% endif %}
+
+        {% if reviews %}
+        <section id="reviews" class="mt-16 scroll-mt-20">
+            <span class="kicker">Reviews</span>
+            <h2 class="section-title">From travellers on this trip</h2>
+            <div class="mt-8 grid gap-5 md:grid-cols-2">
+                {% for review in reviews %}
+                    <figure class="rounded-2xl bg-white p-6 ring-1 ring-black/5">
+                        {% stars review.rating %}
+                        <blockquote class="mt-3 text-grey-700">“{{ review.text }}”</blockquote>
+                        <figcaption class="mt-4 text-sm font-semibold text-grey-900">{{ review.name }}{% if review.country %}<span class="font-normal text-grey-500">, {{ review.country }}</span>{% endif %}</figcaption>
+                    </figure>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <section id="enquire" class="mt-16 scroll-mt-20 rounded-3xl bg-primary-950 p-6 text-white md:p-10">
+            <span class="kicker-light">Free quote</span>
+            <h2 class="section-title text-white">Ask about this trip</h2>
+            <p class="mt-3 text-white/75">We reply within one working day with a detailed quote. No obligation.</p>
+            <form method="post" action="#enquire" class="mt-8 [&_.field-label]:text-white/90 [&_.field-help]:text-white/60" novalidate>
+                {% csrf_token %}
+                <div class="form-grid">
+                    {% field form.name %}
+                    {% field form.email %}
+                    {% field form.phone %}
+                    {% field form.travellers %}
+                    {% field form.travel_date span=True %}
+                    {% field form.message span=True %}
+                </div>
+                <div class="honeypot" aria-hidden="true">{{ form.website }}</div>
+                {% if form.non_field_errors %}<p class="field-error mt-4 text-red-300">{{ form.non_field_errors|join:' ' }}</p>{% endif %}
+                <button type="submit" class="btn btn-light btn-lg mt-8">Send my request <i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
+            </form>
+        </section>
+    </div>
+
+    {# Sticky booking card #}
+    <aside class="lg:order-none">
+        <div class="rounded-3xl bg-white p-7 shadow-xl ring-1 ring-black/5 lg:sticky lg:top-24">
+            {% if tour.price_from %}<p class="text-xs uppercase tracking-widest text-grey-500">From</p>{% endif %}
+            <p class="text-3xl font-bold text-grey-900">{{ tour.price_from|money:tour.currency }}</p>
+            {% if tour.price_from and tour.price_note %}<p class="text-sm text-grey-500">{{ tour.price_note }}</p>{% endif %}
+            <dl class="mt-6 grid gap-3 border-t border-grey-100 pt-6 text-sm">
+                <div class="flex justify-between gap-4"><dt class="text-grey-500">Length</dt><dd class="text-right font-medium">{{ tour.duration_label }}</dd></div>
+                <div class="flex justify-between gap-4"><dt class="text-grey-500">Format</dt><dd class="text-right font-medium">{% if tour.is_day_by_day %}Day-by-day{% else %}Flexible{% endif %}</dd></div>
+                {% with next=departures|first %}
+                <div class="flex justify-between gap-4"><dt class="text-grey-500">Next departure</dt><dd class="text-right font-medium">{% if next %}{{ next.start_date|date:'j M Y' }}{% else %}Any date{% endif %}</dd></div>
+                {% endwith %}
+            </dl>
+            {% if departures %}<a href="#dates" class="btn btn-primary mt-6 w-full">See dates &amp; reserve</a>{% endif %}
+            <a href="#enquire" class="btn {% if departures %}btn-outline{% else %}btn-primary{% endif %} mt-3 w-full">Request a quote</a>
+            <a href="https://wa.me/{{ site.whatsapp_digits }}?text={{ 'Hi! I am interested in: '|add:tour.name|urlencode }}" target="_blank" rel="noopener" class="mt-4 flex items-center justify-center gap-2 text-sm font-medium text-grey-600 hover:text-primary-900">
+                <i class="fa-brands fa-whatsapp text-lg text-[#25d366]" aria-hidden="true"></i> Chat on WhatsApp
+            </a>
+        </div>
+    </aside>
+</div>
+
+{% if posts %}
+<section class="section bg-sand">
+    <div class="container">
+        <span class="kicker">Before you go</span>
+        <h2 class="section-title">Helpful reading</h2>
+        <div class="mt-10 grid gap-6 md:grid-cols-3">{% for post in posts %}{% include 'components/post_card.html' %}{% endfor %}</div>
+    </div>
+</section>
+{% endif %}
+
+{% if related %}
+<section class="section">
+    <div class="container">
+        <span class="kicker">You may also like</span>
+        <h2 class="section-title">Similar trips</h2>
+        <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{% for tour in related %}{% include 'components/tour_card.html' %}{% endfor %}</div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

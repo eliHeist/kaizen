@@ -1,10 +1,9 @@
-/* External @imports must come before everything else or browsers drop them. */
-@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap');
 @import "tailwindcss";
 
 /* Django template discovery (paths are relative to this file: static/src/) */
 @source "../../templates";
 @source "../../*/templates/**/*.html";
+@source "../../*/models.py";
 @source "./**/*.{ts,js}";
 
 /* Brand colors, typography, and design tokens */
@@ -13,7 +12,9 @@
     --color-primary-900: #797931;
     --color-primary-800: #d8d185;
     --color-primary-100: #f0ea86;
+    --color-primary-50: #fbf9e6;
 
+    --color-sand: #f6f3ea;
     --color-lead: #ccc;
 
     --color-grey-50: rgb(252, 252, 252);
@@ -27,143 +28,255 @@
     --color-grey-800: rgb(42, 42, 42);
     --color-grey-900: rgb(28, 28, 28);
 
-    --font-body: "Poppins", sans-serif;
+    --font-body: "Poppins", ui-sans-serif, system-ui, sans-serif;
     --font-lead: "Courgette", cursive;
 
     --aspect-surface: 4 / 3;
     --aspect-1610: 16 / 10;
+    --aspect-portrait: 4 / 5;
+
+    --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-/* Custom utilities retained from the v3 configuration */
-@utility flex-base {
-    flex: 1;
-}
-
-@utility flex-2 {
-    flex: 2 2 0%;
-}
-
-@utility flex-3 {
-    flex: 6 6 0%;
-}
-
-@utility grayscale-10 {
-    filter: grayscale(10%);
-}
-
-.container{
-    @apply mx-auto px-4;
-}
-
-.nav-logo{
-    transform-origin: top;
-    transform: scale(2);
-    background-color: transparent;
-}
-.nav-link{
-    @apply text-white;
-}
-
-
-/* 
-.show .nav-logo{
-    background-color: white;
-} */
-
-.link{
-    @apply font-medium;
-}
-.link:hover{
-    @apply text-lime-600;
-}
-
-.hs{
-    outline: 2px solid lime !important;
-}
-
-.booking-form input, .booking-form textarea{
-    @apply outline outline-1 outline-slate-200 p-2 bg-slate-200;
-}
-.booking-form input[type='radio'], .booking-form input[type='checkbox']{
-    outline: none;
-}
-
-.form-label{
-    @apply block text-gray-700 text-base font-bold mb-2;
-}
-
-.btn{
-    @apply text-base py-2 px-8;
-}
-.btn:hover{
-    @apply transition-all scale-[1.05];
-}
-
-.head-1{
-    @apply text-4xl font-medium text-center mb-8;
-    &.start{
-        @apply text-left;
-    }
-}
-.lead{
-    @apply text-primary-900 font-extrabold font-lead;
-    &-light{
-        @apply text-white font-extrabold font-lead;
+@utility container {
+    margin-inline: auto;
+    padding-inline: 1rem;
+    max-width: 80rem;
+    @media (width >= 64rem) {
+        padding-inline: 2rem;
     }
 }
 
-.card .show{
-    transition: height .5s ease-in;
-}
-.card:hover .show{
-    height: fit-content;
-}
-.card img{
-    transition: transform 1s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-.card:hover img{
-    transform: scale(110%);
+@utility scrollbar-none {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
-.shadowed{
-    text-shadow: 2px 2px 5px black;
-}
-
-.text-f{
-    color: white !important;
-    color: rgb(237, 250, 237);
-}
-
-.clipped{
-    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-    transition: clip-path 3s ease-in;
-}
-.clipped.show{
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-}
-
-body{
-    font-family: 'Comic Neue', cursive;
-}
-
-.h-100{
-    height: 100% !important;
-}
-
-.shadow-all-round{
-    box-shadow: 0 0 15px rgb(0 0 0 / 70%);
-}
-
-.gtc{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    figure{
-        @apply grayscale transition-all cursor-pointer p-4 bg-white;
-        max-width: 100px;
-
-        &:hover{
-            @apply grayscale-0 border-dashed border-grey-300 border;
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        -webkit-tap-highlight-color: transparent;
+    }
+    body {
+        @apply bg-grey-50 text-grey-800 font-body antialiased;
+    }
+    h1, h2, h3, h4 {
+        @apply text-grey-900 text-balance;
+    }
+    ::selection {
+        @apply bg-primary-900 text-white;
+    }
+    [x-cloak] {
+        display: none !important;
+    }
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-primary-900;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
         }
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+@layer components {
+    /* Buttons */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold tracking-wide
+            transition-all duration-300 ease-out-quart cursor-pointer select-none
+            disabled:opacity-50 disabled:pointer-events-none;
+    }
+    .btn-primary {
+        @apply bg-primary-900 text-white hover:bg-primary-950 shadow-sm hover:shadow-md;
+    }
+    .btn-light {
+        @apply bg-white text-grey-900 hover:bg-primary-100;
+    }
+    .btn-outline {
+        @apply ring-2 ring-inset ring-primary-900 text-primary-900 hover:bg-primary-900 hover:text-white;
+    }
+    .btn-outline-light {
+        @apply ring-2 ring-inset ring-white text-white hover:bg-white hover:text-grey-900;
+    }
+    .btn-lg {
+        @apply px-8 py-4 text-base;
+    }
+    .link-arrow {
+        @apply inline-flex items-center gap-2 font-semibold text-primary-900 hover:gap-3 transition-all;
+    }
+
+    /* Section headings: a script kicker over a bold title, as on the original site */
+    .kicker {
+        @apply block font-lead text-primary-900 text-xl md:text-2xl mb-1;
+    }
+    .kicker-light {
+        @apply block font-lead text-primary-100 text-xl md:text-2xl mb-1;
+    }
+    .section-title {
+        @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight;
+    }
+    .section {
+        @apply py-16 md:py-24;
+    }
+
+    .chip {
+        @apply inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary-950;
+    }
+    .chip-dark {
+        @apply inline-flex items-center gap-1.5 rounded-full bg-black/45 backdrop-blur px-3 py-1 text-xs font-medium text-white;
+    }
+    .badge {
+        @apply inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold;
+    }
+
+    /* Cards */
+    .card {
+        @apply relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5
+            transition-all duration-500 ease-out-quart hover:-translate-y-1 hover:shadow-xl;
+    }
+    .card-media {
+        @apply relative overflow-hidden;
+        & img {
+            @apply h-full w-full object-cover transition-transform duration-700 ease-out-quart group-hover:scale-105;
+        }
+    }
+
+    /* Forms */
+    .form-grid {
+        @apply grid gap-5 sm:grid-cols-2;
+    }
+    .field {
+        @apply grid gap-1.5 content-start min-w-0;
+    }
+    .field-label {
+        @apply text-sm font-medium text-grey-800;
+    }
+    .field-help {
+        @apply text-xs text-grey-500;
+    }
+    .field-error {
+        @apply text-sm text-red-700;
+    }
+    .control,
+    .field input:not([type=checkbox]):not([type=radio]),
+    .field select,
+    .field textarea {
+        @apply w-full min-w-0 rounded-xl border border-grey-300 bg-white px-4 py-3 text-base text-grey-900
+            placeholder:text-grey-400 transition
+            focus:border-primary-900 focus:ring-4 focus:ring-primary-900/15 focus:outline-none;
+    }
+    .field input[type=date] {
+        @apply px-3;
+    }
+    .field.has-error input,
+    .field.has-error select,
+    .field.has-error textarea {
+        @apply border-red-600;
+    }
+    .field input[type=checkbox],
+    .field input[type=radio] {
+        @apply size-4 accent-primary-900;
+    }
+    .choices {
+        @apply flex flex-wrap gap-2;
+        & > div {
+            @apply contents;
+        }
+    }
+    .choice {
+        @apply inline-flex cursor-pointer items-center gap-2 rounded-full border border-grey-300 bg-white px-4 py-2 text-sm
+            transition hover:border-primary-900 has-[:checked]:border-primary-900 has-[:checked]:bg-primary-50
+            has-[:checked]:text-primary-950;
+    }
+    .honeypot {
+        position: absolute !important;
+        left: -9999px !important;
+        height: 1px;
+        overflow: hidden;
+    }
+
+    /* Rich text from the CMS */
+    .prose {
+        @apply text-grey-700 leading-relaxed text-base md:text-lg;
+        & > * + * { @apply mt-5; }
+        & h2 { @apply mt-10 text-2xl md:text-3xl font-bold text-grey-900; }
+        & h3 { @apply mt-8 text-xl md:text-2xl font-semibold text-grey-900; }
+        & h4 { @apply mt-6 text-lg font-semibold text-grey-900; }
+        & a { @apply text-primary-900 underline underline-offset-4 hover:text-primary-950; }
+        & strong { @apply text-grey-900 font-semibold; }
+        & ul { @apply list-disc pl-6 space-y-2; }
+        & ol { @apply list-decimal pl-6 space-y-2; }
+        & li::marker { @apply text-primary-900; }
+        & blockquote { @apply border-l-4 border-primary-900 bg-sand rounded-r-xl px-6 py-4 font-lead text-xl text-primary-950; }
+        & img { @apply rounded-2xl w-full h-auto; }
+        & table { @apply w-full text-sm border-collapse; }
+        & th, & td { @apply border border-grey-200 px-3 py-2 text-left; }
+        & hr { @apply border-grey-200 my-10; }
+    }
+    .prose-invert {
+        @apply text-white/85;
+        & h2, & h3, & h4, & strong { @apply text-white; }
+    }
+
+    /* Horizontal snap carousels (reviews, places) */
+    .rail {
+        @apply flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-4 scrollbar-none;
+        & > * { @apply snap-start shrink-0; }
+    }
+
+    /* Day-by-day timeline */
+    .timeline {
+        @apply relative;
+        &::before {
+            content: "";
+            @apply absolute left-5 top-2 bottom-2 w-0.5 bg-primary-800 md:left-6;
+        }
+    }
+
+    /* Header link underline */
+    .nav-link {
+        @apply relative py-2 text-sm font-medium transition-colors;
+        &::after {
+            content: "";
+            @apply absolute left-0 -bottom-0.5 h-0.5 w-0 bg-current transition-all duration-300;
+        }
+        &:hover::after, &[aria-current=page]::after {
+            @apply w-full;
+        }
+    }
+}
+
+/* Scroll reveal: hidden only once JS has marked the page ready, so content
+   is never lost when scripts fail to load. */
+.js .fade-in,
+.js .slide-in-left,
+.js .slide-in-right,
+.js .slide-in-top {
+    opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+    .js .fade-in,
+    .js .slide-in-left,
+    .js .slide-in-right,
+    .js .slide-in-top {
+        opacity: 1;
+    }
+}
+
+.hero-video {
+    @apply absolute inset-0 h-full w-full object-cover;
+}
+
+.parallax {
+    background-size: cover;
+    background-position: center;
+    @media (hover: hover) and (min-width: 64rem) {
+        background-attachment: fixed;
     }
 }

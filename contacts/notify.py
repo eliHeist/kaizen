@@ -41,7 +41,12 @@ def enquiry_received(enquiry):
     subject = f'{enquiry.get_kind_display()}: {enquiry.name}'
     if enquiry.itinerary:
         subject += f' ({enquiry.itinerary.name})'
-    send(subject, 'emails/enquiry_staff.html', {'enquiry': enquiry}, staff_emails(), reply_to=enquiry.email)
+    details = [
+        (key.replace('_', ' ').capitalize(), ', '.join(value) if isinstance(value, list) else value)
+        for key, value in enquiry.details.items()
+    ]
+    send(subject, 'emails/enquiry_staff.html', {'enquiry': enquiry, 'details': details}, staff_emails(),
+         reply_to=enquiry.email)
 
 
 def reservation_received(reservation):

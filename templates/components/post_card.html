@@ -1,0 +1,14 @@
+<article class="card group {{ class }}">
+    <div class="card-media aspect-1610">
+        <img src="{{ post.cover.url }}" alt="" loading="lazy" decoding="async">
+    </div>
+    <div class="flex flex-1 flex-col p-5">
+        <p class="flex items-center gap-2 text-xs text-grey-500">
+            {% if post.category %}<span class="font-semibold uppercase tracking-widest text-primary-900">{{ post.category.name }}</span><span aria-hidden="true">·</span>{% endif %}
+            <time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:'j M Y' }}</time>
+        </p>
+        <h3 class="mt-2 text-lg font-semibold leading-snug"><a href="{{ post.get_absolute_url }}" class="after:absolute after:inset-0">{{ post.title }}</a></h3>
+        <p class="mt-2 line-clamp-3 text-sm text-grey-600">{{ post.excerpt }}</p>
+        <span class="mt-auto pt-4 text-xs text-grey-500">{{ post.reading_minutes }} min read</span>
+    </div>
+</article>

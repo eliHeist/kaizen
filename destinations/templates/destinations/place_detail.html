@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load kaizen %}
+
+{% block title %}{{ place.meta_title|default:place.name }}, {{ place.destination.name }} | {{ site.site_name }}{% endblock %}
+{% block meta_description %}{{ place.meta_description|default:place.summary }}{% endblock %}
+{% block og_title %}{{ place.name }}, {{ place.destination.name }}{% endblock %}
+{% block og_description %}{{ place.summary }}{% endblock %}
+{% block og_image %}{{ place.cover.url|absolute }}{% endblock %}
+{% block structured_data %}<script type="application/ld+json">{{ jsonld|jsonld }}</script>{% endblock %}
+
+{% block header %}{% include 'components/header.html' with overlay=True %}{% endblock %}
+
+{% block content %}
+{% include 'components/page_hero.html' with title=place.name kicker=place.get_kind_display text=place.summary image=place.cover.url %}
+
+<section class="section">
+    <div class="container grid gap-12 lg:grid-cols-[2fr_1fr]">
+        <div>
+            <div class="prose max-w-none">{{ place.body|safe }}</div>
+            {% if images %}
+            <div x-data="lightbox" class="mt-12">
+                <h2 class="text-2xl font-bold">Photos</h2>
+                <div class="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3">
+                    {% for img in images %}
+                        <button type="button" @click="show({{ forloop.counter0 }})" data-lightbox="{{ img.image.url }}" data-caption="{{ img.caption }}"
+                                class="group relative aspect-square overflow-hidden rounded-xl" aria-label="Open photo {{ forloop.counter }}">
+                            <img src="{{ img.image.url }}" alt="{{ img.caption|default:place.name }}" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+                        </button>
+                    {% endfor %}
+                </div>
+                {% include 'components/lightbox.html' %}
+            </div>
+            {% endif %}
+        </div>
+        <aside class="grid h-fit gap-6 lg:sticky lg:top-28">
+            <div class="rounded-3xl bg-sand p-8">
+                <p class="text-sm text-grey-500">Located in</p>
+                <a href="{{ place.destination.get_absolute_url }}" class="text-xl font-semibold hover:text-primary-900">{{ place.destination.name }}</a>
+                {% if place.styles.exists %}
+                    <p class="mt-5 text-sm text-grey-500">Great for</p>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        {% for s in place.styles.all %}<a href="{{ s.get_absolute_url }}" class="chip hover:bg-primary-100">{{ s.name }}</a>{% endfor %}
+                    </div>
+                {% endif %}
+                <a href="{% url 'contacts:plan' %}?message={{ 'I would like to visit '|add:place.name|urlencode }}" class="btn btn-primary mt-8 w-full">Include {{ place.name }} in my trip</a>
+            </div>
+        </aside>
+    </div>
+</section>
+
+{% if tours %}
+<section class="section bg-sand">
+    <div class="container">
+        <span class="kicker">Visit on</span>
+        <h2 class="section-title">Trips that include {{ place.name }}</h2>
+        <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {% for tour in tours %}{% include 'components/tour_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if nearby %}
+<section class="section">
+    <div class="container">
+        <span class="kicker">Also in {{ place.destination.name }}</span>
+        <h2 class="section-title">More places nearby</h2>
+        <div class="mt-10 grid gap-5 sm:grid-cols-3">
+            {% for place in nearby %}{% include 'components/place_card.html' with class='aspect-surface' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

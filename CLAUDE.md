@@ -4,23 +4,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Kaizen Safaris: a Django 4.0 marketing/booking site for East African tours (destinations, itineraries, honeymoon spots, equipment hire, gallery), with content managed through the Django admin (Jazzmin theme, CKEditor rich text). Templates are server-rendered and use Tailwind, Alpine.js and GSAP.
+Kaizen Safaris (canonical URL https://kaizen-safaris.com): a Django 4.0 / Python 3.9 site for an East African tour operator. It covers tours (day-by-day and flexible itineraries with scheduled group departures and seat reservations), destinations and places, a blog, rentals, and enquiry forms. All content is managed in the Django admin (Jazzmin theme, CKEditor). Templates are server-rendered with Tailwind v4, Alpine.js and GSAP.
+
+Stay on Django 4.0 (the owner decided against upgrading). Don't use 4.1+ APIs: for example, the `STORAGES` setting is ignored, so set `STATICFILES_STORAGE` instead.
 
 ## Commands
 
-Python deps are managed with **uv** (`pyproject.toml` / `uv.lock`, Python pinned in `.python-version`). `requirements.txt` lists the same core packages for deployment; `r.txt` is an old, unrelated freeze, so ignore it.
+Python deps are managed with **uv** (`pyproject.toml` / `uv.lock`). `requirements.txt` mirrors them for deployment.
 
 ```sh
-uv sync                                   # install Python deps into .venv
+uv sync
 uv run python manage.py runserver
-uv run python manage.py makemigrations && uv run python manage.py migrate
-uv run python manage.py test              # all tests (the app tests.py files are mostly empty stubs)
-uv run python manage.py test destinations # one app
-uv run python manage.py test destinations.tests.SomeTestCase.test_method
-uv run python manage.py collectstatic     # needed when DEBUG=False (note: settings use STORAGES, which Django 4.0 ignores, so files aren't hashed)
+uv run python manage.py migrate
+uv run python manage.py seed_demo [--flush]   # sample content for local dev (refuses when DEBUG=False)
+uv run python manage.py test                  # all tests
+uv run python manage.py test tours            # one app
+uv run python manage.py test tours.tests.ReservationFlowTests.test_cannot_exceed_seats
+uv run python manage.py collectstatic         # production; uses whitenoise manifest (hashed) storage
 ```
 
-Frontend (run from `static/`; a pnpm lockfile and an npm lockfile both exist):
+Frontend (run from `static/`, with pnpm):
 
 ```sh
 pnpm install
@@ -28,31 +31,39 @@ pnpm dev      # vite build --watch (rebuilds on src/ and template changes)
 pnpm build    # tsc && vite build -> static/public/dist/
 ```
 
-There is no Vite dev server or HMR: Django serves the built files. Run `pnpm dev` next to `runserver` and reload the browser. The built `static/public/dist/` is committed, so rebuild before committing any frontend or template changes. Templates matter too, because Tailwind only emits the classes it finds in them.
+There is no Vite dev server or HMR: Django serves the built files. Run `pnpm dev` next to `runserver` and reload the browser. The built `static/public/dist/` is committed, so rebuild before committing any frontend or template change. Templates matter too, because Tailwind only emits the classes it finds in them.
 
 ## Configuration
 
-`kaizen/settings.py` reads a `.env` through `django-environ` (`environ.Env.read_env()` looks in the `kaizen/` package dir). `kaizen/.envtemp` is the template. `SECRET_KEY`, `ALLOWED_HOSTS` and all the `EMAIL_*` keys are required, or settings fail to import.
+`kaizen/settings.py` reads `kaizen/.env` through `django-environ`, using `kaizen/.envtemp` as the template. `SECRET_KEY` and `ALLOWED_HOSTS` are required. `SITE_URL` (default `https://kaizen-safaris.com`) drives canonical links, the sitemap and the JSON-LD. Email settings are optional: without them mail goes to the console backend.
 
-- `DEBUG=True`: SQLite (`db.sqlite3`), with `static/` and `media/` under the project root.
-- `DEBUG=False`: the database comes from `DB_*` env vars (read with `os.getenv`, MySQL via `mysqlclient`), and `STATIC_ROOT`/`MEDIA_ROOT` come from env. `passenger_wsgi.py` is gitignored, which suggests deployment on cPanel/Passenger hosting.
+- `DEBUG=True`: SQLite at `db.sqlite3`, with `staticfiles/` and `media/` under the project root.
+- `DEBUG=False`: the database comes from `DB_*` env vars (MySQL), `STATIC_ROOT`/`MEDIA_ROOT` come from env, and whitenoise serves hashed static files. Deployment is cPanel/Passenger (`passenger_wsgi.py` is gitignored).
 
 ## Architecture
 
-The URLs are wired in `kaizen/urls.py` and every app uses a URL namespace (`main:`, `destinations:`, `api:`, `contacts:`), so use namespaced names in `{% url %}` and `reverse`. The custom 404 and 500 handlers live in `main/views.py`.
+Each app has a URL namespace (`main`, `destinations`, `tours`, `rentals`, `blog`, `contacts`). Public URLs use slugs.
 
-- **destinations**: the core content model. `Destination` → `Itinerary` (FK `related_name='itineraries'`, has `is_upcoming`, price, dates and a `Duration()` helper) → `Day` (`related_name='days'`). `Itinerary.details` and `Day.description` are CKEditor `RichTextField`s.
-- **main**: the home page, gallery, equipment and honeymoon spots. `TopSpot` and `HoneymoonSpot` are FKs to `destinations.Destination`. `HomeView` gathers upcoming tours, featured top spots, honeymoon spots, tours and reviews. It also holds the custom template filters in `main/templatetags/custom_filters.py`.
-- **contacts**: plain `forms.Form` classes (`BookingForm`, `TentHireForm`, `CarHireForm`), each with its own `send_mail()` method, which the `FormView`s call from `form_valid`. Mail recipients come from the `Receipient` model (managed in admin). `ContactForm` still has hard-coded addresses. `sendMail` is a DRF `@api_view` used by the footer contact form.
-- **api**: small DRF function views for destinations and days. There are no models.
-- Enquiry emails for itineraries and honeymoon spots are sent from POST handlers in `destinations/views.py` and `main/views.py`, which render `templates/emails/*.html` with `render_to_string`.
+- **`main/mixins.py`**: the abstract bases every content model builds on. `Page` = timestamps + an auto-generated unique `slug` (from `slug_source`) + SEO fields (`meta_title`/`meta_description`) + `is_published` + `OptimisedImages`, which downscales newly uploaded files listed in `image_fields`. Public querysets filter with `.published()`.
+- **destinations**: `Destination` (country) → `Place` (park, lake, beach…) with a `PlaceImage` gallery. `TripStyle` (Honeymoon, Gorilla trekking…) tags both places and itineraries. Honeymoons are a trip style, not a separate model.
+- **tours**: `Itinerary.format` is either `day_by_day` (content in `Day` rows, which can span `day_from`–`day_to`) or `flexible` (content in `overview` + highlight `places`). Both formats can have `Departure`s (scheduled dates with `seats_total`). A `Reservation` holds seats while its status is in `HOLDING_STATUSES`. Payment is collected offline and tracked by staff in the admin (`amount_due`/`amount_paid`). Use `Departure.objects.with_seats()` to annotate seat counts in lists, and `is_bookable` for the booking rules. `reserve()` locks the departure row while checking seats. The confirmation page is visible only to the browser session that made the reservation.
+- **contacts**: every form (contact, trip planner, itinerary quote, rental) subclasses `EnquiryForm` and is saved as an `Enquiry`. Fields not in `core_fields` go into `Enquiry.details` (JSON). Forms carry a honeypot `website` field. `contacts/notify.py` emails the active `Recipient`s (falling back to the SiteSettings email); send failures are logged, never shown to visitors.
+- **blog**: `Post` (draft/published, with `published_at` scheduling) with `Author`, `Category` and `Tag`, plus M2M links to destinations, places and itineraries. These render as "Plan this trip" cards.
+- **rentals**: `RentalCategory` → `RentalItem` on one page with a `RentalForm` enquiry.
+- **main**: `SiteSettings` is a singleton (`SiteSettings.load()`) holding contact details, socials and the payment instructions shown after a reservation. The context processor `main.context_processors.site` exposes `site`, nav destinations/styles and the organisation JSON-LD to every template. Also here: `Review`, `Photo`, `Video`, home, gallery, robots.txt, humans.txt and error views.
 
-Templates: project-level `templates/` (`base.html`, `components/header.html` / `footer.html`, `404`/`500`, `emails/`) plus per-app `<app>/templates/<app>/`.
+### SEO
 
-### Frontend / static assets
+- `base.html` blocks: `title`, `meta_description`, `canonical`, `og_*`, `extra_meta` and `structured_data`. A view sets `noindex` in its context to emit robots noindex. That's done for filtered or searched listings, tag pages, reservation and thank-you pages.
+- Views pass `breadcrumbs` as a list of `(label, url_or_None)`. It's rendered visually and as BreadcrumbList JSON-LD.
+- `main/seo.py` builds the JSON-LD (TravelAgency + WebSite, TouristTrip with Offers per departure, TouristAttraction, TouristDestination, BlogPosting). Render it with the `jsonld` filter from `{% load kaizen %}`. The same library provides `money`, `absolute`, `field` (form-field markup), `page_url` and `stars`.
+- `main/sitemaps.py` always emits `SITE_URL` URLs, whatever host the request came in on.
+- The developer credit (DakdotCreations Limited, dakdot.com) is deliberately hidden: an HTML comment, `meta name="designer"`, humans.txt and WebSite `creator` in the JSON-LD. Never add a visible "developed by" line; a test enforces this.
 
-- Django serves static files only from `static/public/` (`STATICFILES_DIRS`). The vendored libraries (lightbox2, swiper) and the images and videos also live under `static/public/`.
-- Vite builds `static/src/main.ts` into `static/public/dist/bundle.js` and `bundle.css`, with fonts in `dist/assets/`. `base.html` loads the bundle as `<script type="module">`. `publicDir` is disabled because `public/` is Django's static dir, not Vite's.
-- The bundled TS/JS is never rendered by Django, so `{% url %}` and other template tags don't work in `static/src/`. Hard-code the paths or pass values in through the DOM.
-- `main.ts` is the entry point: it imports `style.css` and Font Awesome, registers the Alpine plugins (ajax, mask, collapse, anchor, focus) and sets up the GSAP scroll animations driven by the `.fade-in`, `.slide-in-left`, `.slide-in-right` and `.slide-in-top` classes.
-- The styling is **Tailwind v4, configured in CSS** (`@theme` in `static/src/style.css`; there's no `tailwind.config.js`). `@source` directives scan the Django templates for classes. Their paths are relative to `static/src/style.css`, and a source must be a file glob (`*/templates/**/*.html`): a bare directory glob matches nothing. The brand tokens are `primary-*`, `grey-*`, `font-body` (Poppins) and `font-lead` (Courgette).
+### Frontend
+
+- Django serves static files only from `static/public/`. Vite builds `static/src/main.ts` into `static/public/dist/bundle.{js,css}` (fonts in `dist/assets/`), loaded as `<script type="module">`.
+- Bundled TS is never rendered by Django, so template tags don't work in `static/src/`. Pass values through the DOM or `x-data`.
+- `main.ts` registers Alpine components: `siteHeader` (transparent over a hero, solid once scrolled), `lightbox` (reads `[data-lightbox]` children) and `rail` (prev/next for `.rail` scrollers). It also runs the GSAP reveal animations for `.fade-in` / `.slide-in-*`, with an optional `data-delay`. Reveal styles only apply once `html.js` is set, so content stays visible if JS fails.
+- Pages with a full-bleed hero include the header with `overlay=True` (`{% block header %}`) and use `components/page_hero.html`.
+- Tailwind v4 is configured in CSS (`@theme` in `static/src/style.css`, no `tailwind.config.js`). Component classes such as `btn`, `card`, `field`, `prose`, `kicker` and `section-title` are defined there. `@source` paths are relative to `style.css` and must be file globs. `group` can't be `@apply`'d; put it in the markup.

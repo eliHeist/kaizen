@@ -1,0 +1,8 @@
+{% load kaizen %}
+{% if page.has_other_pages %}
+<nav class="mt-12 flex items-center justify-center gap-2" aria-label="Pagination">
+    {% if page.has_previous %}<a href="{% page_url page.previous_page_number %}" class="btn btn-outline" rel="prev"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</a>{% endif %}
+    <span class="px-4 text-sm text-grey-600">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}<a href="{% page_url page.next_page_number %}" class="btn btn-outline" rel="next">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>{% endif %}
+</nav>
+{% endif %}

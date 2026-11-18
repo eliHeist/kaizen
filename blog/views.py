@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 from blog.models import Author, Category, Post, Tag
+from main import seo
 
 PER_PAGE = 9
 
@@ -21,6 +22,7 @@ def _listing(request, posts, template_context):
         'posts': page.object_list,
         'categories': categories,
         'q': q,
+        'noindex': bool(q),
         **template_context,
     })
 
@@ -87,6 +89,7 @@ def post_detail(request, slug):
         'tours': post.itineraries.published().prefetch_related('destinations'),
         'places': post.places.published().select_related('destination'),
         'destinations': post.destinations.published(),
+        'jsonld': seo.post(post),
         'breadcrumbs': [
             ('Blog', reverse('blog:list')),
             *([(post.category.name, post.category.get_absolute_url())] if post.category else []),

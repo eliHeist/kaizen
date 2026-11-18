@@ -1,76 +1,56 @@
 {% load static %}
-
-<footer class="bg-primary-950 pt-12 pb-8 px-2 shadow-2xl">
-    <div class="container text-white">
-        <h2 class="hidden">Footer</h2>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <figure class="hidden sm:block">
-                <img src="{% static 'img/logo-white.webp' %}" alt="logo" class=" scale-90">
-            </figure>
-            <div>
-                <h3 class=" text-2xl font-semibold mb-4">Locate Us</h3>
-                <ol class="list-none grid gap-2">
-                    <li><i class="fas fa-building w-4 mr-4"></i>Mukasa Towers, Ground Floor</li>
-                    <li><i class="fas fa-road w-4 mr-4"></i>Seeta – Namilyango Road</li>
-                    <li><i class="fas fa-box w-4 mr-4"></i>P O Box 8437, Mukono, Uganda</li>
-                    <li><i class="fas fa-envelope w-4 mr-4"></i>info@kaizensafaris.com</li>
-                    <li><i class="fas fa-phone w-4 mr-4"></i>Office: (+256) 393 243 933</li>
-                    <li><i class="fab fa-whatsapp w-4 mr-4"></i>Whatsapp:(+256) 755 312 238</li>
-                </ol>
-            </div>
-            <aside class="mt-8 lg:mt-0">
-                <h3 class="text-2xl font-semibold mb-4">Popular Links</h3>
-                <ol class="list-none grid gap-2">
-                    <li>~<a target="_blank" href="https://www.tourism.go.ug/">Ministry of Tourism</a></li>
-                    <li>~<a target="_blank" href="https://www.gou.go.ug/ministry/ministry-tourism-wildlife-and-antiquities">Wildlife and Antiquities</a></li>
-                    <li>~<a target="_blank" href="https://ugandawildlife.org/">Uganda Wildlife Authority</a></li>
-                    <li>~<a target="_blank" href="https://www.gorilla-permits.com/">Gorilla Permits and Licenses</a></li>
-                    <li>~<a target="_blank" href="https://visas.immigration.go.ug/">Travel e-Visa</a></li>
-                    <li>~<a target="_blank" href="https://utb.go.ug/">Uganda Tourism Board</a></li>
-                </ol>
-            </aside>
-            <div class="mt-8 lg:mt-0">
-                <!-- <h3 class="text-2xl font-semibold mb-4">Get in Touch</h3> -->
-                <form class="grid gap-2" x-data="main" @submit.prevent="sendMail()">
-                    <div id="token">{% csrf_token %}</div>
-                    <input x-model="mail.name" type="text" placeholder="Your Name" name="your_name"
-                        class="py-1 px-2 w-full rounded-sm text-white placeholder:text-primary-800 bg-primary-950 border-l-2 hover:border-l-8 border-primary-900 border-b focus-within:outline-none focus-within:bg-primary-900 transition-all">
-                    <input x-model="mail.email" type="email" placeholder="Your email" name="your_email"
-                        class="py-1 px-2 w-full rounded-sm text-white placeholder:text-primary-800 bg-primary-950 border-l-2 hover:border-l-8 border-primary-900 border-b focus-within:outline-none focus-within:bg-primary-900 transition-all">
-                    <textarea x-model="mail.message" name="your_message" cols="30" rows="4" placeholder="How can we help you?"
-                        class="py-1 px-2 w-full rounded-sm text-white placeholder:text-primary-800 bg-primary-950 border-l-2 hover:border-l-8 border-primary-900 border-b focus-within:outline-none focus-within:bg-primary-900 transition-all"></textarea>
-                    <button type="submit"
-                        class="hover:bg-white outline-2 outline outline-white w-fit text-white hover:text-black btn"
-                        >Send a message</button> <span class="" x-text="status"></span>
-                </form>
-            </div>
+<footer class="bg-primary-950 text-white/80">
+    <div class="container grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-12">
+        <div class="lg:col-span-4">
+            <img src="{% static 'img/logo-white.webp' %}" alt="{{ site.site_name }}" width="120" height="120" loading="lazy" class="h-24 w-auto">
+            <p class="mt-6 max-w-sm text-sm leading-relaxed">{{ site.description }}</p>
+            <ul class="mt-6 flex flex-wrap gap-3" aria-label="Social media">
+                {% for label, icon, url in site.social_links %}
+                    <li><a href="{{ url }}" target="_blank" rel="noopener" aria-label="{{ label }}"
+                           class="grid size-10 place-content-center rounded-full bg-white/10 text-white transition hover:bg-primary-900"><i class="{{ icon }}" aria-hidden="true"></i></a></li>
+                {% endfor %}
+            </ul>
         </div>
-        <p class="text-center mt-4 text-primary-100">
-            © Copyright 2025 - Kaizen Safaris - All Rights Reserved.
-        </p>
-        <ul class=" list-none flex gap-4 justify-center text-xl">
-            <li>
-                <a target="_blank" href="https://www.facebook.com/kaizensafaris" class=""><i class="fab fa-facebook"></i></a>
-            </li>
-            <li>
-                <a target="_blank" href="https://x.com/KaizenSafaris" class="">
-                    <i class="fab fa-twitter"></i>
-                    <i class="fab fa-x"></i>
-                </a>
-            </li>
-            <li>
-                <a target="_blank" href="https://www.instagram.com/kaizensafarisug/" class=""><i class="fab fa-instagram"></i></a>
-            </li>
-            <li><a target="_blank" href="https://wa.me/256755312238" class=""><i class="fab fa-whatsapp"></i></a></li>
-            <li>
-                <a target="_blank" href="mailto:kaizensafaris@gmail.com" class=""><i class="fas fa-envelope"></i></a>
-            </li>
-            <li>
-                <a target="_blank" href="https://www.linkedin.com/in/kaizen-safaris-8a7845199/" class=""><i class="fab fa-linkedin"></i></a>
-            </li>
-            <li>
-                <a target="_blank" href="https://www.youtube.com/@kaizensafaris" class=""><i class="fab fa-youtube"></i></a>
-            </li>
-        </ul>
+
+        <nav class="lg:col-span-2" aria-label="Explore">
+            <h2 class="text-sm font-semibold uppercase tracking-widest text-white">Explore</h2>
+            <ul class="mt-5 grid gap-3 text-sm">
+                <li><a class="hover:text-primary-100" href="{% url 'tours:list' %}">Tours &amp; safaris</a></li>
+                <li><a class="hover:text-primary-100" href="{% url 'tours:departures' %}">Group departures</a></li>
+                <li><a class="hover:text-primary-100" href="{% url 'destinations:list' %}">Destinations</a></li>
+                <li><a class="hover:text-primary-100" href="{% url 'rentals:list' %}">Car &amp; camping hire</a></li>
+                <li><a class="hover:text-primary-100" href="{% url 'blog:list' %}">Blog</a></li>
+                <li><a class="hover:text-primary-100" href="{% url 'main:gallery' %}">Gallery</a></li>
+            </ul>
+        </nav>
+
+        <nav class="lg:col-span-3" aria-label="Useful links">
+            <h2 class="text-sm font-semibold uppercase tracking-widest text-white">Useful links</h2>
+            <ul class="mt-5 grid gap-3 text-sm">
+                <li><a class="hover:text-primary-100" target="_blank" rel="noopener" href="https://visas.immigration.go.ug/">Uganda e-Visa</a></li>
+                <li><a class="hover:text-primary-100" target="_blank" rel="noopener" href="https://ugandawildlife.org/">Uganda Wildlife Authority</a></li>
+                <li><a class="hover:text-primary-100" target="_blank" rel="noopener" href="https://www.gorilla-permits.com/">Gorilla permits</a></li>
+                <li><a class="hover:text-primary-100" target="_blank" rel="noopener" href="https://utb.go.ug/">Uganda Tourism Board</a></li>
+                <li><a class="hover:text-primary-100" target="_blank" rel="noopener" href="https://www.tourism.go.ug/">Ministry of Tourism</a></li>
+            </ul>
+        </nav>
+
+        <div class="lg:col-span-3">
+            <h2 class="text-sm font-semibold uppercase tracking-widest text-white">Visit or call</h2>
+            <address class="mt-5 grid gap-3 text-sm not-italic">
+                <p class="flex gap-3"><i class="fa-solid fa-location-dot mt-1 w-4 text-primary-800" aria-hidden="true"></i>
+                    <span>{{ site.address_line1 }}{% if site.address_line2 %}<br>{{ site.address_line2 }}{% endif %}<br>{% if site.po_box %}{{ site.po_box }}, {% endif %}{{ site.city }}, {{ site.country }}</span></p>
+                <a class="flex gap-3 hover:text-primary-100" href="tel:{{ site.phone_digits }}"><i class="fa-solid fa-phone mt-1 w-4 text-primary-800" aria-hidden="true"></i>{{ site.phone }}</a>
+                <a class="flex gap-3 hover:text-primary-100" href="https://wa.me/{{ site.whatsapp_digits }}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp mt-1 w-4 text-primary-800" aria-hidden="true"></i>{{ site.whatsapp }}</a>
+                <a class="flex gap-3 hover:text-primary-100" href="mailto:{{ site.email }}"><i class="fa-solid fa-envelope mt-1 w-4 text-primary-800" aria-hidden="true"></i>{{ site.email }}</a>
+            </address>
+            <a href="{% url 'contacts:plan' %}" class="btn btn-light mt-6">Plan your trip</a>
+        </div>
+    </div>
+    <div class="border-t border-white/10">
+        <div class="container flex flex-col items-center justify-between gap-2 py-6 text-xs text-white/50 sm:flex-row">
+            <p>© {% now 'Y' %} {{ site.site_name }}. All rights reserved.</p>
+            <p>{{ site.tagline }}</p>
+        </div>
     </div>
 </footer>
