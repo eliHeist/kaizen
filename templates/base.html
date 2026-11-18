@@ -22,6 +22,8 @@
     <meta name="designer" content="DakdotCreations Limited, https://dakdot.com">
     <link rel="author" href="{% url 'main:humans' %}">
     <meta name="theme-color" content="#3f3f13">
+    {% if GOOGLE_SITE_VERIFICATION %}<meta name="google-site-verification" content="{{ GOOGLE_SITE_VERIFICATION }}">{% endif %}
+    {% if BING_SITE_VERIFICATION %}<meta name="msvalidate.01" content="{{ BING_SITE_VERIFICATION }}">{% endif %}
 
     {# Open Graph / social previews #}
     <meta property="og:site_name" content="{{ site.site_name }}">

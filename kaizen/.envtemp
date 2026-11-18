@@ -1,11 +1,15 @@
 DEBUG=
 SECRET_KEY=
-ALLOWED_HOSTS=
+ALLOWED_HOSTS=kaizen-safaris.com,www.kaizen-safaris.com
+
+# Canonical public URL (canonical links, sitemap, structured data, CSRF origin)
+SITE_URL=https://kaizen-safaris.com
 
 STATIC_ROOT=
 MEDIA_ROOT=
 
-EMAIL_BACKEND=''
+# Leave EMAIL_BACKEND empty in development to print emails to the console.
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST=''
 EMAIL_PORT=587
 EMAIL_USE_TLS=True
@@ -19,3 +23,11 @@ DB_USER=''
 DB_PASSWORD=''
 DB_HOST='localhost'
 DB_PORT='3306'
+
+# Production HTTPS (Django behind the host's TLS proxy)
+SECURE_SSL_REDIRECT=False
+SECURE_COOKIES=True
+
+# Optional: values from Google Search Console / Bing Webmaster Tools "HTML tag" verification
+GOOGLE_SITE_VERIFICATION=
+BING_SITE_VERIFICATION=

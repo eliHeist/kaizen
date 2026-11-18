@@ -14,4 +14,6 @@ def site(request):
         'nav_destinations': Destination.objects.published().only('name', 'slug'),
         'nav_styles': TripStyle.objects.published().only('name', 'slug'),
         'org_jsonld': seo.organization(settings_obj),
+        'GOOGLE_SITE_VERIFICATION': settings.GOOGLE_SITE_VERIFICATION,
+        'BING_SITE_VERIFICATION': settings.BING_SITE_VERIFICATION,
     }

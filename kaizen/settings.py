@@ -14,6 +14,19 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 # Canonical public URL, used for canonical links, the sitemap and structured data.
 SITE_URL = env('SITE_URL', default='https://kaizen-safaris.com').rstrip('/')
+CSRF_TRUSTED_ORIGINS = [SITE_URL]
+
+# Search console ownership tokens (the content="" value of the meta tag each tool gives you).
+GOOGLE_SITE_VERIFICATION = env('GOOGLE_SITE_VERIFICATION', default='')
+BING_SITE_VERIFICATION = env('BING_SITE_VERIFICATION', default='')
+
+if not DEBUG:
+    # cPanel/Passenger terminates TLS in front of Django.
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=False)
+    SESSION_COOKIE_SECURE = env.bool('SECURE_COOKIES', default=True)
+    CSRF_COOKIE_SECURE = env.bool('SECURE_COOKIES', default=True)
+    SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 
 
 # Application definition
