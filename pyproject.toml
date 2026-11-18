@@ -3,7 +3,7 @@ name = "kaizen"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 dependencies = [
     "asgiref==3.5.2",
     "crispy-tailwind==0.5.0",

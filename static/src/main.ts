@@ -1,14 +1,33 @@
-import './main.scss'
+import './style.css'
 import './fontawesome/css/all.min.css'
 
 import './js/main.js'
 import './js/scroll.js'
 
-import "./ts/alpine"
+import "./ts/alpine.js"
 
 import Alpine from 'alpinejs'
+import ajax from '@imacrayon/alpine-ajax'
+import mask from "@alpinejs/mask"
+import collapse from "@alpinejs/collapse"
+import anchor from '@alpinejs/anchor'
+import focus from '@alpinejs/focus'
+
 import { gsap } from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+
+declare global {
+  interface Window {
+    Alpine: typeof Alpine;
+  }
+}
+
+window.Alpine = Alpine
+Alpine.plugin(mask)
+Alpine.plugin(collapse)
+Alpine.plugin(ajax)
+Alpine.plugin(anchor)
+Alpine.plugin(focus)
 
 Alpine.start()
 

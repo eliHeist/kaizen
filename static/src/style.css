@@ -1,9 +1,55 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* Django template discovery */
+@source "../templates";
+@source "../**/templates";
+
 
 @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap');
 
+/* Brand colors, typography, and design tokens */
+@theme {
+    --color-primary-950: rgb(63, 63, 19);
+    --color-primary-900: #797931;
+    --color-primary-800: #d8d185;
+    --color-primary-100: #f0ea86;
+
+    --color-lead: #ccc;
+
+    --color-grey-50: rgb(252, 252, 252);
+    --color-grey-100: rgb(245, 245, 245);
+    --color-grey-200: rgb(234, 234, 234);
+    --color-grey-300: rgb(219, 219, 219);
+    --color-grey-400: rgb(175, 175, 175);
+    --color-grey-500: rgb(130, 130, 130);
+    --color-grey-600: rgb(97, 97, 97);
+    --color-grey-700: rgb(69, 69, 69);
+    --color-grey-800: rgb(42, 42, 42);
+    --color-grey-900: rgb(28, 28, 28);
+
+    --font-body: "Poppins", sans-serif;
+    --font-lead: "Courgette", cursive;
+
+    --aspect-surface: 4 / 3;
+    --aspect-1610: 16 / 10;
+}
+
+/* Custom utilities retained from the v3 configuration */
+@utility flex-base {
+    flex: 1;
+}
+
+@utility flex-2 {
+    flex: 2 2 0%;
+}
+
+@utility flex-3 {
+    flex: 6 6 0%;
+}
+
+@utility grayscale-10 {
+    filter: grayscale(10%);
+}
 
 .container{
     @apply mx-auto px-4;
