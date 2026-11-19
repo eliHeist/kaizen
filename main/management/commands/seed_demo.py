@@ -36,6 +36,11 @@ LOREM = (
 )
 
 
+def ugx(usd):
+    """Demo UGX price: the USD price at roughly 3,700 shillings, rounded to 5,000."""
+    return Decimal(round(Decimal(usd) * 3700 / 5000) * 5000)
+
+
 class Command(BaseCommand):
     help = 'Create sample destinations, tours, departures, posts and rentals for local development.'
 
@@ -128,7 +133,7 @@ class Command(BaseCommand):
         gorilla = self.make(
             Itinerary, name='8-Day Uganda Gorillas, Chimps & Big Game Safari', format=Itinerary.Format.DAY_BY_DAY,
             summary='Track chimpanzees in Kibale, cruise the Kazinga Channel, find Ishasha’s tree-climbing lions and meet mountain gorillas in Bwindi.',
-            overview=LOREM, duration_days=8, price_from=Decimal('2850'), is_featured=True,
+            overview=LOREM, duration_days=8, price_from_usd=Decimal('2850'), price_from_ugx=ugx('2850'), is_featured=True,
             inclusions='Gorilla permit (US$800)\nChimpanzee permit\nAll park fees\nFull-board accommodation\nPrivate 4x4 with driver-guide\nBottled water',
             exclusions='International flights\nUganda visa\nTips and gratuities\nTravel insurance',
         )
@@ -154,7 +159,7 @@ class Command(BaseCommand):
             Itinerary, name='Uganda Honeymoon: Gorillas & Lake Bunyonyi', format=Itinerary.Format.FLEXIBLE,
             summary='A slow, romantic journey you shape together: lakeside cottages, a private gorilla trek and as many lazy mornings as you like.',
             overview='<p>This is a flexible itinerary. Tell us how many nights you want in each place and we build the trip around you.</p>' + LOREM,
-            duration_days=7, duration_note='6 to 10 days, you choose', price_from=Decimal('3400'), is_featured=True,
+            duration_days=7, duration_note='6 to 10 days, you choose', price_from_usd=Decimal('3400'), price_from_ugx=ugx('3400'), is_featured=True,
             inclusions='Gorilla permits\nBoutique lodges with lake or forest views\nPrivate candle-lit dinner\nPrivate vehicle and guide',
             exclusions='Flights\nVisas\nDrinks at lodges',
         )
@@ -165,7 +170,7 @@ class Command(BaseCommand):
         mara = self.make(
             Itinerary, name='Maasai Mara Migration Group Safari', format=Itinerary.Format.DAY_BY_DAY,
             summary='Join a small group for four days of migration river crossings and big-cat sightings in the Mara.',
-            overview=LOREM, duration_days=4, price_from=Decimal('1290'), is_featured=True,
+            overview=LOREM, duration_days=4, price_from_usd=Decimal('1290'), price_from_ugx=ugx('1290'), is_featured=True,
             inclusions='Shared 4x4 safari vehicle\nPark fees\nTented camp, full board',
             exclusions='Flights\nTips',
         )
@@ -179,7 +184,7 @@ class Command(BaseCommand):
         east = self.make(
             Itinerary, name='Tailor-made East Africa: Serengeti to Zanzibar', format=Itinerary.Format.FLEXIBLE,
             summary='Combine the Serengeti, Ngorongoro and the beaches of Zanzibar at your own pace.',
-            overview=LOREM, duration_days=None, duration_note='10 to 14 days', price_from=None,
+            overview=LOREM, duration_days=None, duration_note='10 to 14 days', price_from_usd=None,
             inclusions='Planning with a dedicated specialist\nAll ground transport\nPark fees',
             exclusions='International flights',
         )
@@ -190,7 +195,7 @@ class Command(BaseCommand):
         rwanda = self.make(
             Itinerary, name='3-Day Rwanda Gorilla Express', format=Itinerary.Format.DAY_BY_DAY,
             summary='Fly into Kigali, trek gorillas in Volcanoes National Park and be home within the week.',
-            overview=LOREM, duration_days=3, price_from=Decimal('2390'),
+            overview=LOREM, duration_days=3, price_from_usd=Decimal('2390'), price_from_ugx=ugx('2390'),
         )
         rwanda.destinations.set([dests['Rwanda']])
         rwanda.styles.set([styles['Gorilla trekking']])
@@ -203,7 +208,7 @@ class Command(BaseCommand):
                                         status=Departure.Status.GUARANTEED, notes='Gorilla permits secured')
         Departure.objects.create(itinerary=gorilla, start_date=today + timedelta(days=120), seats_total=8)
         dep3 = Departure.objects.create(itinerary=mara, start_date=today + timedelta(days=60), seats_total=6,
-                                        price=Decimal('1190'), booking_deadline=today + timedelta(days=40))
+                                        price_usd=Decimal('1190'), price_ugx=ugx('1190'), booking_deadline=today + timedelta(days=40))
         Departure.objects.create(itinerary=honeymoon, start_date=today + timedelta(days=90), seats_total=2, min_travellers=2)
         Reservation.objects.create(departure=dep1, full_name='Anna Schmidt', email='anna@example.com', phone='+49 151 000000',
                                    country='Germany', travellers=2, status=Reservation.Status.DEPOSIT, amount_paid=Decimal('1710'))
@@ -237,7 +242,7 @@ class Command(BaseCommand):
             (camping, 'Camp kitchen box', 'Stove, cookware and cutlery for 4', '10', 'per day'),
         ]:
             self.make(RentalItem, image_field='image', category=cat, name=name, capacity=cap,
-                      price=Decimal(price), price_unit=unit, summary=f'{name}, cleaned and checked before every hire.')
+                      price_usd=Decimal(price), price_ugx=ugx(price), price_unit=unit, summary=f'{name}, cleaned and checked before every hire.')
 
         # Blog
         author = Author.objects.create(name='Grace Namata', role='Safari specialist',

@@ -21,7 +21,7 @@ class DayInline(admin.StackedInline):
 class DepartureInline(admin.TabularInline):
     model = Departure
     extra = 0
-    fields = ('start_date', 'end_date', 'price', 'seats_total', 'seats_left_display', 'status', 'is_published', 'manage')
+    fields = ('start_date', 'end_date', 'price_usd', 'price_ugx', 'seats_total', 'seats_left_display', 'status', 'is_published', 'manage')
     readonly_fields = ('seats_left_display', 'manage')
     show_change_link = False
 
@@ -39,7 +39,7 @@ class DepartureInline(admin.TabularInline):
 
 @admin.register(Itinerary)
 class ItineraryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'preview', 'format', 'duration_label', 'price_from', 'next_departure', 'is_featured', 'is_published')
+    list_display = ('name', 'preview', 'format', 'duration_label', 'price_from_usd', 'price_from_ugx', 'next_departure', 'is_featured', 'is_published')
     list_editable = ('is_featured', 'is_published')
     list_filter = ('format', 'destinations', 'styles', 'is_featured', 'is_published')
     search_fields = ('name', 'summary')
@@ -51,7 +51,7 @@ class ItineraryAdmin(admin.ModelAdmin):
         (None, {'fields': ('name', 'slug', 'format', 'summary', 'cover', 'overview')}),
         ('Where and what', {'fields': ('destinations', 'styles', 'places')}),
         ('Length and price', {'fields': (
-            ('duration_days', 'duration_note'), ('price_from', 'currency'), 'price_note', 'inclusions', 'exclusions',
+            ('duration_days', 'duration_note'), ('price_from_usd', 'price_from_ugx'), 'price_note', 'inclusions', 'exclusions',
         )}),
         ('Publishing', {'fields': ('is_featured', 'order', 'is_published')}),
         SEO_FIELDSET,
@@ -70,14 +70,14 @@ class ItineraryAdmin(admin.ModelAdmin):
 class ReservationInline(admin.TabularInline):
     model = Reservation
     extra = 0
-    fields = ('reference', 'full_name', 'travellers', 'status', 'amount_due', 'amount_paid')
+    fields = ('reference', 'full_name', 'travellers', 'status', 'currency', 'amount_due', 'amount_paid')
     readonly_fields = ('reference',)
     show_change_link = True
 
 
 @admin.register(Departure)
 class DepartureAdmin(admin.ModelAdmin):
-    list_display = ('itinerary', 'start_date', 'end_date', 'price', 'seats_total', 'seats_left_display', 'status', 'is_published')
+    list_display = ('itinerary', 'start_date', 'end_date', 'price_usd', 'price_ugx', 'seats_total', 'seats_left_display', 'status', 'is_published')
     list_filter = ('status', 'is_published', 'itinerary')
     list_editable = ('status', 'is_published')
     search_fields = ('itinerary__name',)
@@ -104,7 +104,7 @@ def _set_status(status, label):
 
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
-    list_display = ('reference', 'full_name', 'departure', 'travellers', 'status', 'amount_due', 'amount_paid', 'balance', 'created_at')
+    list_display = ('reference', 'full_name', 'departure', 'travellers', 'status', 'currency', 'amount_due', 'amount_paid', 'balance', 'created_at')
     list_filter = ('status', 'departure__itinerary', 'created_at')
     search_fields = ('reference', 'full_name', 'email', 'phone')
     readonly_fields = ('reference', 'created_at', 'updated_at', 'balance')
@@ -113,7 +113,7 @@ class ReservationAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('reference', 'departure', 'status')}),
         ('Traveller', {'fields': ('full_name', 'email', 'phone', 'country', 'travellers', 'message')}),
-        ('Payment (collected offline)', {'fields': ('amount_due', 'amount_paid', 'balance', 'staff_notes')}),
+        ('Payment (collected offline)', {'fields': ('currency', 'amount_due', 'amount_paid', 'balance', 'staff_notes')}),
         ('Record', {'fields': ('created_at', 'updated_at'), 'classes': ('collapse',)}),
     )
     actions = [

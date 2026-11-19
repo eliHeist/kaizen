@@ -1,11 +1,14 @@
 from django.conf import settings
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.cache import cache_control
+from django.views.decorators.http import require_POST
 
 from blog.models import Post
 from destinations.models import Destination, Place, TripStyle
+from main import currency as money
 from main.models import Photo, Review, Video
 from tours.models import Departure, Itinerary
 
@@ -17,6 +20,20 @@ PARTNER_LOGOS = [
     ('img/affiliations/uta.webp', 'Uganda Tourism Association'),
     ('img/affiliations/utb.webp', 'Uganda Tourism Board'),
 ]
+
+
+@require_POST
+def set_currency(request):
+    """Remember the visitor's choice of USD or UGX and send them back."""
+    nxt = request.POST.get('next') or '/'
+    if not url_has_allowed_host_and_scheme(nxt, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
+        nxt = '/'
+    response = redirect(nxt)
+    chosen = request.POST.get('currency')
+    if chosen in money.Currency.values:
+        response.set_cookie(money.COOKIE, chosen, max_age=365 * 24 * 3600, samesite='Lax',
+                            secure=request.is_secure())
+    return response
 
 
 def home(request):

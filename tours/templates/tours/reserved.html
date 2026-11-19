@@ -19,7 +19,7 @@
                 <div><dt class="text-grey-500">Trip</dt><dd class="font-medium">{{ tour.name }}</dd></div>
                 <div><dt class="text-grey-500">Dates</dt><dd class="font-medium">{{ dep.start_date|date:'j M Y' }}{% if dep.end_date %} – {{ dep.end_date|date:'j M Y' }}{% endif %}</dd></div>
                 <div><dt class="text-grey-500">Travellers</dt><dd class="font-medium">{{ reservation.travellers }}</dd></div>
-                {% if reservation.amount_due %}<div class="sm:col-span-2"><dt class="text-grey-500">Estimated total</dt><dd class="text-xl font-bold">{{ reservation.amount_due|money:dep.currency }}</dd></div>{% endif %}
+                {% if reservation.amount_due %}<div class="sm:col-span-2"><dt class="text-grey-500">Estimated total</dt><dd class="text-xl font-bold">{{ reservation.amount_due|money:reservation.currency }}</dd></div>{% endif %}
             </dl>
         </div>
 

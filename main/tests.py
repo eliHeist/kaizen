@@ -30,7 +30,7 @@ class PageTests(TestCase):
         cls.place.styles.add(cls.style)
         PlaceImage.objects.create(place=cls.place, image=image())
         cls.tour = Itinerary.objects.create(name='Gorilla trek', summary='Gorillas', cover=image(), duration_days=3,
-                                            price_from=1000, inclusions='Permit', exclusions='Flights')
+                                            price_from_usd=1000, price_from_ugx=3700000, inclusions='Permit', exclusions='Flights')
         cls.tour.destinations.add(cls.dest)
         cls.tour.styles.add(cls.style)
         Day.objects.create(itinerary=cls.tour, day_from=1, title='Arrive', breakfast=True)
@@ -43,7 +43,7 @@ class PageTests(TestCase):
         Photo.objects.create(image=image())
         Video.objects.create(title='Trailer', url='https://youtu.be/aqz-KE-bpKQ')
         cat = RentalCategory.objects.create(name='Cars')
-        cls.car = RentalItem.objects.create(category=cat, name='Land Cruiser', image=image(), price=150)
+        cls.car = RentalItem.objects.create(category=cat, name='Land Cruiser', image=image(), price_usd=150)
         author = Author.objects.create(name='Grace')
         cls.category = Category.objects.create(name='Tips')
         cls.tag = Tag.objects.create(name='Gorillas')
@@ -161,3 +161,76 @@ class PageTests(TestCase):
         response = self.client.get('/no-such-page/')
         self.assertEqual(response.status_code, 404)
         self.assertContains(response, 'Lost in the bush', status_code=404)
+
+
+@override_settings(MEDIA_ROOT=MEDIA)
+class CurrencyTests(TestCase):
+    UGANDA_IP = '41.75.160.10'  # MTN Uganda block
+    KENYA_IP = '41.80.0.1'
+
+    @classmethod
+    def setUpTestData(cls):
+        dest = Destination.objects.create(name='Uganda', summary='s', cover=image())
+        cls.tour = Itinerary.objects.create(name='Gorilla trek', summary='s', cover=image(), duration_days=3,
+                                            price_from_usd=1000, price_from_ugx=3700000)
+        cls.tour.destinations.add(dest)
+        cls.usd_only = Itinerary.objects.create(name='Mara', summary='s', cover=image(), price_from_usd=800)
+        cls.usd_only.destinations.add(dest)
+        cls.dep = Departure.objects.create(itinerary=cls.tour, start_date=timezone.localdate() + timedelta(days=30))
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        shutil.rmtree(MEDIA, ignore_errors=True)
+
+    def test_uganda_ip_lookup(self):
+        from main.currency import ip_in_uganda
+        self.assertTrue(ip_in_uganda(self.UGANDA_IP))
+        self.assertFalse(ip_in_uganda(self.KENYA_IP))
+        self.assertFalse(ip_in_uganda('8.8.8.8'))
+        self.assertFalse(ip_in_uganda('not an ip'))
+
+    def test_defaults_to_usd_outside_uganda(self):
+        page = self.client.get(self.tour.get_absolute_url(), REMOTE_ADDR=self.KENYA_IP)
+        self.assertContains(page, 'US$1,000')
+        self.assertNotContains(page, 'UGX 3,700,000')
+
+    def test_defaults_to_ugx_in_uganda(self):
+        page = self.client.get(self.tour.get_absolute_url(), REMOTE_ADDR=self.UGANDA_IP)
+        self.assertContains(page, 'UGX 3,700,000')
+        page = self.client.get(self.tour.get_absolute_url(), HTTP_CF_IPCOUNTRY='UG', REMOTE_ADDR='8.8.8.8')
+        self.assertContains(page, 'UGX 3,700,000')
+
+    def test_toggle_overrides_location(self):
+        response = self.client.post(reverse('main:set_currency'), {'currency': 'UGX', 'next': self.tour.get_absolute_url()},
+                                    REMOTE_ADDR=self.KENYA_IP)
+        self.assertRedirects(response, self.tour.get_absolute_url(), fetch_redirect_response=False)
+        page = self.client.get(self.tour.get_absolute_url(), REMOTE_ADDR=self.KENYA_IP)
+        self.assertContains(page, 'UGX 3,700,000')
+        self.client.post(reverse('main:set_currency'), {'currency': 'USD'}, REMOTE_ADDR=self.UGANDA_IP)
+        page = self.client.get(self.tour.get_absolute_url(), REMOTE_ADDR=self.UGANDA_IP)
+        self.assertContains(page, 'US$1,000')
+
+    def test_toggle_rejects_offsite_redirect_and_bad_currency(self):
+        response = self.client.post(reverse('main:set_currency'), {'currency': 'EUR', 'next': 'https://evil.example/'})
+        self.assertRedirects(response, '/', fetch_redirect_response=False)
+        self.assertNotIn('currency', response.cookies)
+
+    def test_falls_back_to_the_price_that_exists(self):
+        self.client.cookies['currency'] = 'UGX'
+        page = self.client.get(self.usd_only.get_absolute_url())
+        self.assertContains(page, 'US$800')
+
+    def test_structured_data_offers_both_currencies(self):
+        page = self.client.get(self.tour.get_absolute_url())
+        self.assertContains(page, '"priceCurrency": "USD"')
+        self.assertContains(page, '"priceCurrency": "UGX"')
+
+    def test_reservation_is_quoted_in_visitor_currency(self):
+        from tours.models import Reservation
+        self.client.cookies['currency'] = 'UGX'
+        self.client.post(self.dep.get_reserve_url(), {
+            'full_name': 'Ann', 'email': 'ann@example.com', 'phone': '+256700000000', 'country': 'UG',
+            'travellers': 2, 'message': '', 'agree': 'on', 'website': ''})
+        res = Reservation.objects.get()
+        self.assertEqual((res.currency, res.amount_due), ('UGX', 7400000))

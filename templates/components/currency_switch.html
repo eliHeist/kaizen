@@ -1,0 +1,9 @@
+{% comment %}USD / UGX toggle. Remembers the choice in a cookie (main.views.set_currency).{% endcomment %}
+<form method="post" action="{% url 'main:set_currency' %}" class="inline-flex shrink-0 rounded-full p-0.5 text-xs font-semibold ring-1 ring-current/30" aria-label="Show prices in">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+    {% for c in currencies %}
+        <button type="submit" name="currency" value="{{ c }}" aria-pressed="{% if c == currency %}true{% else %}false{% endif %}"
+                class="rounded-full px-2.5 py-1 transition {% if c == currency %}bg-primary-900 text-white{% else %}opacity-75 hover:opacity-100{% endif %}">{{ c }}</button>
+    {% endfor %}
+</form>

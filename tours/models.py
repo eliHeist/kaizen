@@ -11,14 +11,8 @@ from django.urls import reverse
 from django.utils import timezone
 
 from destinations.models import Destination, Place, TripStyle
+from main.currency import Currency, Prices
 from main.mixins import OptimisedImages, Page, TimeStamped
-
-
-class Currency(models.TextChoices):
-    USD = 'USD', 'US$'
-    EUR = 'EUR', '€'
-    GBP = 'GBP', '£'
-    UGX = 'UGX', 'UGX'
 
 
 class ItineraryQuerySet(models.QuerySet):
@@ -63,11 +57,14 @@ class Itinerary(Page):
         max_length=60, blank=True,
         help_text='Optional text replacing the length, e.g. "5 to 9 days, you choose".',
     )
-    price_from = models.DecimalField(
-        max_digits=10, decimal_places=2, null=True, blank=True,
-        help_text='Starting price per person. Leave blank to show "Price on request".',
+    price_from_usd = models.DecimalField(
+        'from (US$)', max_digits=10, decimal_places=2, null=True, blank=True,
+        help_text='Starting price per person in US dollars.',
     )
-    currency = models.CharField(max_length=3, choices=Currency.choices, default=Currency.USD)
+    price_from_ugx = models.DecimalField(
+        'from (UGX)', max_digits=14, decimal_places=0, null=True, blank=True,
+        help_text='Starting price per person in Uganda shillings. Leave both blank to show "Price on request".',
+    )
     price_note = models.CharField(max_length=80, blank=True, default='per person sharing')
     inclusions = models.TextField(blank=True, help_text="What's included, one item per line.")
     exclusions = models.TextField(blank=True, help_text="What's not included, one item per line.")
@@ -88,6 +85,10 @@ class Itinerary(Page):
 
     def get_absolute_url(self):
         return reverse('tours:detail', kwargs={'slug': self.slug})
+
+    @property
+    def price_from(self):
+        return Prices(self.price_from_usd, self.price_from_ugx)
 
     @property
     def is_day_by_day(self):
@@ -183,10 +184,11 @@ class Departure(TimeStamped):
     itinerary = models.ForeignKey(Itinerary, on_delete=models.CASCADE, related_name='departures')
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True, help_text="Leave blank to work it out from the trip's length.")
-    price = models.DecimalField(
-        max_digits=10, decimal_places=2, null=True, blank=True,
-        help_text="Per person. Leave blank to use the itinerary's starting price.",
+    price_usd = models.DecimalField(
+        'price (US$)', max_digits=10, decimal_places=2, null=True, blank=True,
+        help_text="Per person. Leave both prices blank to use the itinerary's starting prices.",
     )
+    price_ugx = models.DecimalField('price (UGX)', max_digits=14, decimal_places=0, null=True, blank=True)
     seats_total = models.PositiveSmallIntegerField('seats', default=12, validators=[MinValueValidator(1)])
     min_travellers = models.PositiveSmallIntegerField(
         default=2, validators=[MinValueValidator(1)],
@@ -217,12 +219,12 @@ class Departure(TimeStamped):
         super().save(*args, **kwargs)
 
     @property
-    def effective_price(self):
-        return self.price if self.price is not None else self.itinerary.price_from
+    def price(self):
+        return Prices(self.price_usd, self.price_ugx)
 
     @property
-    def currency(self):
-        return self.itinerary.currency
+    def effective_price(self):
+        return self.price or self.itinerary.price_from
 
     @property
     def seats_reserved(self):
@@ -275,8 +277,12 @@ class Reservation(TimeStamped):
     travellers = models.PositiveSmallIntegerField(default=1, validators=[MinValueValidator(1)])
     message = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
-    amount_due = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
-    amount_paid = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0'))
+    currency = models.CharField(
+        max_length=3, choices=Currency.choices, default=Currency.USD,
+        help_text='Currency of the amounts below (the one the traveller saw when reserving).',
+    )
+    amount_due = models.DecimalField(max_digits=14, decimal_places=2, null=True, blank=True)
+    amount_paid = models.DecimalField(max_digits=14, decimal_places=2, default=Decimal('0'))
     staff_notes = models.TextField(blank=True, help_text='Internal: payment references, special requests...')
 
     class Meta:
@@ -292,7 +298,7 @@ class Reservation(TimeStamped):
                 ref = make_reference()
             self.reference = ref
         if self.amount_due is None and self.departure_id:
-            price = self.departure.effective_price
+            price = self.departure.effective_price.amounts.get(self.currency)
             if price is not None:
                 self.amount_due = price * self.travellers
         super().save(*args, **kwargs)

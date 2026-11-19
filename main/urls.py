@@ -7,6 +7,7 @@ app_name = 'main'
 urlpatterns = [
     path('', views.home, name='home'),
     path('gallery/', views.gallery, name='gallery'),
+    path('currency/', views.set_currency, name='set_currency'),
     path('robots.txt', views.robots_txt, name='robots'),
     path('humans.txt', views.humans_txt, name='humans'),
 ]

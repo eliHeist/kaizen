@@ -8,7 +8,7 @@
     <tr><td style="color:#828282;width:35%;">Trip</td><td><strong>{{ dep.itinerary.name }}</strong></td></tr>
     <tr><td style="color:#828282;">Departure</td><td>{{ dep.start_date|date:'j F Y' }}{% if dep.end_date %} – {{ dep.end_date|date:'j F Y' }}{% endif %}</td></tr>
     <tr><td style="color:#828282;">Travellers</td><td>{{ reservation.travellers }} ({{ dep.seats_left }} seat{{ dep.seats_left|pluralize }} now left)</td></tr>
-    {% if reservation.amount_due %}<tr><td style="color:#828282;">Amount due</td><td><strong>{{ reservation.amount_due|money:dep.currency }}</strong></td></tr>{% endif %}
+    {% if reservation.amount_due %}<tr><td style="color:#828282;">Amount due</td><td><strong>{{ reservation.amount_due|money:reservation.currency }}</strong></td></tr>{% endif %}
     <tr><td style="color:#828282;">Name</td><td>{{ reservation.full_name }}</td></tr>
     <tr><td style="color:#828282;">Email</td><td><a href="mailto:{{ reservation.email }}" style="color:#797931;">{{ reservation.email }}</a></td></tr>
     <tr><td style="color:#828282;">Phone</td><td>{{ reservation.phone }}</td></tr>

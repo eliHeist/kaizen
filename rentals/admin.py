@@ -7,7 +7,7 @@ from rentals.models import RentalCategory, RentalItem
 class RentalItemInline(admin.StackedInline):
     model = RentalItem
     extra = 0
-    fields = (('name', 'is_available'), 'image', 'summary', 'capacity', ('price', 'currency', 'price_unit'), 'order')
+    fields = (('name', 'is_available'), 'image', 'summary', 'capacity', ('price_usd', 'price_ugx', 'price_unit'), 'order')
 
 
 @admin.register(RentalCategory)
@@ -24,7 +24,7 @@ class RentalCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(RentalItem)
 class RentalItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'preview', 'category', 'price', 'price_unit', 'is_available')
+    list_display = ('name', 'preview', 'category', 'price_usd', 'price_ugx', 'price_unit', 'is_available')
     list_editable = ('is_available',)
     list_filter = ('category', 'is_available')
     search_fields = ('name', 'summary')

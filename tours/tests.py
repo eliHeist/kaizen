@@ -23,7 +23,7 @@ def image(name='x.gif'):
 
 def make_tour(**kwargs):
     dest = Destination.objects.first() or Destination.objects.create(name='Uganda', summary='s', cover=image())
-    fields = {'name': 'Gorilla trek', 'summary': 's', 'cover': image(), 'duration_days': 3, 'price_from': Decimal('1000')}
+    fields = {'name': 'Gorilla trek', 'summary': 's', 'cover': image(), 'duration_days': 3, 'price_from_usd': Decimal('1000')}
     fields.update(kwargs)
     tour = Itinerary.objects.create(**fields)
     tour.destinations.add(dest)
@@ -71,7 +71,7 @@ class ModelTests(TestCase):
         self.assertFalse(dep.is_bookable)
 
     def test_reservation_reference_and_amount(self):
-        dep = Departure.objects.create(itinerary=self.tour, start_date=self.start, price=Decimal('900'))
+        dep = Departure.objects.create(itinerary=self.tour, start_date=self.start, price_usd=Decimal('900'))
         res = Reservation.objects.create(departure=dep, full_name='A', email='a@x.com', phone='1', travellers=3)
         self.assertRegex(res.reference, r'^KZ-[A-Z2-9]{6}$')
         self.assertEqual(res.amount_due, Decimal('2700'))

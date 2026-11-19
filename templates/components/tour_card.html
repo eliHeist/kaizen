@@ -20,7 +20,7 @@
             <span class="text-sm text-grey-600"><i class="fa-regular fa-clock mr-1" aria-hidden="true"></i> {{ tour.duration_label }}</span>
             <span class="text-right">
                 {% if tour.price_from %}<span class="block text-[11px] uppercase tracking-wide text-grey-500">From</span>{% endif %}
-                <span class="font-bold text-grey-900">{{ tour.price_from|money:tour.currency }}</span>
+                <span class="font-bold text-grey-900">{% price tour.price_from %}</span>
             </span>
         </div>
     </div>

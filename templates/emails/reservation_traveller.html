@@ -8,7 +8,7 @@
     <tr><td style="color:#828282;width:40%;">Reference</td><td><strong style="font-family:monospace;font-size:16px;color:#797931;">{{ reservation.reference }}</strong></td></tr>
     <tr><td style="color:#828282;">Dates</td><td>{{ dep.start_date|date:'j F Y' }}{% if dep.end_date %} – {{ dep.end_date|date:'j F Y' }}{% endif %}</td></tr>
     <tr><td style="color:#828282;">Travellers</td><td>{{ reservation.travellers }}</td></tr>
-    {% if reservation.amount_due %}<tr><td style="color:#828282;">Estimated total</td><td><strong>{{ reservation.amount_due|money:dep.currency }}</strong></td></tr>{% endif %}
+    {% if reservation.amount_due %}<tr><td style="color:#828282;">Estimated total</td><td><strong>{{ reservation.amount_due|money:reservation.currency }}</strong></td></tr>{% endif %}
 </table>
 <h2 style="margin:28px 0 8px;font-size:16px;">What happens next</h2>
 <ol style="margin:0;padding-left:20px;">

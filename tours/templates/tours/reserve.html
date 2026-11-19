@@ -29,21 +29,21 @@
         </div>
 
         <aside class="h-fit overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/5 lg:sticky lg:top-28"
-               x-data="{ n: parseInt('{{ form.travellers.value|default:1|escapejs }}') || 1, price: Number('{{ departure.effective_price|default:0|escapejs }}') }">
+               x-data="{ n: parseInt('{{ form.travellers.value|default:1|escapejs }}') || 1, price: Number('{{ unit_price|default:0|escapejs }}') }">
             <img src="{{ tour.cover.url }}" alt="" class="aspect-1610 w-full object-cover">
             <div class="p-7">
                 <h2 class="text-lg font-semibold leading-snug"><a href="{{ tour.get_absolute_url }}" class="hover:text-primary-900">{{ tour.name }}</a></h2>
                 <dl class="mt-5 grid gap-3 text-sm">
                     <div class="flex justify-between gap-4"><dt class="text-grey-500">Dates</dt><dd class="text-right font-medium">{{ departure.start_date|date:'j M' }}{% if departure.end_date %} – {{ departure.end_date|date:'j M Y' }}{% else %} {{ departure.start_date|date:'Y' }}{% endif %}</dd></div>
                     <div class="flex justify-between gap-4"><dt class="text-grey-500">Seats left</dt><dd class="text-right font-medium">{{ departure.seats_left }} of {{ departure.seats_total }}</dd></div>
-                    <div class="flex justify-between gap-4"><dt class="text-grey-500">Price per person</dt><dd class="text-right font-medium">{{ departure.effective_price|money:departure.currency }}</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="text-grey-500">Price per person</dt><dd class="text-right font-medium">{{ unit_price|money:unit_currency }}</dd></div>
                     {% if departure.notes %}<div class="rounded-xl bg-sand p-3 text-grey-700">{{ departure.notes }}</div>{% endif %}
                 </dl>
-                {% if departure.effective_price %}
+                {% if unit_price is not None %}
                 <div class="mt-6 flex items-baseline justify-between border-t border-grey-100 pt-5"
                      x-init="$nextTick(() => { const el = document.getElementById('{{ form.travellers.id_for_label }}'); el && el.addEventListener('input', e => n = Math.max(1, parseInt(e.target.value) || 1)) })">
                     <span class="text-sm text-grey-500">Estimated total</span>
-                    <span class="text-2xl font-bold" x-text="'{{ departure.currency }} ' + (n * price).toLocaleString()">{{ departure.effective_price|money:departure.currency }}</span>
+                    <span class="text-2xl font-bold" x-text="'{% if unit_currency == 'USD' %}US${% else %}UGX {% endif %}' + (n * price).toLocaleString('en', { maximumFractionDigits: 2 })">{{ unit_price|money:unit_currency }}</span>
                 </div>
                 {% endif %}
             </div>

@@ -31,7 +31,7 @@
                                 {% if item.capacity %}<p class="mt-1 text-sm text-primary-900"><i class="fa-solid fa-circle-info mr-1" aria-hidden="true"></i>{{ item.capacity }}</p>{% endif %}
                                 {% if item.summary %}<p class="mt-2 text-sm text-grey-600">{{ item.summary }}</p>{% endif %}
                                 <div class="mt-auto flex items-center justify-between gap-3 pt-5">
-                                    <p><span class="text-lg font-bold">{{ item.price|money:item.currency }}</span>{% if item.price %} <span class="text-sm text-grey-500">{{ item.price_unit }}</span>{% endif %}</p>
+                                    <p><span class="text-lg font-bold">{% price item.price %}</span>{% if item.price %} <span class="text-sm text-grey-500">{{ item.price_unit }}</span>{% endif %}</p>
                                     <a href="?item={{ item.pk }}#enquire" class="btn btn-outline px-4 py-2">Enquire</a>
                                 </div>
                             </div>

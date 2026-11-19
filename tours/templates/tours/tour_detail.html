@@ -101,7 +101,7 @@
             {% else %}
                 <div class="mt-6 flex flex-col gap-6 rounded-2xl bg-sand p-6 sm:flex-row sm:items-center">
                     <i class="fa-regular fa-calendar-check text-4xl text-primary-900" aria-hidden="true"></i>
-                    <p class="flex-1 text-grey-700">There are no fixed group dates for this trip. It runs privately on any date you choose{% if tour.price_from %}, from <strong>{{ tour.price_from|money:tour.currency }}</strong> {{ tour.price_note }}{% else %}, and we quote it to match your plans{% endif %}.</p>
+                    <p class="flex-1 text-grey-700">There are no fixed group dates for this trip. It runs privately on any date you choose{% if tour.price_from %}, from <strong>{% price tour.price_from %}</strong> {{ tour.price_note }}{% else %}, and we quote it to match your plans{% endif %}.</p>
                     <a href="#enquire" class="btn btn-primary">Request your dates</a>
                 </div>
             {% endif %}
@@ -169,7 +169,7 @@
     <aside class="lg:order-none">
         <div class="rounded-3xl bg-white p-7 shadow-xl ring-1 ring-black/5 lg:sticky lg:top-24">
             {% if tour.price_from %}<p class="text-xs uppercase tracking-widest text-grey-500">From</p>{% endif %}
-            <p class="text-3xl font-bold text-grey-900">{{ tour.price_from|money:tour.currency }}</p>
+            <p class="text-3xl font-bold text-grey-900">{% price tour.price_from %}</p>
             {% if tour.price_from and tour.price_note %}<p class="text-sm text-grey-500">{{ tour.price_note }}</p>{% endif %}
             <dl class="mt-6 grid gap-3 border-t border-grey-100 pt-6 text-sm">
                 <div class="flex justify-between gap-4"><dt class="text-grey-500">Length</dt><dd class="text-right font-medium">{{ tour.duration_label }}</dd></div>

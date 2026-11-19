@@ -2,6 +2,7 @@ from django.conf import settings
 
 from destinations.models import Destination, TripStyle
 from main import seo
+from main.currency import DEFAULT, Currency
 from main.models import SiteSettings
 
 
@@ -14,6 +15,8 @@ def site(request):
         'nav_destinations': Destination.objects.published().only('name', 'slug'),
         'nav_styles': TripStyle.objects.published().only('name', 'slug'),
         'org_jsonld': seo.organization(settings_obj),
+        'currency': getattr(request, 'currency', DEFAULT),
+        'currencies': Currency.values,
         'GOOGLE_SITE_VERIFICATION': settings.GOOGLE_SITE_VERIFICATION,
         'BING_SITE_VERIFICATION': settings.BING_SITE_VERIFICATION,
     }

@@ -25,7 +25,7 @@
     <div class="flex items-center justify-between gap-4 sm:justify-end">
         <p class="text-right">
             <span class="block text-[11px] uppercase tracking-wide text-grey-500">per person</span>
-            <span class="text-lg font-bold text-grey-900">{{ dep.effective_price|money:dep.currency }}</span>
+            <span class="text-lg font-bold text-grey-900">{% price dep.effective_price %}</span>
         </p>
         {% if dep.is_bookable %}
             <a href="{{ dep.get_reserve_url }}" class="btn btn-primary">Reserve a seat</a>

@@ -44,6 +44,7 @@
         </nav>
 
         <div class="flex items-center gap-3">
+            {% include 'components/currency_switch.html' %}
             <a href="{% url 'contacts:plan' %}" class="btn btn-primary hidden sm:inline-flex">Plan your trip</a>
             <button type="button" class="lg:hidden grid size-11 place-content-center rounded-full text-xl"
                     :class="solid ? 'bg-grey-100' : 'bg-white/15'"

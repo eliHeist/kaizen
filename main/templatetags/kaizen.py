@@ -1,24 +1,27 @@
 import json
-from decimal import Decimal
 
 from django import template
 from django.conf import settings
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-register = template.Library()
+from main.currency import DEFAULT, format_money
 
-SYMBOLS = {'USD': 'US$', 'EUR': '€', 'GBP': '£', 'UGX': 'UGX '}
+register = template.Library()
 
 
 @register.filter
-def money(value, currency='USD'):
+def money(value, currency=DEFAULT):
     """2850 -> "US$2,850". Blank prices read "Price on request"."""
-    if value in (None, ''):
-        return 'Price on request'
-    value = Decimal(value)
-    fmt = '{:,.0f}' if value == value.to_integral() else '{:,.2f}'
-    return f'{SYMBOLS.get(currency, currency + " ")}{fmt.format(value)}'
+    return format_money(value, currency)
+
+
+@register.simple_tag(takes_context=True)
+def price(context, prices):
+    """Show a ``Prices`` in the visitor's currency, falling back to the other one."""
+    request = context.get('request')
+    amount, currency = prices.pick(getattr(request, 'currency', DEFAULT))
+    return format_money(amount, currency)
 
 
 @register.filter

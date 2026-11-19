@@ -106,27 +106,26 @@ def tour(itinerary, departures, days):
         }
     offers = []
     for dep in departures:
-        price = dep.effective_price
-        if price is None:
-            continue
-        offers.append({
-            '@type': 'Offer',
-            'price': str(price),
-            'priceCurrency': itinerary.currency,
-            'availability': 'https://schema.org/InStock' if dep.is_bookable else 'https://schema.org/SoldOut',
-            'validThrough': (dep.booking_deadline or dep.start_date).isoformat(),
-            'availabilityStarts': dep.start_date.isoformat(),
-            'availabilityEnds': (dep.end_date or dep.start_date).isoformat(),
-            'url': _url(dep.get_reserve_url()),
-        })
-    if not offers and itinerary.price_from is not None:
-        offers.append({
-            '@type': 'Offer',
-            'price': str(itinerary.price_from),
-            'priceCurrency': itinerary.currency,
-            'availability': 'https://schema.org/InStock',
-            'url': _url(itinerary.get_absolute_url()),
-        })
+        for currency, price in dep.effective_price.items():
+            offers.append({
+                '@type': 'Offer',
+                'price': str(price),
+                'priceCurrency': currency,
+                'availability': 'https://schema.org/InStock' if dep.is_bookable else 'https://schema.org/SoldOut',
+                'validThrough': (dep.booking_deadline or dep.start_date).isoformat(),
+                'availabilityStarts': dep.start_date.isoformat(),
+                'availabilityEnds': (dep.end_date or dep.start_date).isoformat(),
+                'url': _url(dep.get_reserve_url()),
+            })
+    if not offers:
+        for currency, price in itinerary.price_from.items():
+            offers.append({
+                '@type': 'Offer',
+                'price': str(price),
+                'priceCurrency': currency,
+                'availability': 'https://schema.org/InStock',
+                'url': _url(itinerary.get_absolute_url()),
+            })
     if offers:
         data['offers'] = offers
     return data

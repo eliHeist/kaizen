@@ -3,7 +3,7 @@ from urllib.parse import urlencode
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import F, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -19,7 +19,7 @@ from tours.models import Departure, Itinerary, Reservation
 SESSION_KEY = 'reservation_refs'
 
 
-def _filtered_tours(params):
+def _filtered_tours(params, currency='USD'):
     tours = Itinerary.objects.published().prefetch_related('destinations', 'styles')
     if params.get('destination'):
         tours = tours.filter(destinations__slug=params['destination'])
@@ -34,14 +34,15 @@ def _filtered_tours(params):
         tours = tours.filter(Q(name__icontains=q) | Q(summary__icontains=q) | Q(places__name__icontains=q))
     sort = params.get('sort')
     if sort == 'price':
-        tours = tours.order_by('price_from', 'name')
+        field = 'price_from_ugx' if currency == 'UGX' else 'price_from_usd'
+        tours = tours.order_by(F(field).asc(nulls_last=True), 'name')
     elif sort == 'duration':
         tours = tours.order_by('duration_days', 'name')
     return tours.distinct()
 
 
 def tour_list(request):
-    tours = _filtered_tours(request.GET)
+    tours = _filtered_tours(request.GET, request.currency)
     page = Paginator(tours, 12).get_page(request.GET.get('page'))
     active = {k: v for k, v in request.GET.items() if k != 'page' and v}
     return render(request, 'tours/tour_list.html', {
@@ -129,6 +130,8 @@ def reserve(request, slug, pk):
             if form.is_valid():
                 reservation = form.save(commit=False)
                 reservation.departure = departure
+                # Quote the total in the currency the traveller is looking at.
+                reservation.currency = departure.effective_price.pick(request.currency)[1]
                 reservation.save()
         if form.is_valid():
             notify.reservation_received(reservation)
@@ -138,9 +141,12 @@ def reserve(request, slug, pk):
     else:
         form = ReservationForm(departure=departure)
 
+    unit_price, unit_currency = departure.effective_price.pick(request.currency)
     return render(request, 'tours/reserve.html', {
         'tour': tour,
         'departure': departure,
+        'unit_price': unit_price,
+        'unit_currency': unit_currency,
         'form': form,
         'noindex': True,
         'breadcrumbs': [
